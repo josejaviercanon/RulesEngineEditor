@@ -1,0 +1,111 @@
+@page "/editor"
+@inject HttpClient Http
+@inject IJSRuntime Js
+
+<PageTitle>Workflow Editor</PageTitle>
+
+<h1>Workflow Editor</h1>
+
+<RadzenCard Style="max-width: 960px; margin: 0 auto;">
+    <RadzenStack Gap="1rem">
+        <RadzenTextBox @bind-Value="model.Name" Name="name" Placeholder="Workflow name" Style="width: 100%;" />
+        <RadzenTextBox @bind-Value="model.Expression" Name="expression" Placeholder="Rule expression" Style="width: 100%;" />
+        <RadzenTextArea @bind-Value="model.RuleJson" Name="ruleJson" Rows="8" Placeholder="Workflow JSON" Style="width: 100%;" />
+
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
+            <RadzenButton Text="Validate" Icon="check_circle" Click="ValidateAsync" ButtonStyle="ButtonStyle.Primary" />
+            <RadzenButton Text="Load Sample Graph" Icon="account_tree" Click="LoadSampleGraphAsync" ButtonStyle="ButtonStyle.Secondary" />
+        </RadzenStack>
+
+        @if (errors.Count == 0 && validationRan)
+        {
+            <RadzenAlert AlertStyle="AlertStyle.Success" Shade="Shade.Lighter">Workflow payload is valid.</RadzenAlert>
+        }
+
+        @if (errors.Count > 0)
+        {
+            <RadzenAlert AlertStyle="AlertStyle.Danger" Shade="Shade.Lighter">
+                <ul>
+                    @foreach (var error in errors)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+            </RadzenAlert>
+        }
+
+        <div id="workflow-canvas" style="min-height: 140px; border: 1px dashed #9ca3af; border-radius: 8px; padding: 1rem;">
+            LogicFlow canvas wrapper initialized.
+        </div>
+    </RadzenStack>
+</RadzenCard>
+
+@code {
+    private readonly EditorWorkflowModel model = new();
+    private readonly List<string> errors = [];
+    private bool validationRan;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        await Js.InvokeVoidAsync("workflowCanvasInterop.initializeCanvas", "workflow-canvas", new { nodes = Array.Empty<object>(), edges = Array.Empty<object>() });
+    }
+
+    private async Task ValidateAsync()
+    {
+        errors.Clear();
+        validationRan = true;
+
+        var response = await Http.PostAsJsonAsync("api/workflows/validate", new
+        {
+            model.Name,
+            model.Expression,
+            model.RuleJson,
+            model.Version,
+            model.IsActive,
+            model.EffectiveFromUtc,
+            model.EffectiveToUtc,
+            model.SchemaVersion
+        });
+
+        if (response.IsSuccessStatusCode)
+        {
+            return;
+        }
+
+        var payload = await response.Content.ReadFromJsonAsync<ValidationErrorPayload>();
+        if (payload?.Errors is { Count: > 0 })
+        {
+            errors.AddRange(payload.Errors);
+        }
+        else
+        {
+            errors.Add("Validation request failed.");
+        }
+    }
+
+    private Task LoadSampleGraphAsync() =>
+        Js.InvokeVoidAsync("workflowCanvasInterop.loadGraphData", "workflow-canvas", new { nodes = new[] { new { id = "n1", label = "Start" } }, edges = Array.Empty<object>() }).AsTask();
+
+    private sealed class EditorWorkflowModel
+    {
+        public string Name { get; set; } = "SampleWorkflow";
+        public string Expression { get; set; } = "input1.value > 0";
+        public string RuleJson { get; set; } = "{\"WorkflowName\":\"SampleWorkflow\",\"Rules\":[{\"RuleName\":\"AlwaysTrue\",\"Expression\":\"1 == 1\"}]}";
+        public int Version { get; set; } = 1;
+        public bool IsActive { get; set; } = true;
+        public DateTimeOffset? EffectiveFromUtc { get; set; }
+        public DateTimeOffset? EffectiveToUtc { get; set; }
+        public int? SchemaVersion { get; set; } = 1;
+    }
+
+    private sealed class ValidationErrorPayload
+    {
+        public int SchemaVersion { get; set; }
+        public List<string> Errors { get; set; } = [];
+    }
+}
