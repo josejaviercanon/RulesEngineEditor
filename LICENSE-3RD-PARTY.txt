@@ -1,0 +1,8 @@
+==============================================================================
+EXTERNAL COMPONENT ATTRIBUTION
+==============================================================================
+
+This software incorporates portions of code from:
+Project: RulesEngineEditor (https://github.com/alexreich/RulesEngineEditor)
+License: CC BY 4.0 (https://creativecommons.org)
+

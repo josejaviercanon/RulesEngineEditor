@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/BE/">
+    <Project Path="src/RulesEngine.API/RulesEngine.API.csproj" />
+  </Folder>
+  <Folder Name="/Core/">
+    <Project Path="src/RulesEngine.Application/RulesEngine.Application.csproj" />
+    <Project Path="src/RulesEngine.Core/RulesEngine.Core.csproj" />
+    <Project Path="src/RulesEngine.Editor.Shared/RulesEngine.Editor.Shared.csproj" />
+    <Project Path="src/RulesEngine.Infrastructure/RulesEngine.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/FE/">
+    <Project Path="src/RulesEngine.UI/RulesEngine.UI.csproj" />
+  </Folder>
+  <Folder Name="/Libraries/">
+    <Project Path="RulesEngine/src/RulesEngine/RulesEngine.csproj" />
+  </Folder>
+  <Folder Name="/Testing/">
+    <Project Path="src/RulesEngine.Tests/RulesEngine.Tests.csproj" />
+  </Folder>
+</Solution>
