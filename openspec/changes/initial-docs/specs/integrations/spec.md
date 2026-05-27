@@ -32,6 +32,14 @@ The system SHALL use EF Core repositories and mappings to persist workflow defin
 - **WHEN** persistence is executed
 - **THEN** EF Core stores the workflow definition payload according to configured JSON mapping rules
 
+### Requirement: PostgreSQL Rules Table Integration Contract
+The system SHALL integrate EF Core persistence with PostgreSQL 18 using a rules table contract that includes Id, Name, Expression, RuleJson, Version, IsActive, EffectiveFromUtc, and EffectiveToUtc.
+
+#### Scenario: Persist rule record into canonical rules table
+- **GIVEN** the persistence layer is configured for PostgreSQL 18
+- **WHEN** a rule definition is saved
+- **THEN** the record is written to rules with primary key PK_rules on Id and the contract-compatible field set
+
 ### Requirement: Minimal API Integration Contract
 The system SHALL expose integration endpoints through Minimal API mappings for validation, execution, and workflow lifecycle operations.
 

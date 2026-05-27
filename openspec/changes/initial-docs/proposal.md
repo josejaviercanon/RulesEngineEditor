@@ -4,6 +4,7 @@ RulesEngineWorkflowEditor has a new multi-project solution scaffold and legacy i
 
 ## What Changes
 
+- Add PostgreSQL 18 database connectivity baseline for all projects requiring persistence, including a shared connection configuration and initial rules-table contract.
 - Add a documentation-first OpenSpec change named initial-docs to define architecture and integration contracts.
 - Add delta specs for architecture layers, workflow lifecycle behavior, and external or cross-layer integrations.
 - Add a consolidated technical design document that replaces separate architecture and integration writeups.
@@ -11,6 +12,7 @@ RulesEngineWorkflowEditor has a new multi-project solution scaffold and legacy i
 
 ## Scope
 
+- Define the initial persistence connection contract using PostgreSQL 18 and the canonical rules table schema for rule storage.
 - Define normative requirements for clean architecture boundaries across core, shared-editor, infrastructure, application, api, ui, and tests.
 - Define normative requirements for workflow CRUD lifecycle behavior and endpoint semantics.
 - Define normative requirements for integration contracts: RulesEngine, LogicFlow.js interop, Radzen UI, EF Core persistence, and Minimal API.

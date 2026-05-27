@@ -40,6 +40,14 @@ The system SHALL validate workflow definitions against the configured schema ver
 - **WHEN** an execution request is submitted
 - **THEN** the system rejects the request with structured validation errors
 
+### Requirement: Workflow Persistence Connection Precondition
+The system SHALL require PostgreSQL 18 connectivity to be configured before workflow lifecycle create or update operations are processed.
+
+#### Scenario: Reject persistence operations when database connection is not configured
+- **GIVEN** create or update workflow operations are invoked
+- **WHEN** the configured PostgreSQL connection to GamificationFlow_DEV is unavailable or missing
+- **THEN** the system returns structured persistence configuration errors and does not write to rules storage
+
 ### Requirement: Dry-Run Execution Path
 The system SHALL support a dry-run mode that evaluates workflows without persisting execution side effects.
 

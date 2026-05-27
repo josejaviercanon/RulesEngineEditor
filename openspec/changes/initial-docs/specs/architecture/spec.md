@@ -24,6 +24,14 @@ The system SHALL confine persistence concerns, EF Core mappings, and repository 
 - **WHEN** database mappings are applied
 - **THEN** persistence configuration is implemented in infrastructure and consumed via abstractions
 
+### Requirement: Infrastructure Database Connection Ownership
+The system SHALL centralize PostgreSQL 18 connection configuration in infrastructure and expose it through dependency injection to projects that require database access.
+
+#### Scenario: Shared connection configuration across layers
+- **GIVEN** api, application, and infrastructure components require persistence access
+- **WHEN** service registration is built from configuration
+- **THEN** all database-capable services use the configured connection string Host=localhost;Port=5432;Database=GamificationFlow_DEV;Username=postgres;Password=postgres via infrastructure-owned setup
+
 ### Requirement: Application Layer Orchestration
 The system SHALL orchestrate use cases through application services, DTOs, and MediatR handlers without direct coupling to UI framework concerns.
 

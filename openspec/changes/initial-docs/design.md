@@ -7,7 +7,7 @@ RulesEngineWorkflowEditor is evolving from a legacy editor implementation toward
 **Goals:**
 - Define explicit layer responsibilities across core, shared-editor, infrastructure, application, api, ui, and tests.
 - Define integration boundaries for RulesEngine, LogicFlow.js interop, Radzen UI composition, EF Core persistence, and Minimal API endpoints.
-- Establish a JSON column persistence strategy for workflow definitions with metadata-friendly relational fields.
+- Establish a PostgreSQL 18 persistence baseline, including shared connection configuration and a canonical rules table contract.
 - Define schema versioning expectations for workflow validation.
 - Define execution behavior differences between dry-run and real execution paths.
 
@@ -40,9 +40,11 @@ Alternatives considered:
 - Direct component-level JS calls in each page/component.
 - Rejected due to duplicate interop glue and unstable contract surface.
 
-### Decision: JSON column strategy for workflow definition
-- WorkflowEntity.Definition SHALL be mapped as JSON via EF Core ToJson configuration.
-- Stable metadata fields (Id, Name, Version, timestamps) remain first-class columns for querying.
+### Decision: PostgreSQL 18 connection baseline and rules table contract
+- Database-capable services SHALL use PostgreSQL 18 connection settings via shared configuration and dependency injection wiring.
+- The canonical baseline connection string for development is Host=localhost;Port=5432;Database=GamificationFlow_DEV;Username=postgres;Password=postgres.
+- Rule persistence SHALL target the rules table contract with columns Id, Name, Expression, RuleJson, Version, IsActive, EffectiveFromUtc, and EffectiveToUtc, with PK_rules on Id.
+- RuleJson SHALL carry serialized rule definition payloads while metadata columns remain queryable.
 
 Alternatives considered:
 - Fully normalized relational graph for every node and edge.
@@ -66,7 +68,8 @@ Alternatives considered:
 
 ## Risks / Trade-offs
 
-- Risk: JSON column flexibility can reduce relational query ergonomics. -> Mitigation: keep indexed metadata columns and projection views for common queries.
+- Risk: Reliance on a single shared development connection string can hide environment-specific misconfiguration. -> Mitigation: keep environment overrides explicit and validate configuration at startup.
+- Risk: RuleJson text payloads may reduce ad-hoc relational query ergonomics. -> Mitigation: keep stable metadata columns queryable and add projections for common read paths.
 - Risk: Interop wrapper can drift from LogicFlow capabilities. -> Mitigation: version wrapper interface and add contract tests around wrapper methods.
 - Risk: Schema version proliferation can increase maintenance load. -> Mitigation: define version lifecycle policy and deprecation windows.
 - Risk: Divergence between dry-run and real execution code paths can create inconsistent outcomes. -> Mitigation: share evaluation core and isolate only persistence side effects.
