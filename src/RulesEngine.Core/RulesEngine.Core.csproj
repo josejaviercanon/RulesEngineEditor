@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RulesEngine" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\RulesEngine\src\RulesEngine\RulesEngine.csproj" />
   </ItemGroup>
 
