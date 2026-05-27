@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "DEV profile",
+    "Projects": [
+      {
+        "Path": "src\\RulesEngine.API\\RulesEngine.API.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "src\\RulesEngine.UI\\RulesEngine.UI.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      }
+    ]
+  }
+]

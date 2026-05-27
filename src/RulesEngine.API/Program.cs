@@ -34,16 +34,31 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 // Add NSwag services
 //builder.Services.AddOpenApiDocument();
 
+// 1. Explicitly name the schema "v1"
+builder.Services.AddOpenApi("v1");
+
 var app = builder.Build();
+
+// Seed the database
+//await using var scope = app.Services.CreateAsyncScope();
+//await SeedData.InitializeAsync(scope.ServiceProvider);
+
+//app.MapOpenApi();
+
+// 2. Explicitly map the route pattern
+app.MapOpenApi("/openapi/{documentName}.json");
 
 if (app.Environment.IsDevelopment())
 {
-    // Seed the database
-    //await using var scope = app.Services.CreateAsyncScope();
-    //await SeedData.InitializeAsync(scope.ServiceProvider);
 
-    app.MapOpenApi();
-    app.MapScalarApiReference(); // Maps the Scalar UI playground to /scalar/v1
+    //app.MapScalarApiReference();
+    app.MapScalarApiReference(options =>
+    {
+        // Points explicitly to the exact localized JSON path
+        options.WithOpenApiRoutePattern("/openapi/v1.json");
+    });
+
+    //app.MapGet("/scalar/v1/", () => Results.Redirect("/scalar/", permanent: false));
 }
 
 // Activate the CORS policy
