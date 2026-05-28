@@ -12,7 +12,7 @@ public sealed class ExecuteWorkflowResultDto
 
     public bool WasSuccessful { get; init; }
 
-    public string ResultJson { get; init; } = string.Empty;
+    public IReadOnlyList<RuleResultDto> Results { get; init; } = [];
 
     public Guid? ExecutionId { get; init; }
 

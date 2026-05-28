@@ -1,18 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
+using System.Text.Json.Serialization;
 using MediatR;
 using RulesEngine.API.Contracts;
 using RulesEngine.API.Mapping;
 using RulesEngine.Application.Commands;
+using RulesEngine.Application.Dtos;
 using Scalar.AspNetCore;
 using RulesEngine.Application.DependencyInjection;
-using RulesEngine.Core.Execution;
-using RulesEngine.Core.Models;
-using RulesEngine.Core.Repositories;
-using RulesEngine.Core.Validation;
 using RulesEngine.Infrastructure.DependencyInjection;
-using RulesEngine.Infrastructure.Persistence;
-using RulesEngine.Infrastructure.Persistence.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 var backendUrl = builder.Configuration["BackendUrl"] ?? "https://localhost:7086";
@@ -30,6 +25,10 @@ builder.Services.AddCors(
 
 // Add Endpoints API Explorer
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
@@ -98,23 +97,19 @@ workflows.MapGet("/{id:guid}", async (Guid id, IMediator mediator, CancellationT
 workflows.MapPost("/", async (
         WorkflowRequest request,
         IMediator mediator,
-        IWorkflowSchemaValidator schemaValidator,
         CancellationToken cancellationToken) =>
     {
-        var validationResult = schemaValidator.Validate(request.RuleJson, request.SchemaVersion);
-        if (!validationResult.IsValid)
+        WorkflowDto workflow;
+        try
         {
-            return Results.BadRequest(new ValidationErrorResponse(validationResult.ResolvedVersion, validationResult.Errors));
+            workflow = await mediator.Send(new CreateWorkflowCommand(
+                request.Workflow,
+                request.SchemaVersion), cancellationToken);
         }
-
-        var workflow = await mediator.Send(new CreateWorkflowCommand(
-            request.Name,
-            request.Expression,
-            request.RuleJson,
-            request.Version,
-            request.IsActive,
-            request.EffectiveFromUtc,
-            request.EffectiveToUtc), cancellationToken);
+        catch (InvalidOperationException exception)
+        {
+            return Results.BadRequest(new ValidationErrorResponse(request.SchemaVersion ?? 1, [exception.Message]));
+        }
 
         var response = workflow.ToResponse();
 
@@ -126,24 +121,20 @@ workflows.MapPut("/{id:guid}", async (
         Guid id,
         WorkflowRequest request,
         IMediator mediator,
-        IWorkflowSchemaValidator schemaValidator,
         CancellationToken cancellationToken) =>
     {
-        var validationResult = schemaValidator.Validate(request.RuleJson, request.SchemaVersion);
-        if (!validationResult.IsValid)
+        WorkflowDto? updated;
+        try
         {
-            return Results.BadRequest(new ValidationErrorResponse(validationResult.ResolvedVersion, validationResult.Errors));
+            updated = await mediator.Send(new UpdateWorkflowCommand(
+                id,
+                request.Workflow,
+                request.SchemaVersion), cancellationToken);
         }
-
-        var updated = await mediator.Send(new UpdateWorkflowCommand(
-            id,
-            request.Name,
-            request.Expression,
-            request.RuleJson,
-            request.Version,
-            request.IsActive,
-            request.EffectiveFromUtc,
-            request.EffectiveToUtc), cancellationToken);
+        catch (InvalidOperationException exception)
+        {
+            return Results.BadRequest(new ValidationErrorResponse(request.SchemaVersion ?? 1, [exception.Message]));
+        }
 
         if (updated is null)
         {
@@ -166,15 +157,10 @@ workflows.MapDelete("/{id:guid}", async (Guid id, IMediator mediator, Cancellati
     })
     .WithName("DeleteWorkflow");
 
-workflows.MapPost("/validate", async (WorkflowRequest request, IMediator mediator, CancellationToken cancellationToken) =>
+workflows.MapPost("/validate", async (ValidateWorkflowRequest request, IMediator mediator, CancellationToken cancellationToken) =>
     {
-        var validationResult = await mediator.Send(new ValidateWorkflowCommand(request.RuleJson, request.SchemaVersion), cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            return Results.BadRequest(new ValidationErrorResponse(validationResult.ResolvedVersion, validationResult.Errors));
-        }
-
-        return Results.Ok(new { validationResult.ResolvedVersion, Errors = Array.Empty<string>() });
+        var validationResult = await mediator.Send(new ValidateWorkflowCommand(request.Workflow), cancellationToken);
+        return Results.Ok(new ValidateWorkflowResponse(validationResult.IsValid, validationResult.Errors.ToArray()));
     })
     .WithName("ValidateWorkflow");
 
@@ -184,7 +170,7 @@ workflows.MapPost("/{id:guid}/execute", async (
         IMediator mediator,
         CancellationToken cancellationToken) =>
     {
-        var result = await mediator.Send(new ExecuteWorkflowCommand(id, request.DryRun, request.SchemaVersion), cancellationToken);
+        var result = await mediator.Send(new ExecuteWorkflowCommand(id, request.DryRun, request.SchemaVersion, request.Inputs), cancellationToken);
 
         if (!result.Found)
         {
@@ -205,7 +191,7 @@ workflows.MapPost("/{id:guid}/execute", async (
             SchemaVersion: result.SchemaVersion ?? 1,
             Persisted: result.Persisted,
             WasSuccessful: result.WasSuccessful,
-            ResultJson: result.ResultJson,
+            Results: result.Results,
             ExecutionId: result.ExecutionId));
     })
     .WithName("ExecuteWorkflow");

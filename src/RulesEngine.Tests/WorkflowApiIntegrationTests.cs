@@ -1,11 +1,11 @@
 using System.Net;
 using System.Net.Http.Json;
-using System.Text.Json;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using RulesEngine.API.Contracts;
 using Microsoft.Extensions.DependencyInjection;
+using RulesEngine.API.Contracts;
+using RulesEngine.Application.Dtos;
 using RulesEngine.Infrastructure.Persistence;
 using RulesEngine.Tests.Infrastructure;
 
@@ -41,15 +41,11 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
 
         var loaded = await getByIdResponse.Content.ReadFromJsonAsync<WorkflowResponse>();
         loaded.Should().NotBeNull();
-        loaded!.Name.Should().Be("CrudWorkflow");
+        loaded!.Workflow.WorkflowName.Should().Be(workflowName);
 
-        var updateRequest = createRequest with
+        var updateRequest = CreateWorkflowRequest("CrudWorkflowUpdated") with
         {
-            Name = "CrudWorkflowUpdated",
-            Expression = "1 == 1",
-            RuleJson = BuildRuleJson("CrudWorkflowUpdated"),
-            Version = 2,
-            IsActive = false
+            Workflow = CreateWorkflowDto("CrudWorkflowUpdated")
         };
 
         var updateResponse = await _client.PutAsJsonAsync($"/api/workflows/{createdId}", updateRequest);
@@ -60,7 +56,7 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
 
         var workflows = await listResponse.Content.ReadFromJsonAsync<List<WorkflowResponse>>();
         workflows.Should().NotBeNull();
-        workflows!.Should().Contain(item => item.Id == createdId && item.Name == "CrudWorkflowUpdated");
+        workflows!.Should().Contain(item => item.Id == createdId && item.Workflow.WorkflowName == "CrudWorkflowUpdated");
 
         var deleteResponse = await _client.DeleteAsync($"/api/workflows/{createdId}");
         deleteResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -79,7 +75,7 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
 
         var dryRunResponse = await _client.PostAsJsonAsync(
             $"/api/workflows/{createdId}/execute",
-            new ExecuteWorkflowRequest(DryRun: true, SchemaVersion: 1));
+            new ExecuteWorkflowRequest(DryRun: true, SchemaVersion: 1, Inputs: []));
 
         dryRunResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         var dryRunPayload = await dryRunResponse.Content.ReadFromJsonAsync<ExecuteWorkflowResponse>();
@@ -88,12 +84,11 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         dryRunPayload.Persisted.Should().BeFalse();
         dryRunPayload.ExecutionId.Should().BeNull();
         dryRunPayload.WasSuccessful.Should().BeTrue();
-
-        JsonDocument.Parse(dryRunPayload.ResultJson).RootElement.ValueKind.Should().Be(JsonValueKind.Array);
+        dryRunPayload.Results.Should().HaveCount(1);
 
         var persistedResponse = await _client.PostAsJsonAsync(
             $"/api/workflows/{createdId}/execute",
-            new ExecuteWorkflowRequest(DryRun: false, SchemaVersion: 1));
+            new ExecuteWorkflowRequest(DryRun: false, SchemaVersion: 1, Inputs: []));
 
         persistedResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         var persistedPayload = await persistedResponse.Content.ReadFromJsonAsync<ExecuteWorkflowResponse>();
@@ -115,23 +110,33 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
     }
 
     [Fact]
-    public async Task ValidateEndpoint_ShouldReturnStructuredErrorsForInvalidPayload()
+    public async Task ValidateEndpoint_ShouldReturnStructuredErrorsForInvalidWorkflow()
     {
-        var invalidRequest = CreateWorkflowRequest("InvalidWorkflow") with
-        {
-            RuleJson = "{not-valid-json}"
-        };
+        var invalid = new WorkflowDto();
+        var response = await _client.PostAsJsonAsync("/api/workflows/validate", new ValidateWorkflowRequest(invalid));
 
-        var response = await _client.PostAsJsonAsync("/api/workflows/validate", invalidRequest);
-
-        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        var payload = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var payload = await response.Content.ReadFromJsonAsync<ValidateWorkflowResponse>();
         payload.Should().NotBeNull();
-        payload!.Errors.Should().Contain(error => error.Contains("valid JSON", StringComparison.OrdinalIgnoreCase));
+        payload!.IsValid.Should().BeFalse();
+        payload.Errors.Should().NotBeEmpty();
     }
 
     [Fact]
-    public async Task ExecuteEndpoint_ShouldReturnValidationErrorForInvalidSchemaVersion()
+    public async Task ValidateEndpoint_ShouldReturnSuccessForValidWorkflow()
+    {
+        var valid = CreateWorkflowDto("validate-valid");
+        var response = await _client.PostAsJsonAsync("/api/workflows/validate", new ValidateWorkflowRequest(valid));
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var payload = await response.Content.ReadFromJsonAsync<ValidateWorkflowResponse>();
+        payload.Should().NotBeNull();
+        payload!.IsValid.Should().BeTrue();
+        payload.Errors.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task ExecuteEndpoint_ShouldReturnValidationErrorForInvalidInputJson()
     {
         const string workflowName = "ExecuteValidationFailure";
         var createResponse = await _client.PostAsJsonAsync("/api/workflows", CreateWorkflowRequest(workflowName));
@@ -140,15 +145,119 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
 
         var response = await _client.PostAsJsonAsync(
             $"/api/workflows/{createdId}/execute",
-            new ExecuteWorkflowRequest(DryRun: true, SchemaVersion: 0));
+            new ExecuteWorkflowRequest(
+                DryRun: true,
+                SchemaVersion: 1,
+                Inputs:
+                [
+                    new RuleParameterDto
+                    {
+                        Name = "input1",
+                        ValueJson = "{not-json}"
+                    }
+                ]));
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var payload = await response.Content.ReadFromJsonAsync<ExecutionErrorResponse>();
 
         payload.Should().NotBeNull();
-        payload!.Code.Should().Be("validation_failed");
+        payload!.Code.Should().Be("invalid_input_json");
         payload.Errors.Should().NotBeNull();
-        payload.Errors!.Should().Contain(error => error.Contains("SchemaVersion", StringComparison.OrdinalIgnoreCase));
+        payload.Errors!.Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public async Task ExecuteEndpoint_ShouldAcceptNamedInputsAndReturnTypedResults()
+    {
+        var workflow = new WorkflowDto
+        {
+            WorkflowName = "ExecuteWithInputs",
+            Rules =
+            [
+                new RuleDto
+                {
+                    RuleName = "InputRule",
+                    Enabled = true,
+                    Expression = "input1.GetProperty(\"total\").GetInt32() > 10"
+                }
+            ],
+            Version = 1,
+            IsActive = true
+        };
+
+        var createResponse = await _client.PostAsJsonAsync(
+            "/api/workflows",
+            new WorkflowRequest(workflow, 1));
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        var createdId = ResolveWorkflowId(createResponse);
+        var executeResponse = await _client.PostAsJsonAsync(
+            $"/api/workflows/{createdId}/execute",
+            new ExecuteWorkflowRequest(
+                DryRun: true,
+                SchemaVersion: 1,
+                Inputs:
+                [
+                    new RuleParameterDto
+                    {
+                        Name = "input1",
+                        ValueJson = "{\"total\": 15}"
+                    }
+                ]));
+
+        executeResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var payload = await executeResponse.Content.ReadFromJsonAsync<ExecuteWorkflowResponse>();
+        payload.Should().NotBeNull();
+        payload!.Results.Should().ContainSingle();
+        payload.Results[0].RuleName.Should().Be("InputRule");
+        payload.Results[0].IsSuccess.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ExecuteEndpoint_ShouldSurfaceExpressionErrorsInResults()
+    {
+        var workflow = new WorkflowDto
+        {
+            WorkflowName = "ExecuteExpressionError",
+            Rules =
+            [
+                new RuleDto
+                {
+                    RuleName = "BrokenRule",
+                    Enabled = true,
+                    Expression = "input1.GetProperty(\"missing\").GetInt32() > 10"
+                }
+            ],
+            Version = 1,
+            IsActive = true
+        };
+
+        var createResponse = await _client.PostAsJsonAsync(
+            "/api/workflows",
+            new WorkflowRequest(workflow, 1));
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        var createdId = ResolveWorkflowId(createResponse);
+        var executeResponse = await _client.PostAsJsonAsync(
+            $"/api/workflows/{createdId}/execute",
+            new ExecuteWorkflowRequest(
+                DryRun: true,
+                SchemaVersion: 1,
+                Inputs:
+                [
+                    new RuleParameterDto
+                    {
+                        Name = "input1",
+                        ValueJson = "{\"total\": 15}"
+                    }
+                ]));
+
+        executeResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var payload = await executeResponse.Content.ReadFromJsonAsync<ExecuteWorkflowResponse>();
+        payload.Should().NotBeNull();
+        payload!.WasSuccessful.Should().BeFalse();
+        payload.Results.Should().ContainSingle();
+        payload.Results[0].ExceptionMessage.Should().NotBeNullOrWhiteSpace();
     }
 
     private static Guid ResolveWorkflowId(HttpResponseMessage response)
@@ -161,24 +270,22 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
     }
 
     private static WorkflowRequest CreateWorkflowRequest(string workflowName) => new(
-        Name: workflowName,
-        Expression: "1 == 1",
-        RuleJson: BuildRuleJson(workflowName),
-        Version: 1,
-        IsActive: true,
-        EffectiveFromUtc: null,
-        EffectiveToUtc: null,
+        Workflow: CreateWorkflowDto(workflowName),
         SchemaVersion: 1);
 
-    private static string BuildRuleJson(string workflowName) => $$"""
-        {
-          "WorkflowName": "{{workflowName}}",
-          "Rules": [
+    private static WorkflowDto CreateWorkflowDto(string workflowName) => new()
+    {
+        WorkflowName = workflowName,
+        Rules =
+        [
+            new RuleDto
             {
-              "RuleName": "AlwaysTrue",
-              "Expression": "1 == 1"
+                RuleName = "AlwaysTrue",
+                Enabled = true,
+                Expression = "1 == 1"
             }
-          ]
-        }
-        """;
+        ],
+        Version = 1,
+        IsActive = true
+    };
 }

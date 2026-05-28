@@ -1,7 +1,9 @@
 using FluentAssertions;
+using AutoMapper;
 using RulesEngine.Application.Commands;
+using RulesEngine.Application.Dtos;
 using RulesEngine.Application.Handlers;
-using RulesEngine.Application.Validation;
+using RulesEngine.Application.Mapping;
 using RulesEngine.Core.Execution;
 using RulesEngine.Core.Models;
 using RulesEngine.Core.Repositories;
@@ -10,38 +12,76 @@ namespace RulesEngine.Tests;
 
 public sealed class WorkflowApplicationHandlersTests
 {
+    private static readonly IMapper Mapper = new MapperConfiguration(cfg =>
+    {
+        cfg.AddProfile<WorkflowMappingProfile>();
+    }).CreateMapper();
+
     [Fact]
     public async Task CreateWorkflowHandler_ShouldPersistWorkflowUsingRepository()
     {
         var repository = new InMemoryWorkflowRepository();
-        var handler = new CreateWorkflowCommandHandler(repository);
+        var rulesService = new RulesEngineWorkflowService();
+        var handler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper);
+
+        var workflow = BuildWorkflowDto("create-handler-test");
 
         var result = await handler.Handle(new CreateWorkflowCommand(
-            Name: "create-handler-test",
-            Expression: "1 == 1",
-            RuleJson: BuildRuleJson("create-handler-test"),
-            Version: 1,
-            IsActive: true,
-            EffectiveFromUtc: null,
-            EffectiveToUtc: null),
+            Workflow: workflow,
+            SchemaVersion: null),
             CancellationToken.None);
 
         result.Id.Should().NotBeEmpty();
-        result.Name.Should().Be("create-handler-test");
+        result.WorkflowName.Should().Be("create-handler-test");
 
         repository.Store.Should().ContainSingle(item => item.Id == result.Id);
     }
 
     [Fact]
-    public async Task ValidateWorkflowHandler_ShouldReturnResolvedVersionAndErrors()
+    public async Task ValidateWorkflowHandler_ShouldReturnErrorsForInvalidWorkflow()
     {
-        var handler = new ValidateWorkflowCommandHandler(new JsonWorkflowSchemaValidator());
+        var handler = new ValidateWorkflowCommandHandler(Mapper);
 
-        var result = await handler.Handle(new ValidateWorkflowCommand("{not-json}", 2), CancellationToken.None);
+        var result = await handler.Handle(new ValidateWorkflowCommand(new WorkflowDto()), CancellationToken.None);
 
-        result.ResolvedVersion.Should().Be(2);
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(error => error.Contains("valid JSON", StringComparison.OrdinalIgnoreCase));
+        result.Errors.Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public async Task ValidateWorkflowHandler_ShouldReturnErrorsForMissingExpression()
+    {
+        var handler = new ValidateWorkflowCommandHandler(Mapper);
+        var workflow = new WorkflowDto
+        {
+            WorkflowName = "validate-missing-expression",
+            Rules =
+            [
+                new RuleDto
+                {
+                    RuleName = "BrokenRule",
+                    Enabled = true,
+                    Expression = string.Empty
+                }
+            ]
+        };
+
+        var result = await handler.Handle(new ValidateWorkflowCommand(workflow), CancellationToken.None);
+
+        result.IsValid.Should().BeFalse();
+        result.Errors.Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public async Task ValidateWorkflowHandler_ShouldReturnSuccessForValidWorkflow()
+    {
+        var handler = new ValidateWorkflowCommandHandler(Mapper);
+        var workflow = BuildWorkflowDto("validate-valid");
+
+        var result = await handler.Handle(new ValidateWorkflowCommand(workflow), CancellationToken.None);
+
+        result.IsValid.Should().BeTrue();
+        result.Errors.Should().BeEmpty();
     }
 
     [Fact]
@@ -50,41 +90,48 @@ public sealed class WorkflowApplicationHandlersTests
         var repository = new InMemoryWorkflowRepository();
         var executionStateRepository = new InMemoryExecutionStateRepository();
         var rulesService = new RulesEngineWorkflowService();
-        var validator = new JsonWorkflowSchemaValidator();
 
         var workflow = await repository.CreateAsync(new WorkflowRecord
         {
             Id = Guid.NewGuid(),
             Name = "execute-handler-test",
             Expression = "1 == 1",
-            RuleJson = BuildRuleJson("execute-handler-test"),
+            RuleJson = SerializeWorkflowDto(BuildWorkflowDto("execute-handler-test")),
             Version = 1,
             IsActive = true
         }, CancellationToken.None);
 
-        var handler = new ExecuteWorkflowCommandHandler(repository, validator, rulesService, executionStateRepository);
+        var handler = new ExecuteWorkflowCommandHandler(repository, rulesService, executionStateRepository, Mapper);
 
         var result = await handler.Handle(
-            new ExecuteWorkflowCommand(workflow.Id, DryRun: true, SchemaVersion: 1),
+            new ExecuteWorkflowCommand(workflow.Id, DryRun: true, SchemaVersion: 1, Inputs: []),
             CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
         result.DryRun.Should().BeTrue();
         result.Persisted.Should().BeFalse();
+        result.Results.Should().HaveCount(1);
         executionStateRepository.Store.Should().BeEmpty();
     }
 
-    private static string BuildRuleJson(string workflowName) => $$"""
-        {
-          "WorkflowName": "{{workflowName}}",
-          "Rules": [
+    private static WorkflowDto BuildWorkflowDto(string workflowName) => new()
+    {
+        WorkflowName = workflowName,
+        Rules =
+        [
+            new RuleDto
             {
-              "RuleName": "AlwaysTrue",
-              "Expression": "1 == 1"
+                RuleName = "AlwaysTrue",
+                Enabled = true,
+                Expression = "1 == 1"
             }
-          ]
-        }
-        """;
+        ],
+        Version = 1,
+        IsActive = true
+    };
+
+    private static string SerializeWorkflowDto(WorkflowDto workflow)
+        => System.Text.Json.JsonSerializer.Serialize(workflow);
 
     private sealed class InMemoryWorkflowRepository : IWorkflowRepository
     {

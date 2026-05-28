@@ -1,14 +1,27 @@
+using System.Text.Json.Serialization;
+using RulesEngine.Models;
+
 namespace RulesEngine.Application.Dtos;
 
 public sealed class WorkflowDto
 {
     public Guid Id { get; init; }
 
-    public string Name { get; init; } = string.Empty;
+    [JsonPropertyName("WorkflowName")]
+    public string WorkflowName { get; init; } = string.Empty;
 
-    public string Expression { get; init; } = string.Empty;
+    [JsonPropertyName("RuleExpressionType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public RuleExpressionType RuleExpressionType { get; init; } = RuleExpressionType.LambdaExpression;
 
-    public string RuleJson { get; init; } = string.Empty;
+    [JsonPropertyName("GlobalParams")]
+    public IReadOnlyList<ScopedParamDto> GlobalParams { get; init; } = [];
+
+    [JsonPropertyName("Rules")]
+    public IReadOnlyList<RuleDto> Rules { get; init; } = [];
+
+    [JsonPropertyName("WorkflowsToInject")]
+    public IReadOnlyList<string> WorkflowsToInject { get; init; } = [];
 
     public int Version { get; init; }
 

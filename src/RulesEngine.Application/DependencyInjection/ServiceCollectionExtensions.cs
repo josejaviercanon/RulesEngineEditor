@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
     {
         _ = configuration;
+        services.AddAutoMapper(typeof(ServiceCollectionExtensions).Assembly);
         services.AddMediatR(config =>
             config.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly));
         services.AddSingleton<IRulesEngineWorkflowService, RulesEngineWorkflowService>();

@@ -1,15 +1,25 @@
 using MediatR;
 using RulesEngine.Application.Commands;
+using RulesEngine.Core.Execution;
 using RulesEngine.Core.Repositories;
 
 namespace RulesEngine.Application.Handlers;
 
-public sealed class DeleteWorkflowCommandHandler(IWorkflowRepository workflowRepository)
+public sealed class DeleteWorkflowCommandHandler(
+    IWorkflowRepository workflowRepository,
+    IRulesEngineWorkflowService rulesEngineWorkflowService)
     : IRequestHandler<DeleteWorkflowCommand, bool>
 {
-    public Task<bool> Handle(DeleteWorkflowCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(DeleteWorkflowCommand request, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        return workflowRepository.DeleteAsync(request.Id, cancellationToken);
+
+        var deleted = await workflowRepository.DeleteAsync(request.Id, cancellationToken);
+        if (deleted)
+        {
+            rulesEngineWorkflowService.EvictWorkflow(request.Id);
+        }
+
+        return deleted;
     }
 }

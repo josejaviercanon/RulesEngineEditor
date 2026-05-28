@@ -1,27 +1,29 @@
 using System.Text.Json;
+using AutoMapper;
 using MediatR;
 using RulesEngine.Application.Commands;
 using RulesEngine.Application.Dtos;
 using RulesEngine.Core.Execution;
 using RulesEngine.Core.Models;
 using RulesEngine.Core.Repositories;
-using RulesEngine.Core.Validation;
+using RulesEngine.Exceptions;
+using RulesEngine.Models;
 
 namespace RulesEngine.Application.Handlers;
 
 public sealed class ExecuteWorkflowCommandHandler(
     IWorkflowRepository workflowRepository,
-    IWorkflowSchemaValidator schemaValidator,
     IRulesEngineWorkflowService rulesEngineWorkflowService,
-    IExecutionStateRepository executionStateRepository)
+    IExecutionStateRepository executionStateRepository,
+    IMapper mapper)
     : IRequestHandler<ExecuteWorkflowCommand, ExecuteWorkflowResultDto>
 {
     public async Task<ExecuteWorkflowResultDto> Handle(ExecuteWorkflowCommand request, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var workflow = await workflowRepository.GetByIdAsync(request.WorkflowId, cancellationToken);
-        if (workflow is null)
+        var workflowRecord = await workflowRepository.GetByIdAsync(request.WorkflowId, cancellationToken);
+        if (workflowRecord is null)
         {
             return new ExecuteWorkflowResultDto
             {
@@ -30,36 +32,51 @@ public sealed class ExecuteWorkflowCommandHandler(
             };
         }
 
-        var validationResult = schemaValidator.Validate(workflow.RuleJson, request.SchemaVersion);
-        if (!validationResult.IsValid)
+        var workflowDto = JsonSerializer.Deserialize<WorkflowDto>(workflowRecord.RuleJson);
+        if (workflowDto is null)
         {
             return new ExecuteWorkflowResultDto
             {
                 IsSuccess = false,
-                SchemaVersion = validationResult.ResolvedVersion,
-                ErrorCode = "validation_failed",
-                ErrorMessage = "Workflow schema validation failed.",
-                Errors = validationResult.Errors
+                SchemaVersion = request.SchemaVersion,
+                ErrorCode = "deserialization_failed",
+                ErrorMessage = "Stored workflow payload could not be deserialized as WorkflowDto."
             };
         }
 
+        RuleParameter[] ruleParameters;
         try
         {
-            rulesEngineWorkflowService.AddOrUpdateWorkflow(workflow.RuleJson);
-            var executionResults = await rulesEngineWorkflowService.ExecuteAllRulesAsync(workflow.Name);
+            ruleParameters = request.Inputs.Select(input =>
+            {
+                var json = JsonSerializer.Deserialize<JsonElement>(input.ValueJson);
+                return new RuleParameter(input.Name, json);
+            }).ToArray();
+        }
+        catch (JsonException exception)
+        {
+            return new ExecuteWorkflowResultDto
+            {
+                IsSuccess = false,
+                SchemaVersion = request.SchemaVersion,
+                ErrorCode = "invalid_input_json",
+                ErrorMessage = "One or more input parameters contain invalid JSON.",
+                Errors = [exception.Message]
+            };
+        }
 
-            var resultPayload = executionResults
-                .Select(result => new
-                {
-                    RuleName = result.Rule?.RuleName,
-                    result.IsSuccess,
-                    result.ExceptionMessage
-                })
-                .OrderBy(result => result.RuleName, StringComparer.Ordinal)
-                .ToArray();
+        var workflowDefinition = mapper.Map<Workflow>(workflowDto);
 
-            var resultJson = JsonSerializer.Serialize(resultPayload);
+        try
+        {
+            var executionResults = await rulesEngineWorkflowService.ExecuteWorkflowAsync(
+                workflowRecord.Id,
+                workflowDefinition,
+                ruleParameters,
+                cancellationToken);
             var wasSuccessful = executionResults.All(result => result.IsSuccess);
+            var results = mapper.Map<IReadOnlyList<RuleResultDto>>(executionResults);
+            var serializedResults = JsonSerializer.Serialize(results);
 
             if (request.DryRun)
             {
@@ -69,8 +86,8 @@ public sealed class ExecuteWorkflowCommandHandler(
                     DryRun = true,
                     Persisted = false,
                     WasSuccessful = wasSuccessful,
-                    ResultJson = resultJson,
-                    SchemaVersion = validationResult.ResolvedVersion,
+                    Results = results,
+                    SchemaVersion = request.SchemaVersion,
                     ExecutionId = null
                 };
             }
@@ -78,11 +95,11 @@ public sealed class ExecuteWorkflowCommandHandler(
             var executionId = await executionStateRepository.CreateAsync(new ExecutionStateRecord
             {
                 Id = Guid.NewGuid(),
-                WorkflowId = workflow.Id,
+                WorkflowId = workflowRecord.Id,
                 IsDryRun = false,
                 WasSuccessful = wasSuccessful,
                 ExecutedAtUtc = DateTimeOffset.UtcNow,
-                ResultJson = resultJson,
+                ResultJson = serializedResults,
                 ErrorJson = null
             }, cancellationToken);
 
@@ -92,9 +109,20 @@ public sealed class ExecuteWorkflowCommandHandler(
                 DryRun = false,
                 Persisted = true,
                 WasSuccessful = wasSuccessful,
-                ResultJson = resultJson,
-                SchemaVersion = validationResult.ResolvedVersion,
+                Results = results,
+                SchemaVersion = request.SchemaVersion,
                 ExecutionId = executionId
+            };
+        }
+        catch (RuleValidationException exception)
+        {
+            return new ExecuteWorkflowResultDto
+            {
+                IsSuccess = false,
+                SchemaVersion = request.SchemaVersion,
+                ErrorCode = "validation_failed",
+                ErrorMessage = exception.Message,
+                Errors = exception.Errors.Select(error => error.ErrorMessage).ToArray()
             };
         }
         catch (Exception exception)

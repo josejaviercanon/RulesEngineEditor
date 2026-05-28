@@ -1,8 +1,5 @@
-# api-surface Specification
+## MODIFIED Requirements
 
-## Purpose
-Define the externally visible Minimal API behavior for workflow lifecycle operations, HTTP semantics, and response contract expectations.
-## Requirements
 ### Requirement: Workflow CRUD Endpoints
 The system SHALL expose HTTP endpoints for workflow lifecycle operations and SHALL enforce consistent request validation, response payloads, and error contracts across create, read, update, delete, validate, and execute routes. Request and response payloads SHALL embed a typed `WorkflowDto` (with full `Rules`, `GlobalParams`, etc.) rather than a raw JSON string. The execute route SHALL accept a typed `Inputs` array and return a typed `Results` collection.
 
@@ -21,4 +18,3 @@ The system SHALL expose HTTP endpoints for workflow lifecycle operations and SHA
 #### Scenario: Validate route exposes compile-check without persistence
 - **WHEN** POST /api/workflows/validate is called with a WorkflowDto payload
 - **THEN** the API returns a structured validation result with IsValid and Errors and does not write to the persistence store
-

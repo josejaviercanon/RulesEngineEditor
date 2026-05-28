@@ -1,19 +1,32 @@
+using AutoMapper;
 using MediatR;
 using RulesEngine.Application.Commands;
 using RulesEngine.Application.Dtos;
-using RulesEngine.Core.Validation;
+using RulesEngine.Exceptions;
+using RulesEngine.Models;
 
 namespace RulesEngine.Application.Handlers;
 
-public sealed class ValidateWorkflowCommandHandler(IWorkflowSchemaValidator schemaValidator)
+public sealed class ValidateWorkflowCommandHandler(IMapper mapper)
     : IRequestHandler<ValidateWorkflowCommand, WorkflowValidationDto>
 {
     public Task<WorkflowValidationDto> Handle(ValidateWorkflowCommand request, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var result = schemaValidator.Validate(request.RuleJson, request.SchemaVersion);
+        var workflow = mapper.Map<Workflow>(request.Workflow);
 
-        return Task.FromResult(new WorkflowValidationDto(result.ResolvedVersion, result.Errors));
+        try
+        {
+            var engine = new global::RulesEngine.RulesEngine();
+            engine.AddOrUpdateWorkflow(workflow);
+            return Task.FromResult(new WorkflowValidationDto(true, []));
+        }
+        catch (RuleValidationException ex)
+        {
+            var errors = ex.Errors.Select(error => error.ErrorMessage).ToArray();
+            return Task.FromResult(new WorkflowValidationDto(false, errors));
+        }
+
     }
 }

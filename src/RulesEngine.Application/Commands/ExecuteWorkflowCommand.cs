@@ -6,4 +6,5 @@ namespace RulesEngine.Application.Commands;
 public sealed record ExecuteWorkflowCommand(
     Guid WorkflowId,
     bool DryRun,
-    int? SchemaVersion) : IRequest<ExecuteWorkflowResultDto>;
+    int? SchemaVersion,
+    IReadOnlyList<RuleParameterDto> Inputs) : IRequest<ExecuteWorkflowResultDto>;

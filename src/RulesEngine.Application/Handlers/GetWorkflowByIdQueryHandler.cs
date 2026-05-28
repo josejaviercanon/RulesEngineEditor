@@ -1,3 +1,4 @@
+using System.Text.Json;
 using MediatR;
 using RulesEngine.Application.Commands;
 using RulesEngine.Application.Dtos;
@@ -18,12 +19,20 @@ public sealed class GetWorkflowByIdQueryHandler(IWorkflowRepository workflowRepo
             return null;
         }
 
+        var workflow = JsonSerializer.Deserialize<WorkflowDto>(record.RuleJson);
+        if (workflow is null)
+        {
+            return null;
+        }
+
         return new WorkflowDto
         {
+            WorkflowName = workflow.WorkflowName,
+            RuleExpressionType = workflow.RuleExpressionType,
+            GlobalParams = workflow.GlobalParams,
+            Rules = workflow.Rules,
+            WorkflowsToInject = workflow.WorkflowsToInject,
             Id = record.Id,
-            Name = record.Name,
-            Expression = record.Expression,
-            RuleJson = record.RuleJson,
             Version = record.Version,
             IsActive = record.IsActive,
             EffectiveFromUtc = record.EffectiveFromUtc,
