@@ -26,6 +26,7 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<RulesEngineEditorDbContext>(options =>
             options.UseNpgsql(connectionString));
         services.AddScoped<IWorkflowRepository, WorkflowRepository>();
+        services.AddScoped<IExecutionStateRepository, ExecutionStateRepository>();
 
         return services;
     }

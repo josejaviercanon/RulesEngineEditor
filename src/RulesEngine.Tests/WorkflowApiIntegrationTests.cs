@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using RulesEngine.API.Contracts;
 using Microsoft.Extensions.DependencyInjection;
+using RulesEngine.Infrastructure.Persistence;
 using RulesEngine.Tests.Infrastructure;
 
 namespace RulesEngine.Tests;
@@ -101,6 +102,53 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         persistedPayload.Persisted.Should().BeTrue();
         persistedPayload.ExecutionId.Should().NotBeNull();
         persistedPayload.WasSuccessful.Should().BeTrue();
+
+        using var scope = _factory.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<RulesEngineEditorDbContext>();
+        var persistedRecord = await dbContext.ExecutionStates
+            .AsNoTracking()
+            .FirstOrDefaultAsync(state => state.Id == persistedPayload.ExecutionId);
+
+        persistedRecord.Should().NotBeNull();
+        persistedRecord!.WorkflowId.Should().Be(createdId);
+        persistedRecord.IsDryRun.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task ValidateEndpoint_ShouldReturnStructuredErrorsForInvalidPayload()
+    {
+        var invalidRequest = CreateWorkflowRequest("InvalidWorkflow") with
+        {
+            RuleJson = "{not-valid-json}"
+        };
+
+        var response = await _client.PostAsJsonAsync("/api/workflows/validate", invalidRequest);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var payload = await response.Content.ReadFromJsonAsync<ValidationErrorResponse>();
+        payload.Should().NotBeNull();
+        payload!.Errors.Should().Contain(error => error.Contains("valid JSON", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task ExecuteEndpoint_ShouldReturnValidationErrorForInvalidSchemaVersion()
+    {
+        const string workflowName = "ExecuteValidationFailure";
+        var createResponse = await _client.PostAsJsonAsync("/api/workflows", CreateWorkflowRequest(workflowName));
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        var createdId = ResolveWorkflowId(createResponse);
+
+        var response = await _client.PostAsJsonAsync(
+            $"/api/workflows/{createdId}/execute",
+            new ExecuteWorkflowRequest(DryRun: true, SchemaVersion: 0));
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var payload = await response.Content.ReadFromJsonAsync<ExecutionErrorResponse>();
+
+        payload.Should().NotBeNull();
+        payload!.Code.Should().Be("validation_failed");
+        payload.Errors.Should().NotBeNull();
+        payload.Errors!.Should().Contain(error => error.Contains("SchemaVersion", StringComparison.OrdinalIgnoreCase));
     }
 
     private static Guid ResolveWorkflowId(HttpResponseMessage response)

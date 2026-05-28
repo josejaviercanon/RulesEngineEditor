@@ -1,18 +1,18 @@
 using RulesEngine.API.Contracts;
-using RulesEngine.Infrastructure.Persistence.Entities;
+using RulesEngine.Application.Dtos;
 
 namespace RulesEngine.API.Mapping;
 
 public static class WorkflowMapping
 {
-    public static WorkflowResponse ToResponse(this RuleRecord entity) =>
+    public static WorkflowResponse ToResponse(this WorkflowDto workflow) =>
         new(
-            entity.Id,
-            entity.Name,
-            entity.Expression,
-            entity.RuleJson,
-            entity.Version,
-            entity.IsActive,
-            entity.EffectiveFromUtc,
-            entity.EffectiveToUtc);
+            workflow.Id,
+            workflow.Name,
+            workflow.Expression,
+            workflow.RuleJson,
+            workflow.Version,
+            workflow.IsActive,
+            workflow.EffectiveFromUtc,
+            workflow.EffectiveToUtc);
 }

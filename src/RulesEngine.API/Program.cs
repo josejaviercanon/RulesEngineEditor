@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using MediatR;
 using RulesEngine.API.Contracts;
 using RulesEngine.API.Mapping;
+using RulesEngine.Application.Commands;
 using Scalar.AspNetCore;
 using RulesEngine.Application.DependencyInjection;
 using RulesEngine.Core.Execution;
@@ -71,47 +73,31 @@ app.MapGet("/", () => "RulesEngine Editor Web API!");
 var workflows = app.MapGroup("/api/workflows")
     .WithTags("Workflows");
 
-workflows.MapGet("/", async (IWorkflowRepository repository, CancellationToken cancellationToken) =>
+workflows.MapGet("/", async (IMediator mediator, CancellationToken cancellationToken) =>
     {
-        var items = await repository.ListAsync(cancellationToken);
-        var response = items.Select(item => new WorkflowResponse(
-            item.Id,
-            item.Name,
-            item.Expression,
-            item.RuleJson,
-            item.Version,
-            item.IsActive,
-            item.EffectiveFromUtc,
-            item.EffectiveToUtc));
+        var items = await mediator.Send(new ListWorkflowsQuery(), cancellationToken);
+        var response = items.Select(item => item.ToResponse());
 
         return Results.Ok(response);
     })
     .WithName("ListWorkflows");
 
-workflows.MapGet("/{id:guid}", async (Guid id, IWorkflowRepository repository, CancellationToken cancellationToken) =>
+workflows.MapGet("/{id:guid}", async (Guid id, IMediator mediator, CancellationToken cancellationToken) =>
     {
-        var item = await repository.GetByIdAsync(id, cancellationToken);
+        var item = await mediator.Send(new GetWorkflowByIdQuery(id), cancellationToken);
 
         if (item is null)
         {
             return Results.NotFound();
         }
 
-        return Results.Ok(new WorkflowResponse(
-            item.Id,
-            item.Name,
-            item.Expression,
-            item.RuleJson,
-            item.Version,
-            item.IsActive,
-            item.EffectiveFromUtc,
-            item.EffectiveToUtc));
+        return Results.Ok(item.ToResponse());
     })
     .WithName("GetWorkflowById");
 
 workflows.MapPost("/", async (
         WorkflowRequest request,
-        IWorkflowRepository repository,
+        IMediator mediator,
         IWorkflowSchemaValidator schemaValidator,
         CancellationToken cancellationToken) =>
     {
@@ -121,27 +107,16 @@ workflows.MapPost("/", async (
             return Results.BadRequest(new ValidationErrorResponse(validationResult.ResolvedVersion, validationResult.Errors));
         }
 
-        var workflow = await repository.CreateAsync(new WorkflowRecord
-        {
-            Id = Guid.NewGuid(),
-            Name = request.Name,
-            Expression = request.Expression,
-            RuleJson = request.RuleJson,
-            Version = request.Version,
-            IsActive = request.IsActive,
-            EffectiveFromUtc = request.EffectiveFromUtc,
-            EffectiveToUtc = request.EffectiveToUtc
-        }, cancellationToken);
+        var workflow = await mediator.Send(new CreateWorkflowCommand(
+            request.Name,
+            request.Expression,
+            request.RuleJson,
+            request.Version,
+            request.IsActive,
+            request.EffectiveFromUtc,
+            request.EffectiveToUtc), cancellationToken);
 
-        var response = new WorkflowResponse(
-            workflow.Id,
-            workflow.Name,
-            workflow.Expression,
-            workflow.RuleJson,
-            workflow.Version,
-            workflow.IsActive,
-            workflow.EffectiveFromUtc,
-            workflow.EffectiveToUtc);
+        var response = workflow.ToResponse();
 
         return Results.Created($"/api/workflows/{workflow.Id}", response);
     })
@@ -150,7 +125,7 @@ workflows.MapPost("/", async (
 workflows.MapPut("/{id:guid}", async (
         Guid id,
         WorkflowRequest request,
-        IWorkflowRepository repository,
+        IMediator mediator,
         IWorkflowSchemaValidator schemaValidator,
         CancellationToken cancellationToken) =>
     {
@@ -160,37 +135,28 @@ workflows.MapPut("/{id:guid}", async (
             return Results.BadRequest(new ValidationErrorResponse(validationResult.ResolvedVersion, validationResult.Errors));
         }
 
-        var updated = await repository.UpdateAsync(id, new WorkflowRecord
-        {
-            Name = request.Name,
-            Expression = request.Expression,
-            RuleJson = request.RuleJson,
-            Version = request.Version,
-            IsActive = request.IsActive,
-            EffectiveFromUtc = request.EffectiveFromUtc,
-            EffectiveToUtc = request.EffectiveToUtc
-        }, cancellationToken);
+        var updated = await mediator.Send(new UpdateWorkflowCommand(
+            id,
+            request.Name,
+            request.Expression,
+            request.RuleJson,
+            request.Version,
+            request.IsActive,
+            request.EffectiveFromUtc,
+            request.EffectiveToUtc), cancellationToken);
 
         if (updated is null)
         {
             return Results.NotFound();
         }
 
-        return Results.Ok(new WorkflowResponse(
-            updated.Id,
-            updated.Name,
-            updated.Expression,
-            updated.RuleJson,
-            updated.Version,
-            updated.IsActive,
-            updated.EffectiveFromUtc,
-            updated.EffectiveToUtc));
+        return Results.Ok(updated.ToResponse());
     })
     .WithName("UpdateWorkflow");
 
-workflows.MapDelete("/{id:guid}", async (Guid id, IWorkflowRepository repository, CancellationToken cancellationToken) =>
+workflows.MapDelete("/{id:guid}", async (Guid id, IMediator mediator, CancellationToken cancellationToken) =>
     {
-        var deleted = await repository.DeleteAsync(id, cancellationToken);
+        var deleted = await mediator.Send(new DeleteWorkflowCommand(id), cancellationToken);
         if (!deleted)
         {
             return Results.NotFound();
@@ -200,9 +166,9 @@ workflows.MapDelete("/{id:guid}", async (Guid id, IWorkflowRepository repository
     })
     .WithName("DeleteWorkflow");
 
-workflows.MapPost("/validate", (WorkflowRequest request, IWorkflowSchemaValidator schemaValidator) =>
+workflows.MapPost("/validate", async (WorkflowRequest request, IMediator mediator, CancellationToken cancellationToken) =>
     {
-        var validationResult = schemaValidator.Validate(request.RuleJson, request.SchemaVersion);
+        var validationResult = await mediator.Send(new ValidateWorkflowCommand(request.RuleJson, request.SchemaVersion), cancellationToken);
         if (!validationResult.IsValid)
         {
             return Results.BadRequest(new ValidationErrorResponse(validationResult.ResolvedVersion, validationResult.Errors));
@@ -215,86 +181,32 @@ workflows.MapPost("/validate", (WorkflowRequest request, IWorkflowSchemaValidato
 workflows.MapPost("/{id:guid}/execute", async (
         Guid id,
         ExecuteWorkflowRequest request,
-        RulesEngineEditorDbContext dbContext,
-        IWorkflowSchemaValidator schemaValidator,
-        IRulesEngineWorkflowService rulesEngineWorkflowService,
+        IMediator mediator,
         CancellationToken cancellationToken) =>
     {
-        var workflow = await dbContext.Workflows
-            .AsNoTracking()
-            .FirstOrDefaultAsync(current => current.Id == id, cancellationToken);
+        var result = await mediator.Send(new ExecuteWorkflowCommand(id, request.DryRun, request.SchemaVersion), cancellationToken);
 
-        if (workflow is null)
+        if (!result.Found)
         {
             return Results.NotFound();
         }
 
-        var validationResult = schemaValidator.Validate(workflow.Definition.RuleJson, request.SchemaVersion);
-        if (!validationResult.IsValid)
+        if (!result.IsSuccess)
         {
             return Results.BadRequest(new ExecutionErrorResponse(
-                "validation_failed",
-                "Workflow schema validation failed.",
-                validationResult.ResolvedVersion,
-                validationResult.Errors));
+                result.ErrorCode ?? "execution_failed",
+                result.ErrorMessage ?? "Execution failed.",
+                result.SchemaVersion,
+                result.Errors));
         }
 
-        try
-        {
-            rulesEngineWorkflowService.AddOrUpdateWorkflow(workflow.Definition.RuleJson);
-            var executionResults = await rulesEngineWorkflowService.ExecuteAllRulesAsync(workflow.Name);
-
-            var resultPayload = executionResults.Select(result => new
-            {
-                RuleName = result.Rule?.RuleName,
-                result.IsSuccess,
-                result.ExceptionMessage
-            });
-
-            var resultJson = JsonSerializer.Serialize(resultPayload);
-            var wasSuccessful = executionResults.All(result => result.IsSuccess);
-
-            if (request.DryRun)
-            {
-                return Results.Ok(new ExecuteWorkflowResponse(
-                    DryRun: true,
-                    SchemaVersion: validationResult.ResolvedVersion,
-                    Persisted: false,
-                    WasSuccessful: wasSuccessful,
-                    ResultJson: resultJson,
-                    ExecutionId: null));
-            }
-
-            var executionState = new ExecutionStateRecord
-            {
-                Id = Guid.NewGuid(),
-                WorkflowId = workflow.Id,
-                IsDryRun = false,
-                WasSuccessful = wasSuccessful,
-                ExecutedAtUtc = DateTimeOffset.UtcNow,
-                ResultJson = resultJson,
-                ErrorJson = null
-            };
-
-            dbContext.ExecutionStates.Add(executionState);
-            await dbContext.SaveChangesAsync(cancellationToken);
-
-            return Results.Ok(new ExecuteWorkflowResponse(
-                DryRun: false,
-                SchemaVersion: validationResult.ResolvedVersion,
-                Persisted: true,
-                WasSuccessful: wasSuccessful,
-                ResultJson: resultJson,
-                ExecutionId: executionState.Id));
-        }
-        catch (Exception exception)
-        {
-            return Results.BadRequest(new ExecutionErrorResponse(
-                "execution_failed",
-                exception.Message,
-                request.SchemaVersion,
-                null));
-        }
+        return Results.Ok(new ExecuteWorkflowResponse(
+            DryRun: result.DryRun,
+            SchemaVersion: result.SchemaVersion ?? 1,
+            Persisted: result.Persisted,
+            WasSuccessful: result.WasSuccessful,
+            ResultJson: result.ResultJson,
+            ExecutionId: result.ExecutionId));
     })
     .WithName("ExecuteWorkflow");
 

@@ -14,3 +14,8 @@ public interface IWorkflowRepository
 
     Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
 }
+
+public interface IExecutionStateRepository
+{
+    Task<Guid> CreateAsync(ExecutionStateRecord record, CancellationToken cancellationToken);
+}

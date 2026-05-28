@@ -1,9 +1,4 @@
-# core-engine Specification
-
-## Purpose
-RulesEngine.Core domain behavior - validation and execution.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Workflow Schema Validation
 The system SHALL validate workflow JSON against a versioned schema before execution and SHALL provide resolved schema version information with validation outcomes.

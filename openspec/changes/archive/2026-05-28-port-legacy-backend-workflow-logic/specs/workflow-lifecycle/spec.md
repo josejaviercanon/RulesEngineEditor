@@ -1,9 +1,4 @@
-# workflow-lifecycle Specification
-
-## Purpose
-Define workflow lifecycle behavior for create, read, update, delete, validation gates, execution modes, and persistence preconditions.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Workflow Create Operation
 The system SHALL support creating new workflows through a POST operation that persists workflow definition data, validates schema compatibility, and returns the created resource identity with persisted lifecycle metadata.
@@ -12,13 +7,6 @@ The system SHALL support creating new workflows through a POST operation that pe
 - **WHEN** the client submits POST /api/workflows with a valid workflow payload
 - **THEN** the workflow is persisted and the response indicates creation with workflow identity and lifecycle metadata
 
-### Requirement: Workflow Read Operation
-The system SHALL support retrieving workflow definitions by identifier and listing workflows via GET operations.
-
-#### Scenario: Read workflow by id
-- **WHEN** the client submits GET /api/workflows/{id}
-- **THEN** the response returns workflow definition and metadata
-
 ### Requirement: Workflow Update Operation
 The system SHALL support updating an existing workflow through a PUT operation with schema validation and deterministic replacement semantics for workflow definition content.
 
@@ -26,26 +14,12 @@ The system SHALL support updating an existing workflow through a PUT operation w
 - **WHEN** the client submits PUT /api/workflows/{id} with a valid updated payload
 - **THEN** the stored workflow definition is replaced and returned using the canonical response contract
 
-### Requirement: Workflow Delete Operation
-The system SHALL support deleting an existing workflow through a DELETE operation.
-
-#### Scenario: Delete workflow
-- **WHEN** the client submits DELETE /api/workflows/{id}
-- **THEN** the workflow is removed and the response confirms deletion semantics
-
 ### Requirement: Workflow Validation Before Execution
 The system SHALL validate workflow definitions against the configured schema version before any execution path is invoked and SHALL return structured validation failures without persisting execution state.
 
 #### Scenario: Reject invalid workflow execution request
 - **WHEN** an execution request is submitted for a workflow definition that violates required schema constraints
 - **THEN** the system rejects the request with structured validation errors and does not execute rules
-
-### Requirement: Workflow Persistence Connection Precondition
-The system SHALL require PostgreSQL 18 connectivity to be configured before workflow lifecycle create or update operations are processed.
-
-#### Scenario: Reject persistence operations when database connection is not configured
-- **WHEN** create or update workflow operations are invoked
-- **THEN** the system returns structured persistence configuration errors and does not write to rules storage
 
 ### Requirement: Dry-Run Execution Path
 The system SHALL support a dry-run mode that evaluates workflows without persisting execution side effects and SHALL return explicit dry-run metadata to callers.

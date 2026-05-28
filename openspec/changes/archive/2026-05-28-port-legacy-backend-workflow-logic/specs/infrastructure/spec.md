@@ -1,9 +1,4 @@
-# infrastructure Specification
-
-## Purpose
-Define EF Core persistence behavior, repository responsibilities, and workflow data storage contracts for the infrastructure layer.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Workflow Persistence
 The system MUST store workflow definitions as JSON in an EF Core database and MUST support create/read/update/delete operations through infrastructure repositories used by application handlers.

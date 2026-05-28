@@ -1,9 +1,4 @@
-# api-surface Specification
-
-## Purpose
-Define the externally visible Minimal API behavior for workflow lifecycle operations, HTTP semantics, and response contract expectations.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Workflow CRUD Endpoints
 The system SHALL expose HTTP endpoints for workflow lifecycle operations and SHALL enforce consistent request validation, response payloads, and error contracts across create, read, update, delete, validate, and execute routes.
