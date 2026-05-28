@@ -14,12 +14,36 @@ The system SHALL integrate with the RulesEngine library to register workflows, v
 - THEN the RulesEngine integration registers or updates workflow definitions and returns evaluation results
 
 ### Requirement: LogicFlow JS Interop Contract
-The system SHALL expose a stable JS interop contract for LogicFlow.js canvas operations through a wrapper module.
+The system SHALL expose a stable JS interop contract for LogicFlow.js canvas operations through a wrapper module and MUST define agentic integration guidance for LogicFlow package roles and documentation lookup order.
 
 #### Scenario: Retrieve graph data via interop
 - GIVEN the editor canvas is initialized
 - WHEN the UI requests current graph data
 - THEN the interop wrapper returns graph JSON through getGraphData without leaking raw library internals to components
+
+#### Scenario: Define package roles for integration planning
+- GIVEN workflow editor integration docs are updated
+- WHEN package responsibilities are documented
+- THEN docs describe `@logicflow/core` as the core graph editor runtime (canvas, nodes, edges, models, events, rendering, themes, and basic interactions)
+- AND docs describe `@logicflow/extension` as official plugins for common product features
+- AND docs describe `@logicflow/layout` as official layout plugins for automatic graph layout
+
+#### Scenario: Define node-module docs lookup locations
+- GIVEN integration guidance references upstream LogicFlow docs
+- WHEN local documentation locations are listed
+- THEN docs include node_modules/@logicflow/core/dist/docs/ as the local node documentation root
+- AND docs include node_modules/@logicflow/core/dist/docs/tutorial/extension/ for `@logicflow/extension` and `@logicflow/layout` capabilities
+
+#### Scenario: Guard package installation in agentic workflows
+- GIVEN an official LogicFlow package is needed but not installed
+- WHEN the contributor or agent is preparing to install it
+- THEN they ask the user before installation
+
+#### Scenario: Preserve standard agent-rules snippet markers
+- GIVEN repository documentation includes LogicFlow agent guidance
+- WHEN guidance snippets are authored or updated
+- THEN guidance preserves marker format using <!-- BEGIN:logicflow-agent-rules --> and <!-- END:logicflow-agent-rules -->
+- AND content between markers includes local docs path, package roles, extension/layout docs path, local-doc-first policy, and ask-before-install policy
 
 ### Requirement: Radzen UI Component Contract
 The system SHALL use Radzen components for editor forms, validation display, and workflow operation controls in a consistent UI contract.

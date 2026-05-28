@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@logicflow/core": "^2.2.3"
+  }
+}
