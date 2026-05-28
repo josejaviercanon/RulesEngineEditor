@@ -4,5 +4,13 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"dotnet.defaultSolution": "RulesEngineWorkflowEditor.slnx"
+	},
+	"extensions": {
+		"recommendations": [
+			"ms-dotnettools.csdevkit",
+			"ms-dotnettools.csharp"
+		]
+	}
 }
