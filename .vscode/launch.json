@@ -1,7 +1,4 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
@@ -13,13 +10,9 @@
             "args": [],
             "cwd": "${workspaceFolder}/src/RulesEngine.API",
             "stopAtEntry": false,
-            "console": "internalConsole",
+            "console": "externalTerminal",
             "launchSettingsFilePath": "${workspaceFolder}/src/RulesEngine.API/Properties/launchSettings.json",
             "launchSettingsProfile": "https",
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-            },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }
@@ -33,16 +26,36 @@
             "args": [],
             "cwd": "${workspaceFolder}/src/RulesEngine.UI",
             "stopAtEntry": false,
-            "console": "internalConsole",
+            "console": "externalTerminal",
             "launchSettingsFilePath": "${workspaceFolder}/src/RulesEngine.UI/Properties/launchSettings.json",
             "launchSettingsProfile": "https",
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-            },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }
+        },
+        {
+            "name": "Chrome: RulesEngine.API (HTTPS)",
+            "type": "chrome",
+            "request": "launch",
+            "url": "https://localhost:7086",
+            "webRoot": "${workspaceFolder}",
+            "runtimeExecutable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+            "runtimeArgs": [
+                "--new-window"
+            ],
+            "userDataDir": "${workspaceFolder}/.vscode/.chrome-api-profile"
+        },
+        {
+            "name": "Chrome: RulesEngine.UI (HTTPS)",
+            "type": "chrome",
+            "request": "launch",
+            "url": "https://localhost:7286",
+            "webRoot": "${workspaceFolder}/src/RulesEngine.UI",
+            "runtimeExecutable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+            "runtimeArgs": [
+                "--new-window"
+            ],
+            "userDataDir": "${workspaceFolder}/.vscode/.chrome-ui-profile"
         }
     ],
     "compounds": [
@@ -51,7 +64,9 @@
             "stopAll": true,
             "configurations": [
                 ".NET: RulesEngine.API (HTTPS)",
-                ".NET: RulesEngine.UI (HTTPS)"
+                ".NET: RulesEngine.UI (HTTPS)",
+                "Chrome: RulesEngine.API (HTTPS)",
+                "Chrome: RulesEngine.UI (HTTPS)"
             ]
         }
     ]
