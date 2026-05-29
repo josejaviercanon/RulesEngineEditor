@@ -14,6 +14,15 @@
   <Folder Name="/Libraries/">
     <Project Path="RulesEngine/src/RulesEngine/RulesEngine.csproj" />
   </Folder>
+  <Folder Name="/Libraries/UI/">
+    <Project Path="Blazorise/Source/Blazorise.Tailwind/Blazorise.Tailwind.csproj" />
+    <Project Path="Blazorise/Source/Blazorise/Blazorise.csproj" />
+    <Project Path="Blazorise/Source/Extensions/Blazorise.Icons.Lucide/Blazorise.Icons.Lucide.csproj" />
+    <Project Path="Blazorise/Source/SourceGenerators/Blazorise.Generator.Features/Blazorise.Generator.Features.csproj" />
+    <Project Path="Blazorise/Source/SourceGenerators/Blazorise.Generator/Blazorise.Generator.csproj" />
+    <Project Path="Blazorise/Source/SourceGenerators/Blazorise.Weavers.Fody/Blazorise.Weavers.Fody.csproj" />
+    <Project Path="Blazorise/Source/SourceGenerators/Blazorise.Weavers/Blazorise.Weavers.csproj" />
+  </Folder>
   <Folder Name="/Testing/">
     <Project Path="src/RulesEngine.Tests/RulesEngine.Tests.csproj" />
   </Folder>

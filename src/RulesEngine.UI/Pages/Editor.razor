@@ -6,39 +6,41 @@
 
 <h1>Workflow Editor</h1>
 
-<RadzenCard Style="max-width: 960px; margin: 0 auto;">
-    <RadzenStack Gap="1rem">
-        <RadzenTextBox @bind-Value="model.Name" Name="name" Placeholder="Workflow name" Style="width: 100%;" />
-        <RadzenTextBox @bind-Value="model.Expression" Name="expression" Placeholder="Rule expression" Style="width: 100%;" />
-        <RadzenTextArea @bind-Value="model.RuleJson" Name="ruleJson" Rows="8" Placeholder="Workflow JSON" Style="width: 100%;" />
+<Card Style="max-width: 960px; margin: 0 auto;">
+    <CardBody>
+        <div class="d-flex flex-column gap-3">
+            <TextInput @bind-Value="model.Name" Placeholder="Workflow name" />
+            <TextInput @bind-Value="model.Expression" Placeholder="Rule expression" />
+            <MemoInput @bind-Value="model.RuleJson" Rows="8" Placeholder="Workflow JSON" />
 
-        <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-            <RadzenButton Text="Validate" Icon="check_circle" Click="ValidateAsync" ButtonStyle="ButtonStyle.Primary" />
-            <RadzenButton Text="Load Sample Graph" Icon="account_tree" Click="LoadSampleGraphAsync" ButtonStyle="ButtonStyle.Secondary" />
-        </RadzenStack>
+            <div class="d-flex gap-2">
+                <Button Color="Color.Primary" Clicked="ValidateAsync">Validate</Button>
+                <Button Color="Color.Secondary" Clicked="LoadSampleGraphAsync">Load Sample Graph</Button>
+            </div>
 
-        @if (errors.Count == 0 && validationRan)
-        {
-            <RadzenAlert AlertStyle="AlertStyle.Success" Shade="Shade.Lighter">Workflow payload is valid.</RadzenAlert>
-        }
+            @if (errors.Count == 0 && validationRan)
+            {
+                <Alert Color="Color.Success">Workflow payload is valid.</Alert>
+            }
 
-        @if (errors.Count > 0)
-        {
-            <RadzenAlert AlertStyle="AlertStyle.Danger" Shade="Shade.Lighter">
-                <ul>
-                    @foreach (var error in errors)
-                    {
-                        <li>@error</li>
-                    }
-                </ul>
-            </RadzenAlert>
-        }
+            @if (errors.Count > 0)
+            {
+                <Alert Color="Color.Danger">
+                    <ul>
+                        @foreach (var error in errors)
+                        {
+                            <li>@error</li>
+                        }
+                    </ul>
+                </Alert>
+            }
 
-        <div id="workflow-canvas" style="min-height: 140px; border: 1px dashed #9ca3af; border-radius: 8px; padding: 1rem;">
-            LogicFlow canvas wrapper initialized.
+            <div id="workflow-canvas" style="min-height: 140px; border: 1px dashed #9ca3af; border-radius: 8px; padding: 1rem;">
+                LogicFlow canvas wrapper initialized.
+            </div>
         </div>
-    </RadzenStack>
-</RadzenCard>
+    </CardBody>
+</Card>
 
 @code {
     private readonly EditorWorkflowModel model = new();

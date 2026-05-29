@@ -14,7 +14,12 @@
         <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.8" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.8" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.8" />
-        <PackageReference Include="Radzen.Blazor" Version="10.4.6" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Blazorise\Source\Blazorise.Tailwind\Blazorise.Tailwind.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Blazorise\Blazorise.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.Lucide\Blazorise.Icons.Lucide.csproj" />
     </ItemGroup>
 
 </Project>
