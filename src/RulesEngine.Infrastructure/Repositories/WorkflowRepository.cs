@@ -641,6 +641,8 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
 
         var activeByName = await LoadActiveRuleGuidsByNameAsync(workflowId, cancellationToken);
 
+        var desiredLinks = new List<(Guid RuleGuidId, int RuleVersion)>();
+
         foreach (var rule in rules)
         {
             var ruleGuidId = rule.RuleGuidId;
@@ -708,13 +710,38 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                 }
             }
 
-            dbContext.WorkflowRules.Add(new WorkflowRuleCollectionEntity
+            desiredLinks.Add((ruleGuidId, resolvedVersion));
+        }
+
+        var desiredByRuleGuid = desiredLinks
+            .GroupBy(item => item.RuleGuidId)
+            .Select(group => group.Last())
+            .ToDictionary(item => item.RuleGuidId, item => item.RuleVersion);
+
+        foreach (var link in existingLinks)
+        {
+            if (!desiredByRuleGuid.ContainsKey(link.RuleGuidId))
             {
-                WorkflowId = workflowId,
-                WorkflowVersion = workflowVersion,
-                RuleGuidId = ruleGuidId,
-                RuleVersion = resolvedVersion
-            });
+                dbContext.WorkflowRules.Remove(link);
+            }
+        }
+
+        foreach (var item in desiredByRuleGuid)
+        {
+            var existingLink = existingLinks.FirstOrDefault(link => link.RuleGuidId == item.Key);
+            if (existingLink is null)
+            {
+                dbContext.WorkflowRules.Add(new WorkflowRuleCollectionEntity
+                {
+                    WorkflowId = workflowId,
+                    WorkflowVersion = workflowVersion,
+                    RuleGuidId = item.Key,
+                    RuleVersion = item.Value
+                });
+                continue;
+            }
+
+            existingLink.RuleVersion = item.Value;
         }
     }
 
