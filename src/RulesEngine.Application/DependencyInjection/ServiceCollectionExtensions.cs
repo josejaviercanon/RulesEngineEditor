@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RulesEngine.Application.Policies;
 using RulesEngine.Application.Validation;
 using RulesEngine.Core.Execution;
 using RulesEngine.Core.Validation;
@@ -16,6 +17,7 @@ public static class ServiceCollectionExtensions
             config.RegisterServicesFromAssembly(typeof(ServiceCollectionExtensions).Assembly));
         services.AddSingleton<IRulesEngineWorkflowService, RulesEngineWorkflowService>();
         services.AddScoped<IWorkflowSchemaValidator, JsonWorkflowSchemaValidator>();
+        services.AddScoped<IRuleStatusPolicy, RuleStatusPolicy>();
 
         return services;
     }

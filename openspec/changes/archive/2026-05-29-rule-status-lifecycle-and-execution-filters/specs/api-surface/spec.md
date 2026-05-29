@@ -1,8 +1,5 @@
-# api-surface Specification
+## MODIFIED Requirements
 
-## Purpose
-Define the externally visible Minimal API behavior for workflow lifecycle operations, HTTP semantics, and response contract expectations.
-## Requirements
 ### Requirement: Workflow CRUD Endpoints
 The system SHALL expose HTTP endpoints for workflow lifecycle operations and SHALL enforce consistent request validation, response payloads, and error contracts across create, read, update, delete, validate, and execute routes. Request and response payloads SHALL embed a typed `WorkflowDto` (with full `Rules`, `GlobalParams`, etc.) rather than a raw JSON string, and workflow responses SHALL surface version metadata for the active revision. Rule payloads SHALL include rule `Status` with allowed values `draft|failed|disabled|production`, defaulting to `draft` for newly created rules. The execute route SHALL accept a typed `Inputs` array, a status filter parameter for `draft|failed|production` selection, and return a typed `Results` collection with status transition metadata.
 
@@ -33,23 +30,3 @@ The system SHALL expose HTTP endpoints for workflow lifecycle operations and SHA
 #### Scenario: Execute route supports explicit status filtering
 - **WHEN** POST /api/workflows/{id}/execute is called with a status filter containing one or more of `draft`, `failed`, `production`
 - **THEN** only rules in the requested statuses are evaluated, and `disabled` rules are excluded
-
-### Requirement: Workflow version management endpoints
-The system SHALL expose HTTP endpoints to manage both workflow revisions and rule revisions within a workflow context. The API MUST allow listing rule versions for a `RuleGuidId`, activating a specific retained rule version, and querying workflow rules in active-only, latest-per-rule, or history-inclusive modes while preserving retained revision history.
-
-#### Scenario: List rule revisions for a rule identity
-- **WHEN** the client submits a request to list versions for a `RuleGuidId`
-- **THEN** the API returns all retained versions in version order and identifies which version is active
-
-#### Scenario: Activate specific rule revision
-- **WHEN** the client submits a request to activate version 8 for a `RuleGuidId` that currently has version 10 active
-- **THEN** the API marks version 8 active, marks other versions inactive for that `RuleGuidId`, and returns updated active-version metadata
-
-#### Scenario: Query workflow rules in active-only mode
-- **WHEN** the client requests workflow rules with active-only mode
-- **THEN** the API returns one active rule revision per `RuleGuidId` and does not return duplicate logical rules
-
-#### Scenario: Query workflow rules in latest-per-rule mode
-- **WHEN** the client requests workflow rules with latest-per-rule mode
-- **THEN** the API returns one highest-version rule revision per `RuleGuidId` regardless of active flag
-

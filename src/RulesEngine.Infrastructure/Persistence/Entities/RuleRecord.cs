@@ -1,3 +1,5 @@
+using RulesEngine.Core.Models;
+
 namespace RulesEngine.Infrastructure.Persistence.Entities;
 
 public sealed class RuleRecord
@@ -15,6 +17,8 @@ public sealed class RuleRecord
     public int Version { get; set; }
 
     public bool IsActive { get; set; }
+
+    public RuleStatus Status { get; set; } = RuleStatus.Draft;
 
     public DateTimeOffset? EffectiveFromUtc { get; set; }
 

@@ -4,6 +4,7 @@ using RulesEngine.Application.Commands;
 using RulesEngine.Application.Dtos;
 using RulesEngine.Application.Handlers;
 using RulesEngine.Application.Mapping;
+using RulesEngine.Application.Policies;
 using RulesEngine.Core.Execution;
 using RulesEngine.Core.Models;
 using RulesEngine.Core.Repositories;
@@ -13,6 +14,8 @@ namespace RulesEngine.Tests;
 
 public sealed class WorkflowApplicationHandlersTests
 {
+    private static readonly RuleStatusPolicy StatusPolicy = new();
+
     private static readonly IMapper Mapper = new MapperConfiguration(cfg =>
     {
         cfg.AddProfile<WorkflowMappingProfile>();
@@ -23,7 +26,7 @@ public sealed class WorkflowApplicationHandlersTests
     {
         var repository = new InMemoryWorkflowRepository();
         var rulesService = new RulesEngineWorkflowService();
-        var handler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper);
+        var handler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
 
         var workflow = BuildWorkflowDto("create-handler-test");
 
@@ -45,8 +48,8 @@ public sealed class WorkflowApplicationHandlersTests
     {
         var repository = new InMemoryWorkflowRepository();
         var rulesService = new RulesEngineWorkflowService();
-        var createHandler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper);
-        var updateHandler = new UpdateWorkflowCommandHandler(repository, rulesService, Mapper);
+        var createHandler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
+        var updateHandler = new UpdateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
 
         var created = await createHandler.Handle(new CreateWorkflowCommand(BuildWorkflowDto("workflow-v1"), null), CancellationToken.None);
 
@@ -67,8 +70,8 @@ public sealed class WorkflowApplicationHandlersTests
     {
         var repository = new InMemoryWorkflowRepository();
         var rulesService = new RulesEngineWorkflowService();
-        var createHandler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper);
-        var updateHandler = new UpdateWorkflowCommandHandler(repository, rulesService, Mapper);
+        var createHandler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
+        var updateHandler = new UpdateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
         var activateHandler = new ActivateWorkflowVersionCommandHandler(repository, rulesService, Mapper);
 
         var created = await createHandler.Handle(new CreateWorkflowCommand(BuildWorkflowDto("workflow-v1"), null), CancellationToken.None);
@@ -88,8 +91,8 @@ public sealed class WorkflowApplicationHandlersTests
     {
         var repository = new InMemoryWorkflowRepository();
         var rulesService = new RulesEngineWorkflowService();
-        var createHandler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper);
-        var updateHandler = new UpdateWorkflowCommandHandler(repository, rulesService, Mapper);
+        var createHandler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
+        var updateHandler = new UpdateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
         var setEnabledHandler = new SetWorkflowVersionEnabledCommandHandler(repository);
 
         var created = await createHandler.Handle(new CreateWorkflowCommand(BuildWorkflowDto("workflow-v1"), null), CancellationToken.None);
@@ -108,7 +111,7 @@ public sealed class WorkflowApplicationHandlersTests
     {
         var repository = new InMemoryWorkflowRepository();
         var rulesService = new RulesEngineWorkflowService();
-        var handler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper);
+        var handler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
 
         var workflow = BuildWorkflowDto("comment-length");
         workflow = new WorkflowDto
@@ -138,8 +141,8 @@ public sealed class WorkflowApplicationHandlersTests
     {
         var repository = new InMemoryWorkflowRepository();
         var rulesService = new RulesEngineWorkflowService();
-        var createHandler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper);
-        var updateHandler = new UpdateWorkflowCommandHandler(repository, rulesService, Mapper);
+        var createHandler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
+        var updateHandler = new UpdateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
         var getVersionHandler = new GetWorkflowVersionQueryHandler(repository);
 
         var created = await createHandler.Handle(new CreateWorkflowCommand(BuildWorkflowDto("workflow-v1"), null), CancellationToken.None);
@@ -162,7 +165,7 @@ public sealed class WorkflowApplicationHandlersTests
     [Fact]
     public async Task ValidateWorkflowHandler_ShouldReturnErrorsForInvalidWorkflow()
     {
-        var handler = new ValidateWorkflowCommandHandler(Mapper);
+        var handler = new ValidateWorkflowCommandHandler(Mapper, StatusPolicy);
 
         var result = await handler.Handle(new ValidateWorkflowCommand(new WorkflowDto()), CancellationToken.None);
 
@@ -173,7 +176,7 @@ public sealed class WorkflowApplicationHandlersTests
     [Fact]
     public async Task ValidateWorkflowHandler_ShouldReturnErrorsForMissingExpression()
     {
-        var handler = new ValidateWorkflowCommandHandler(Mapper);
+        var handler = new ValidateWorkflowCommandHandler(Mapper, StatusPolicy);
         var workflow = new WorkflowDto
         {
             WorkflowName = "validate-missing-expression",
@@ -197,7 +200,7 @@ public sealed class WorkflowApplicationHandlersTests
     [Fact]
     public async Task ValidateWorkflowHandler_ShouldReturnSuccessForValidWorkflow()
     {
-        var handler = new ValidateWorkflowCommandHandler(Mapper);
+        var handler = new ValidateWorkflowCommandHandler(Mapper, StatusPolicy);
         var workflow = BuildWorkflowDto("validate-valid");
 
         var result = await handler.Handle(new ValidateWorkflowCommand(workflow), CancellationToken.None);
@@ -223,10 +226,10 @@ public sealed class WorkflowApplicationHandlersTests
             IsActive = true
         }, CancellationToken.None);
 
-        var handler = new ExecuteWorkflowCommandHandler(repository, rulesService, executionStateRepository, Mapper);
+        var handler = new ExecuteWorkflowCommandHandler(repository, rulesService, executionStateRepository, Mapper, StatusPolicy);
 
         var result = await handler.Handle(
-            new ExecuteWorkflowCommand(workflow.Id, DryRun: true, SchemaVersion: 1, Inputs: []),
+            new ExecuteWorkflowCommand(workflow.Id, DryRun: true, SchemaVersion: 1, Inputs: [], IncludeStatuses: null),
             CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
@@ -374,11 +377,15 @@ public sealed class WorkflowApplicationHandlersTests
                 Expression = rule.Expression,
                 RuleJson = JsonSerializer.Serialize(rule),
                 Version = rule.Version == 0 ? 1 : rule.Version,
-                IsActive = true
+                IsActive = true,
+                Status = RuleStatusParser.ParseOrDefault(rule.Status)
             }).ToArray();
 
             return Task.FromResult<IReadOnlyCollection<RuleVersionRecord>>(rules);
         }
+
+        public Task ApplyRuleStatusUpdatesAsync(IReadOnlyCollection<RuleStatusUpdateRecord> updates, CancellationToken cancellationToken)
+            => Task.CompletedTask;
 
         public Task<WorkflowRecord> CreateAsync(WorkflowRecord workflow, CancellationToken cancellationToken)
         {

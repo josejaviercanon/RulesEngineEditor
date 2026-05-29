@@ -17,7 +17,11 @@ public sealed record WorkflowResponse(
 
 public sealed record ValidationErrorResponse(int SchemaVersion, IReadOnlyCollection<string> Errors);
 
-public sealed record ExecuteWorkflowRequest(bool DryRun, int? SchemaVersion, IReadOnlyList<RuleParameterDto> Inputs);
+public sealed record ExecuteWorkflowRequest(
+    bool DryRun,
+    int? SchemaVersion,
+    IReadOnlyList<RuleParameterDto> Inputs,
+    IReadOnlyList<string>? IncludeStatuses);
 
 public sealed record ExecuteWorkflowResponse(
     bool DryRun,
@@ -25,10 +29,14 @@ public sealed record ExecuteWorkflowResponse(
     bool Persisted,
     bool WasSuccessful,
     IReadOnlyList<RuleResultDto> Results,
+    IReadOnlyList<RuleStatusTransitionDto> RuleStatusTransitions,
     Guid? ExecutionId);
 
 public sealed record ValidateWorkflowRequest(WorkflowDto Workflow);
 
-public sealed record ValidateWorkflowResponse(bool IsValid, IReadOnlyList<string> Errors);
+public sealed record ValidateWorkflowResponse(
+    bool IsValid,
+    IReadOnlyList<string> Errors,
+    IReadOnlyList<RuleStatusTransitionDto> RuleStatusTransitions);
 
 public sealed record ExecutionErrorResponse(string Code, string Message, int? SchemaVersion, IReadOnlyCollection<string>? Errors);

@@ -3,6 +3,7 @@ using AutoMapper;
 using MediatR;
 using RulesEngine.Application.Commands;
 using RulesEngine.Application.Dtos;
+using RulesEngine.Application.Policies;
 using RulesEngine.Core.Execution;
 using RulesEngine.Core.Models;
 using RulesEngine.Core.Repositories;
@@ -15,7 +16,8 @@ public sealed class ExecuteWorkflowCommandHandler(
     IWorkflowRepository workflowRepository,
     IRulesEngineWorkflowService rulesEngineWorkflowService,
     IExecutionStateRepository executionStateRepository,
-    IMapper mapper)
+    IMapper mapper,
+    IRuleStatusPolicy ruleStatusPolicy)
     : IRequestHandler<ExecuteWorkflowCommand, ExecuteWorkflowResultDto>
 {
     public async Task<ExecuteWorkflowResultDto> Handle(ExecuteWorkflowCommand request, CancellationToken cancellationToken)
@@ -50,13 +52,29 @@ public sealed class ExecuteWorkflowCommandHandler(
             WorkflowRuleQueryMode.ActiveOnly,
             cancellationToken);
 
+        var includeStatuses = ResolveIncludedStatuses(request.IncludeStatuses, out var statusFilterError);
+        if (statusFilterError is not null)
+        {
+            return new ExecuteWorkflowResultDto
+            {
+                IsSuccess = false,
+                SchemaVersion = request.SchemaVersion,
+                ErrorCode = "invalid_status_filter",
+                ErrorMessage = statusFilterError
+            };
+        }
+
+        var selectedRules = activeRules
+            .Where(rule => includeStatuses.Contains(rule.Status) && rule.Status != RuleStatus.Disabled)
+            .ToArray();
+
         workflowDto = new WorkflowDto
         {
             Id = workflowRecord.Id,
             WorkflowName = workflowDto.WorkflowName,
             RuleExpressionType = workflowDto.RuleExpressionType,
             GlobalParams = workflowDto.GlobalParams,
-            Rules = activeRules.Select(WorkflowDtoProjection.MapRule).ToArray(),
+            Rules = selectedRules.Select(WorkflowDtoProjection.MapRule).ToArray(),
             WorkflowsToInject = workflowDto.WorkflowsToInject,
             Version = workflowRecord.Version,
             IsActive = workflowRecord.IsActive,
@@ -89,14 +107,33 @@ public sealed class ExecuteWorkflowCommandHandler(
 
         try
         {
-            var executionResults = await rulesEngineWorkflowService.ExecuteWorkflowAsync(
-                workflowRecord.Id,
-                workflowDefinition,
-                ruleParameters,
-                cancellationToken);
+            var executionResults = selectedRules.Length == activeRules.Count
+                ? await rulesEngineWorkflowService.ExecuteWorkflowAsync(
+                    workflowRecord.Id,
+                    workflowDefinition,
+                    ruleParameters,
+                    cancellationToken)
+                : await ExecuteTransientAsync(workflowDefinition, ruleParameters);
             var wasSuccessful = executionResults.All(result => result.IsSuccess);
-            var results = mapper.Map<IReadOnlyList<RuleResultDto>>(executionResults);
-            var serializedResults = JsonSerializer.Serialize(results);
+            var mappedResults = mapper.Map<IReadOnlyList<RuleResultDto>>(executionResults);
+
+            var byRuleName = selectedRules
+                .GroupBy(rule => rule.Name, StringComparer.Ordinal)
+                .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+
+            var statusUpdates = new Dictionary<Guid, RuleStatusUpdateRecord>();
+            var transitions = new List<RuleStatusTransitionDto>();
+
+            var enrichedResults = mappedResults
+                .Select(result => EnrichResult(result, byRuleName, statusUpdates, transitions))
+                .ToArray();
+
+            if (!request.DryRun && statusUpdates.Count > 0)
+            {
+                await workflowRepository.ApplyRuleStatusUpdatesAsync(statusUpdates.Values.ToArray(), cancellationToken);
+            }
+
+            var serializedResults = JsonSerializer.Serialize(enrichedResults);
 
             if (request.DryRun)
             {
@@ -106,7 +143,8 @@ public sealed class ExecuteWorkflowCommandHandler(
                     DryRun = true,
                     Persisted = false,
                     WasSuccessful = wasSuccessful,
-                    Results = results,
+                    Results = enrichedResults,
+                    RuleStatusTransitions = transitions,
                     SchemaVersion = request.SchemaVersion,
                     ExecutionId = null
                 };
@@ -129,7 +167,8 @@ public sealed class ExecuteWorkflowCommandHandler(
                 DryRun = false,
                 Persisted = true,
                 WasSuccessful = wasSuccessful,
-                Results = results,
+                Results = enrichedResults,
+                RuleStatusTransitions = transitions,
                 SchemaVersion = request.SchemaVersion,
                 ExecutionId = executionId
             };
@@ -156,5 +195,120 @@ public sealed class ExecuteWorkflowCommandHandler(
                 Errors = null
             };
         }
+    }
+
+    private RuleResultDto EnrichResult(
+        RuleResultDto result,
+        IReadOnlyDictionary<string, RuleVersionRecord> byRuleName,
+        IDictionary<Guid, RuleStatusUpdateRecord> statusUpdates,
+        ICollection<RuleStatusTransitionDto> transitions)
+    {
+        var enrichedChildren = result.ChildResults
+            .Select(child => EnrichResult(child, byRuleName, statusUpdates, transitions))
+            .ToArray();
+
+        if (!byRuleName.TryGetValue(result.RuleName, out var ruleRecord))
+        {
+            return new RuleResultDto
+            {
+                RuleGuidId = result.RuleGuidId,
+                RuleName = result.RuleName,
+                IsSuccess = result.IsSuccess,
+                ExceptionMessage = result.ExceptionMessage,
+                SuccessEvent = result.SuccessEvent,
+                ActionOutput = result.ActionOutput,
+                StatusBefore = result.StatusBefore,
+                StatusAfter = result.StatusAfter,
+                TransitionReason = result.TransitionReason,
+                ChildResults = enrichedChildren
+            };
+        }
+
+        var before = ruleRecord.Status;
+        var after = result.IsSuccess ? before : ruleStatusPolicy.ResolveExecutionFailureStatus(before);
+        var reason = !result.IsSuccess && before != after
+            ? "execution_failed_auto_transition"
+            : null;
+
+        if (before != after)
+        {
+            statusUpdates[ruleRecord.RuleGuidId] = new RuleStatusUpdateRecord
+            {
+                RuleGuidId = ruleRecord.RuleGuidId,
+                Status = after
+            };
+        }
+
+        transitions.Add(new RuleStatusTransitionDto
+        {
+            RuleGuidId = ruleRecord.RuleGuidId,
+            RuleName = ruleRecord.Name,
+            StatusBefore = RuleStatusParser.ToValue(before),
+            StatusAfter = RuleStatusParser.ToValue(after),
+            TransitionReason = reason
+        });
+
+        return new RuleResultDto
+        {
+            RuleGuidId = ruleRecord.RuleGuidId,
+            RuleName = result.RuleName,
+            IsSuccess = result.IsSuccess,
+            ExceptionMessage = result.ExceptionMessage,
+            SuccessEvent = result.SuccessEvent,
+            ActionOutput = result.ActionOutput,
+            StatusBefore = RuleStatusParser.ToValue(before),
+            StatusAfter = RuleStatusParser.ToValue(after),
+            TransitionReason = reason,
+            ChildResults = enrichedChildren
+        };
+    }
+
+    private HashSet<RuleStatus> ResolveIncludedStatuses(IReadOnlyList<string>? requestedStatuses, out string? error)
+    {
+        error = null;
+
+        if (requestedStatuses is null || requestedStatuses.Count == 0)
+        {
+            return [RuleStatus.Draft, RuleStatus.Failed, RuleStatus.Production];
+        }
+
+        var included = new HashSet<RuleStatus>();
+        foreach (var statusValue in requestedStatuses)
+        {
+            if (!RuleStatusParser.TryParse(statusValue, out var parsed))
+            {
+                error = $"Unknown rule status filter value '{statusValue}'. Allowed values: draft, failed, production.";
+                return [];
+            }
+
+            if (parsed == RuleStatus.Disabled)
+            {
+                continue;
+            }
+
+            included.Add(parsed);
+        }
+
+        if (included.Count == 0)
+        {
+            included.Add(RuleStatus.Draft);
+            included.Add(RuleStatus.Failed);
+            included.Add(RuleStatus.Production);
+        }
+
+        return included;
+    }
+
+    private static async Task<IReadOnlyList<RuleResultTree>> ExecuteTransientAsync(Workflow workflow, RuleParameter[] ruleParameters)
+    {
+        var engine = new global::RulesEngine.RulesEngine(new ReSettings
+        {
+            EnableExceptionAsErrorMessage = true,
+            EnableExceptionAsErrorMessageForRuleExpressionParsing = true
+        });
+
+        engine.AddOrUpdateWorkflow(workflow);
+        var results = await engine.ExecuteAllRulesAsync(workflow.WorkflowName, ruleParameters);
+        return results.AsReadOnly();
     }
 }

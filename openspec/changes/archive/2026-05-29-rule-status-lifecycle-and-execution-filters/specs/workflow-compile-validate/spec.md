@@ -1,8 +1,5 @@
-# workflow-compile-validate Specification
+## MODIFIED Requirements
 
-## Purpose
-TBD - created by archiving change workflow-model-backend-dtos. Update Purpose after archive.
-## Requirements
 ### Requirement: Compile-validate endpoint checks workflow expressions without persistence
 The system SHALL expose a POST `/api/workflows/validate` endpoint that accepts a `WorkflowDto`, runs structural FluentValidation and then attempts to compile the workflow in a transient RulesEngine instance, returning a structured result with all errors or a success indicator — without persisting the workflow. The validation result SHALL include rule-level status evaluation metadata indicating whether each rule remains in its current status or must transition to `failed` under status policy when the workflow is later persisted.
 
@@ -44,4 +41,3 @@ The system SHALL implement `ValidateWorkflowCommandHandler` to first run FluentV
 #### Scenario: Handler computes status-transition metadata from compile outcomes
 - **WHEN** compile evaluation finishes for a workflow containing rules with mixed statuses
 - **THEN** the handler returns per-rule status transition metadata consistent with policy (`production` -> `failed`; `draft` stays `draft`; `disabled` stays `disabled`; `failed` stays `failed`)
-

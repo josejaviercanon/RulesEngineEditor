@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using RulesEngine.Core.Models;
 using RulesEngine.Infrastructure.Persistence.Entities;
+using PersistenceExecutionStateRecord = RulesEngine.Infrastructure.Persistence.Entities.ExecutionStateRecord;
 
 namespace RulesEngine.Infrastructure.Persistence;
 
@@ -9,7 +11,7 @@ public sealed class RulesEngineEditorDbContext(DbContextOptions<RulesEngineEdito
     public DbSet<RuleRecord> Rules => Set<RuleRecord>();
     public DbSet<WorkflowEntity> Workflows => Set<WorkflowEntity>();
     public DbSet<WorkflowRuleCollectionEntity> WorkflowRules => Set<WorkflowRuleCollectionEntity>();
-    public DbSet<ExecutionStateRecord> ExecutionStates => Set<ExecutionStateRecord>();
+    public DbSet<PersistenceExecutionStateRecord> ExecutionStates => Set<PersistenceExecutionStateRecord>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -53,6 +55,15 @@ public sealed class RulesEngineEditorDbContext(DbContextOptions<RulesEngineEdito
                 .HasColumnName("IsActive")
                 .IsRequired();
 
+            entity.Property(rule => rule.Status)
+                .HasColumnName("Status")
+                .HasColumnType("character varying(32)")
+                .HasConversion(
+                    value => RuleStatusParser.ToValue(value),
+                    value => RuleStatusParser.ParseOrDefault(value))
+                .HasDefaultValue(RuleStatus.Draft)
+                .IsRequired();
+
             entity.Property(rule => rule.EffectiveFromUtc)
                 .HasColumnName("EffectiveFromUtc")
                 .HasColumnType("timestamp with time zone");
@@ -72,6 +83,11 @@ public sealed class RulesEngineEditorDbContext(DbContextOptions<RulesEngineEdito
 
             entity.HasIndex(rule => new { rule.RuleGuidId, rule.IsActive, rule.Version })
                 .HasDatabaseName("IX_rules_RuleGuidId_IsActive_Version");
+
+            entity.ToTable(tableBuilder =>
+                tableBuilder.HasCheckConstraint(
+                    "CK_rules_Status",
+                    "\"Status\" IN ('draft', 'failed', 'disabled', 'production')"));
         });
 
         modelBuilder.Entity<WorkflowRuleCollectionEntity>(entity =>
@@ -110,7 +126,7 @@ public sealed class RulesEngineEditorDbContext(DbContextOptions<RulesEngineEdito
                 .HasDatabaseName("IX_workflow_rules_Workflow_RuleGuidId_RuleVersion");
         });
 
-        modelBuilder.Entity<ExecutionStateRecord>(entity =>
+        modelBuilder.Entity<PersistenceExecutionStateRecord>(entity =>
         {
             entity.ToTable("rule_execution_states");
 

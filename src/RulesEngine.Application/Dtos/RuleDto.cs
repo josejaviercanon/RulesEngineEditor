@@ -14,6 +14,9 @@ public sealed class RuleDto
     [JsonPropertyName("IsActive")]
     public bool IsActive { get; init; }
 
+    [JsonPropertyName("Status")]
+    public string Status { get; init; } = "draft";
+
     [JsonPropertyName("RuleName")]
     public string RuleName { get; init; } = string.Empty;
 

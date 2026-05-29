@@ -1,6 +1,7 @@
 using System.Text.Json;
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using RulesEngine.Application.Dtos;
 using RulesEngine.Application.Mapping;
 
@@ -86,7 +87,7 @@ public sealed class WorkflowDtoSerializationTests
         var configuration = new MapperConfiguration(cfg =>
         {
             cfg.AddProfile<WorkflowMappingProfile>();
-        });
+        }, NullLoggerFactory.Instance);
 
         configuration.AssertConfigurationIsValid();
     }

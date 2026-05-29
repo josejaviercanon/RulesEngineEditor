@@ -308,7 +308,10 @@ workflows.MapDelete("/{id:guid}", async (Guid id, IMediator mediator, Cancellati
 workflows.MapPost("/validate", async (ValidateWorkflowRequest request, IMediator mediator, CancellationToken cancellationToken) =>
     {
         var validationResult = await mediator.Send(new ValidateWorkflowCommand(request.Workflow), cancellationToken);
-        return Results.Ok(new ValidateWorkflowResponse(validationResult.IsValid, validationResult.Errors.ToArray()));
+        return Results.Ok(new ValidateWorkflowResponse(
+            validationResult.IsValid,
+            validationResult.Errors.ToArray(),
+            validationResult.RuleStatusTransitions));
     })
     .WithName("ValidateWorkflow");
 
@@ -318,7 +321,9 @@ workflows.MapPost("/{id:guid}/execute", async (
         IMediator mediator,
         CancellationToken cancellationToken) =>
     {
-        var result = await mediator.Send(new ExecuteWorkflowCommand(id, request.DryRun, request.SchemaVersion, request.Inputs), cancellationToken);
+        var result = await mediator.Send(
+            new ExecuteWorkflowCommand(id, request.DryRun, request.SchemaVersion, request.Inputs, request.IncludeStatuses),
+            cancellationToken);
 
         if (!result.Found)
         {
@@ -340,6 +345,7 @@ workflows.MapPost("/{id:guid}/execute", async (
             Persisted: result.Persisted,
             WasSuccessful: result.WasSuccessful,
             Results: result.Results,
+                RuleStatusTransitions: result.RuleStatusTransitions,
             ExecutionId: result.ExecutionId));
     })
     .WithName("ExecuteWorkflow");

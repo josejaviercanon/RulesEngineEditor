@@ -1,6 +1,7 @@
 using System.Text.Json;
 using AutoMapper;
 using RulesEngine.Application.Dtos;
+using RulesEngine.Core.Models;
 using RulesEngine.Models;
 
 namespace RulesEngine.Application.Mapping;
@@ -31,6 +32,7 @@ public sealed class WorkflowMappingProfile : Profile
             .ForMember(dest => dest.RuleGuidId, opt => opt.Ignore())
             .ForMember(dest => dest.Version, opt => opt.Ignore())
             .ForMember(dest => dest.IsActive, opt => opt.Ignore())
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => RuleStatusParser.Draft))
             .ReverseMap();
 
         CreateMap<Workflow, WorkflowDto>()
@@ -44,12 +46,16 @@ public sealed class WorkflowMappingProfile : Profile
             .ReverseMap();
 
         CreateMap<RuleResultTree, RuleResultDto>()
+            .ForMember(dest => dest.RuleGuidId, opt => opt.Ignore())
             .ForMember(dest => dest.RuleName, opt => opt.MapFrom(src => src.Rule != null ? src.Rule.RuleName : string.Empty))
             .ForMember(dest => dest.SuccessEvent, opt => opt.MapFrom(src => src.Rule != null ? src.Rule.SuccessEvent : null))
             .ForMember(dest => dest.ActionOutput, opt => opt.MapFrom(src =>
                 src.ActionResult != null && src.ActionResult.Output != null
                     ? JsonSerializer.Serialize(src.ActionResult.Output)
                     : null))
+            .ForMember(dest => dest.StatusBefore, opt => opt.Ignore())
+            .ForMember(dest => dest.StatusAfter, opt => opt.Ignore())
+            .ForMember(dest => dest.TransitionReason, opt => opt.Ignore())
             .ForMember(dest => dest.ChildResults, opt => opt.MapFrom(src => src.ChildResults));
     }
 }

@@ -53,6 +53,10 @@ public interface IWorkflowRepository
         WorkflowRuleQueryMode mode,
         CancellationToken cancellationToken);
 
+    Task ApplyRuleStatusUpdatesAsync(
+        IReadOnlyCollection<RuleStatusUpdateRecord> updates,
+        CancellationToken cancellationToken);
+
     Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
 }
 

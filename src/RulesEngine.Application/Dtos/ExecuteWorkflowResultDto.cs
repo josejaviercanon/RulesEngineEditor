@@ -14,6 +14,8 @@ public sealed class ExecuteWorkflowResultDto
 
     public IReadOnlyList<RuleResultDto> Results { get; init; } = [];
 
+    public IReadOnlyList<RuleStatusTransitionDto> RuleStatusTransitions { get; init; } = [];
+
     public Guid? ExecutionId { get; init; }
 
     public int? SchemaVersion { get; init; }

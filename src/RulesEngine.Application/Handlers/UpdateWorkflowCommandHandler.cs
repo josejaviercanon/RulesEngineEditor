@@ -3,6 +3,7 @@ using AutoMapper;
 using MediatR;
 using RulesEngine.Application.Commands;
 using RulesEngine.Application.Dtos;
+using RulesEngine.Application.Policies;
 using RulesEngine.Core.Execution;
 using RulesEngine.Core.Models;
 using RulesEngine.Core.Repositories;
@@ -14,7 +15,8 @@ namespace RulesEngine.Application.Handlers;
 public sealed class UpdateWorkflowCommandHandler(
     IWorkflowRepository workflowRepository,
     IRulesEngineWorkflowService rulesEngineWorkflowService,
-    IMapper mapper)
+    IMapper mapper,
+    IRuleStatusPolicy ruleStatusPolicy)
     : IRequestHandler<UpdateWorkflowCommand, WorkflowDto?>
 {
     public async Task<WorkflowDto?> Handle(UpdateWorkflowCommand request, CancellationToken cancellationToken)
@@ -22,18 +24,31 @@ public sealed class UpdateWorkflowCommandHandler(
         cancellationToken.ThrowIfCancellationRequested();
         ValidateWorkflowMetadata(request.Workflow);
 
-        var workflowDefinition = mapper.Map<Workflow>(request.Workflow);
-        EnsureWorkflowIsStructurallyValid(workflowDefinition);
+        var active = await workflowRepository.GetByIdAsync(request.Id, cancellationToken, WorkflowRuleQueryMode.ActiveOnly);
+        var previousStatuses = active is null
+            ? new Dictionary<Guid, RuleStatus>()
+            : (await workflowRepository.ListWorkflowRulesAsync(active.Id, active.Version, WorkflowRuleQueryMode.ActiveOnly, cancellationToken))
+                .ToDictionary(rule => rule.RuleGuidId, rule => rule.Status);
+
+        var normalized = NormalizeRuleStatuses(request.Workflow, validationsPassed: true, previousStatuses);
+        var workflowDefinition = mapper.Map<Workflow>(normalized);
+        var validationsPassed = TryValidateWorkflow(workflowDefinition, out _);
+
+        if (!validationsPassed)
+        {
+            normalized = NormalizeRuleStatuses(request.Workflow, validationsPassed: false, previousStatuses);
+            workflowDefinition = mapper.Map<Workflow>(normalized);
+        }
 
         var updated = await workflowRepository.UpdateAsync(request.Id, new WorkflowRecord
         {
-            Name = request.Workflow.WorkflowName,
+            Name = normalized.WorkflowName,
             Expression = string.Empty,
-            RuleJson = JsonSerializer.Serialize(request.Workflow),
-            IsEnabled = request.Workflow.IsEnabled,
-            Comments = request.Workflow.Comments,
-            EffectiveFromUtc = request.Workflow.EffectiveFromUtc,
-            EffectiveToUtc = request.Workflow.EffectiveToUtc
+            RuleJson = JsonSerializer.Serialize(normalized),
+            IsEnabled = normalized.IsEnabled,
+            Comments = normalized.Comments,
+            EffectiveFromUtc = normalized.EffectiveFromUtc,
+            EffectiveToUtc = normalized.EffectiveToUtc
         }, cancellationToken);
 
         if (updated is null)
@@ -50,19 +65,81 @@ public sealed class UpdateWorkflowCommandHandler(
             cancellationToken);
     }
 
-    private static void EnsureWorkflowIsStructurallyValid(Workflow workflow)
+    private static bool TryValidateWorkflow(Workflow workflow, out IReadOnlyList<string> errors)
     {
         try
         {
             var engine = new global::RulesEngine.RulesEngine();
             engine.AddOrUpdateWorkflow(workflow);
+            errors = [];
+            return true;
         }
         catch (RuleValidationException ex)
         {
-            throw new InvalidOperationException(
-                string.Join("; ", ex.Errors.Select(error => error.ErrorMessage)),
-                ex);
+            errors = ex.Errors.Select(error => error.ErrorMessage).ToArray();
+            return false;
         }
+    }
+
+    private WorkflowDto NormalizeRuleStatuses(
+        WorkflowDto workflow,
+        bool validationsPassed,
+        IReadOnlyDictionary<Guid, RuleStatus> previousStatuses)
+    {
+        var normalizedRules = workflow.Rules
+            .Select(rule =>
+            {
+                if (!string.IsNullOrWhiteSpace(rule.Status) && !ruleStatusPolicy.IsValidStatus(rule.Status))
+                {
+                    throw new InvalidOperationException($"Invalid status '{rule.Status}' for rule '{rule.RuleName}'.");
+                }
+
+                var previous = rule.RuleGuidId != Guid.Empty && previousStatuses.TryGetValue(rule.RuleGuidId, out var previousStatus)
+                    ? previousStatus
+                    : (RuleStatus?)null;
+
+                var requested = ruleStatusPolicy.ResolveUserRequestedStatus(previous, rule.Status, validationsPassed);
+                var final = validationsPassed
+                    ? requested
+                    : ruleStatusPolicy.ResolveCompileFailureStatus(requested);
+
+                return new RuleDto
+                {
+                    RuleGuidId = rule.RuleGuidId,
+                    Version = rule.Version,
+                    IsActive = rule.IsActive,
+                    Status = RuleStatusParser.ToValue(final),
+                    RuleName = rule.RuleName,
+                    Operator = rule.Operator,
+                    ErrorMessage = rule.ErrorMessage,
+                    Enabled = rule.Enabled,
+                    RuleExpressionType = rule.RuleExpressionType,
+                    Expression = rule.Expression,
+                    SuccessEvent = rule.SuccessEvent,
+                    LocalParams = rule.LocalParams,
+                    Rules = rule.Rules,
+                    Actions = rule.Actions,
+                    WorkflowsToInject = rule.WorkflowsToInject,
+                    Properties = rule.Properties
+                };
+            })
+            .ToArray();
+
+        return new WorkflowDto
+        {
+            Id = workflow.Id,
+            WorkflowName = workflow.WorkflowName,
+            RuleExpressionType = workflow.RuleExpressionType,
+            GlobalParams = workflow.GlobalParams,
+            Rules = normalizedRules,
+            WorkflowsToInject = workflow.WorkflowsToInject,
+            Version = workflow.Version,
+            IsActive = workflow.IsActive,
+            IsEnabled = workflow.IsEnabled,
+            Comments = workflow.Comments,
+            EffectiveFromUtc = workflow.EffectiveFromUtc,
+            EffectiveToUtc = workflow.EffectiveToUtc
+        };
     }
 
     private static void ValidateWorkflowMetadata(WorkflowDto workflow)

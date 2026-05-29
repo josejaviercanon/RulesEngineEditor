@@ -243,7 +243,7 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
 
         var dryRunResponse = await _client.PostAsJsonAsync(
             $"/api/workflows/{createdId}/execute",
-            new ExecuteWorkflowRequest(DryRun: true, SchemaVersion: 1, Inputs: []));
+            new ExecuteWorkflowRequest(DryRun: true, SchemaVersion: 1, Inputs: [], IncludeStatuses: null));
 
         dryRunResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         var dryRunPayload = await dryRunResponse.Content.ReadFromJsonAsync<ExecuteWorkflowResponse>();
@@ -256,7 +256,7 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
 
         var persistedResponse = await _client.PostAsJsonAsync(
             $"/api/workflows/{createdId}/execute",
-            new ExecuteWorkflowRequest(DryRun: false, SchemaVersion: 1, Inputs: []));
+            new ExecuteWorkflowRequest(DryRun: false, SchemaVersion: 1, Inputs: [], IncludeStatuses: null));
 
         persistedResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         var persistedPayload = await persistedResponse.Content.ReadFromJsonAsync<ExecuteWorkflowResponse>();
@@ -323,7 +323,8 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
                         Name = "input1",
                         ValueJson = "{not-json}"
                     }
-                ]));
+                ],
+                IncludeStatuses: null));
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var payload = await response.Content.ReadFromJsonAsync<ExecutionErrorResponse>();
@@ -371,7 +372,8 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
                         Name = "input1",
                         ValueJson = "{\"total\": 15}"
                     }
-                ]));
+                ],
+                IncludeStatuses: null));
 
         executeResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         var payload = await executeResponse.Content.ReadFromJsonAsync<ExecuteWorkflowResponse>();
@@ -418,7 +420,8 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
                         Name = "input1",
                         ValueJson = "{\"total\": 15}"
                     }
-                ]));
+                ],
+                IncludeStatuses: null));
 
         executeResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         var payload = await executeResponse.Content.ReadFromJsonAsync<ExecuteWorkflowResponse>();
@@ -426,6 +429,158 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         payload!.WasSuccessful.Should().BeFalse();
         payload.Results.Should().ContainSingle();
         payload.Results[0].ExceptionMessage.Should().NotBeNullOrWhiteSpace();
+    }
+
+    [Fact]
+    public async Task ExecuteEndpoint_ShouldFilterByIncludedStatuses_AndExcludeDisabled()
+    {
+        var workflow = new WorkflowDto
+        {
+            WorkflowName = "ExecuteStatusFilter",
+            Rules =
+            [
+                new RuleDto
+                {
+                    RuleName = "ProductionRule",
+                    Enabled = true,
+                    Status = "production",
+                    Expression = "1 == 1"
+                },
+                new RuleDto
+                {
+                    RuleName = "DraftRule",
+                    Enabled = true,
+                    Status = "draft",
+                    Expression = "1 == 1"
+                },
+                new RuleDto
+                {
+                    RuleName = "DisabledRule",
+                    Enabled = true,
+                    Status = "disabled",
+                    Expression = "1 == 1"
+                }
+            ],
+            Version = 1,
+            IsActive = true
+        };
+
+        var createResponse = await _client.PostAsJsonAsync("/api/workflows", new WorkflowRequest(workflow, 1));
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        var createdId = ResolveWorkflowId(createResponse);
+
+        var executeResponse = await _client.PostAsJsonAsync(
+            $"/api/workflows/{createdId}/execute",
+            new ExecuteWorkflowRequest(
+                DryRun: true,
+                SchemaVersion: 1,
+                Inputs: [],
+                IncludeStatuses: ["production"]));
+
+        executeResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var payload = await executeResponse.Content.ReadFromJsonAsync<ExecuteWorkflowResponse>();
+        payload.Should().NotBeNull();
+        payload!.Results.Should().ContainSingle();
+        payload.Results[0].RuleName.Should().Be("ProductionRule");
+    }
+
+    [Fact]
+    public async Task ExecuteEndpoint_ShouldReturnAndPersistProductionFailureTransition()
+    {
+        var workflow = new WorkflowDto
+        {
+            WorkflowName = "ExecuteProductionFailureTransition",
+            Rules =
+            [
+                new RuleDto
+                {
+                    RuleName = "FailingProductionRule",
+                    Enabled = true,
+                    Status = "production",
+                    Expression = "input1.GetProperty(\"missing\").GetInt32() > 10"
+                }
+            ],
+            Version = 1,
+            IsActive = true
+        };
+
+        var createResponse = await _client.PostAsJsonAsync("/api/workflows", new WorkflowRequest(workflow, 1));
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        var createdId = ResolveWorkflowId(createResponse);
+
+        var persistedRun = await _client.PostAsJsonAsync(
+            $"/api/workflows/{createdId}/execute",
+            new ExecuteWorkflowRequest(
+                DryRun: false,
+                SchemaVersion: 1,
+                Inputs:
+                [
+                    new RuleParameterDto
+                    {
+                        Name = "input1",
+                        ValueJson = "{\"total\": 15}"
+                    }
+                ],
+                IncludeStatuses: ["production"]));
+
+        persistedRun.StatusCode.Should().Be(HttpStatusCode.OK);
+        var payload = await persistedRun.Content.ReadFromJsonAsync<ExecuteWorkflowResponse>();
+        payload.Should().NotBeNull();
+        payload!.WasSuccessful.Should().BeFalse();
+        payload.RuleStatusTransitions.Should().ContainSingle(transition =>
+            transition.RuleName == "FailingProductionRule" &&
+            transition.StatusBefore == "production" &&
+            transition.StatusAfter == "failed");
+
+        var secondRun = await _client.PostAsJsonAsync(
+            $"/api/workflows/{createdId}/execute",
+            new ExecuteWorkflowRequest(
+                DryRun: true,
+                SchemaVersion: 1,
+                Inputs:
+                [
+                    new RuleParameterDto
+                    {
+                        Name = "input1",
+                        ValueJson = "{\"total\": 15}"
+                    }
+                ],
+                IncludeStatuses: ["production"]));
+
+            secondRun.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            var secondPayload = await secondRun.Content.ReadFromJsonAsync<ExecutionErrorResponse>();
+            secondPayload.Should().NotBeNull();
+            secondPayload!.Code.Should().Be("validation_failed");
+    }
+
+    [Fact]
+    public async Task ValidateEndpoint_ShouldReturnStatusTransitionPreviewOnCompileError()
+    {
+        var invalid = new WorkflowDto
+        {
+            WorkflowName = "validate-transition-preview",
+            Rules =
+            [
+                new RuleDto
+                {
+                    RuleName = "BrokenProductionRule",
+                    Enabled = true,
+                    Status = "production",
+                    Expression = string.Empty
+                }
+            ]
+        };
+
+        var response = await _client.PostAsJsonAsync("/api/workflows/validate", new ValidateWorkflowRequest(invalid));
+
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var payload = await response.Content.ReadFromJsonAsync<ValidateWorkflowResponse>();
+        payload.Should().NotBeNull();
+        payload!.IsValid.Should().BeFalse();
+        payload.RuleStatusTransitions.Should().ContainSingle(transition =>
+            transition.RuleName == "BrokenProductionRule" &&
+            transition.StatusBefore == "production" &&
+            transition.StatusAfter == "failed");
     }
 
     private static Guid ResolveWorkflowId(HttpResponseMessage response)

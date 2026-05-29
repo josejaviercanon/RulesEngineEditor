@@ -1,8 +1,5 @@
-# workflow-test-execution Specification
+## MODIFIED Requirements
 
-## Purpose
-TBD - created by archiving change workflow-model-backend-dtos. Update Purpose after archive.
-## Requirements
 ### Requirement: Execute endpoint accepts structured named test inputs
 The system SHALL extend the POST `/api/workflows/{id}/execute` endpoint to accept an `Inputs` array of `RuleParameterDto` objects (name + JSON value) in the request body, which are passed to the RulesEngine as `RuleParameter[]`. The endpoint SHALL support status-based rule inclusion filtering for active workflow-version rules through an `IncludeStatuses` parameter, with default inclusion set `draft,failed,production` and exclusion of `disabled`.
 
@@ -59,4 +56,3 @@ The system SHALL implement `ExecuteWorkflowCommandHandler` to deserialize each `
 #### Scenario: Handler excludes disabled status regardless of filter defaults
 - **WHEN** the handler computes selected rules for execution
 - **THEN** rules in `disabled` status are excluded unless future explicit behavior changes this contract
-

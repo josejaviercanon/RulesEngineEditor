@@ -16,6 +16,8 @@ public sealed class RuleVersionRecord
 
     public bool IsActive { get; set; }
 
+    public RuleStatus Status { get; set; } = RuleStatus.Draft;
+
     public DateTimeOffset? EffectiveFromUtc { get; set; }
 
     public DateTimeOffset? EffectiveToUtc { get; set; }

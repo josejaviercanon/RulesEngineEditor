@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using RulesEngine.Core.Models;
 using RulesEngine.Core.Repositories;
 using RulesEngine.Infrastructure.Persistence;
@@ -320,7 +321,8 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                     Expression = item.Expression,
                     RuleJson = item.RawRuleJson,
                     Version = 1,
-                    IsActive = true
+                    IsActive = true,
+                    Status = item.Status
                 })
                 .ToArray();
         }
@@ -359,6 +361,38 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         }
 
         return entities.Select(MapRuleToCore).ToArray();
+    }
+
+    public async Task ApplyRuleStatusUpdatesAsync(
+        IReadOnlyCollection<RuleStatusUpdateRecord> updates,
+        CancellationToken cancellationToken)
+    {
+        if (updates.Count == 0)
+        {
+            return;
+        }
+
+        var byGuid = updates
+            .GroupBy(update => update.RuleGuidId)
+            .ToDictionary(group => group.Key, group => group.Last().Status);
+
+        var ruleGuids = byGuid.Keys.ToArray();
+        var activeRules = await dbContext.Rules
+            .Where(rule => ruleGuids.Contains(rule.RuleGuidId) && rule.IsActive)
+            .ToListAsync(cancellationToken);
+
+        foreach (var active in activeRules)
+        {
+            if (!byGuid.TryGetValue(active.RuleGuidId, out var nextStatus))
+            {
+                continue;
+            }
+
+            active.Status = nextStatus;
+            active.RuleJson = TryWriteRuleStatus(active.RuleJson, nextStatus);
+        }
+
+        await SaveChangesAsync(cancellationToken);
     }
 
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
@@ -507,6 +541,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                 RuleJson = item.Rule.RawRuleJson,
                 Version = nextVersion,
                 IsActive = true,
+                Status = item.Rule.Status,
                 EffectiveFromUtc = null,
                 EffectiveToUtc = null
             };
@@ -552,6 +587,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                     ? (expressionElement.GetString() ?? string.Empty)
                     : string.Empty;
                 var ruleGuidId = Guid.Empty;
+                var status = RuleStatus.Draft;
                 if (item.TryGetProperty("RuleGuidId", out var ruleGuidElement) &&
                     ruleGuidElement.ValueKind == JsonValueKind.String &&
                     Guid.TryParse(ruleGuidElement.GetString(), out var parsed))
@@ -559,7 +595,13 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                     ruleGuidId = parsed;
                 }
 
-                rules.Add(new ParsedRulePayload(ruleName, expression, item.GetRawText(), ruleGuidId));
+                if (item.TryGetProperty("Status", out var statusElement) &&
+                    statusElement.ValueKind == JsonValueKind.String)
+                {
+                    status = RuleStatusParser.ParseOrDefault(statusElement.GetString(), RuleStatus.Draft);
+                }
+
+                rules.Add(new ParsedRulePayload(ruleName, expression, item.GetRawText(), ruleGuidId, status));
             }
 
             return rules;
@@ -617,9 +659,34 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         RuleJson = record.RuleJson,
         Version = record.Version,
         IsActive = record.IsActive,
+        Status = record.Status,
         EffectiveFromUtc = record.EffectiveFromUtc,
         EffectiveToUtc = record.EffectiveToUtc
     };
 
-    private sealed record ParsedRulePayload(string RuleName, string Expression, string RawRuleJson, Guid RuleGuidId);
+    private static string TryWriteRuleStatus(string ruleJson, RuleStatus status)
+    {
+        try
+        {
+            var node = JsonNode.Parse(ruleJson);
+            if (node is not JsonObject obj)
+            {
+                return ruleJson;
+            }
+
+            obj["Status"] = RuleStatusParser.ToValue(status);
+            return obj.ToJsonString();
+        }
+        catch (JsonException)
+        {
+            return ruleJson;
+        }
+    }
+
+    private sealed record ParsedRulePayload(
+        string RuleName,
+        string Expression,
+        string RawRuleJson,
+        Guid RuleGuidId,
+        RuleStatus Status);
 }
