@@ -8,6 +8,8 @@ public sealed class WorkflowRecord
 
     public string Expression { get; set; } = string.Empty;
 
+    public string WorkflowJson { get; set; } = string.Empty;
+
     public string RuleJson { get; set; } = string.Empty;
 
     public int Version { get; set; }

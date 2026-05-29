@@ -43,3 +43,18 @@ dotnet ef database update \
 - Keep `src/RulesEngine.API/appsettings.Development.json` as the default development source of truth for migration connection settings.
 - Use `RULES_ENGINE_EDITOR_CONNECTION` only to pass the exact same value to design-time EF tooling.
 - If the development connection string changes, migration automation must read it dynamically rather than hardcoding a database name.
+
+## Workflow JSON Rollout and Rollback
+
+Deployment sequence for `WorkflowJson` / `RuleJson` persistence:
+
+1. Apply migrations first so the `workflows.WorkflowJson` column exists.
+2. Deploy API/app code that reads `WorkflowJson` with fallback to legacy workflow JSON payloads.
+3. Let startup backfill populate missing `WorkflowJson` and ensure each `rules.RuleJson` contains plain-text `Expression`.
+4. Validate with API smoke tests: create, update, list/get, execute workflow.
+
+Rollback sequence:
+
+1. Roll back app binaries first (older code keeps working because legacy payload fallback is maintained).
+2. Keep the new DB column in place during app rollback to avoid data loss.
+3. Only drop `WorkflowJson` via migration rollback if you are also rolling back to a schema baseline that never references it.

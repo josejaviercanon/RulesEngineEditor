@@ -19,6 +19,7 @@ public sealed class WorkflowInfrastructurePersistenceTests
             Id = Guid.NewGuid(),
             Name = "infra-persist-workflow",
             Expression = "1 == 1",
+            WorkflowJson = "{}",
             RuleJson = "{}",
             Version = 1,
             IsActive = true,
@@ -31,6 +32,7 @@ public sealed class WorkflowInfrastructurePersistenceTests
         loaded.Should().NotBeNull();
         loaded!.Name.Should().Be("infra-persist-workflow");
         loaded.Expression.Should().Be("1 == 1");
+        loaded.WorkflowJson.Should().Be("{}");
         loaded.RuleJson.Should().Be("{}");
         loaded.Version.Should().Be(1);
         loaded.IsActive.Should().BeTrue();
@@ -50,6 +52,7 @@ public sealed class WorkflowInfrastructurePersistenceTests
             Id = Guid.NewGuid(),
             Name = "infra-comment-boundary",
             Expression = "1 == 1",
+            WorkflowJson = "{}",
             RuleJson = "{}",
             Version = 1,
             IsActive = true,

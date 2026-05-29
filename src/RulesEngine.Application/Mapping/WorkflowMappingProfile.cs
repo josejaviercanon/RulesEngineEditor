@@ -32,6 +32,7 @@ public sealed class WorkflowMappingProfile : Profile
             .ForMember(dest => dest.RuleGuidId, opt => opt.Ignore())
             .ForMember(dest => dest.Version, opt => opt.Ignore())
             .ForMember(dest => dest.IsActive, opt => opt.Ignore())
+            .ForMember(dest => dest.RuleJson, opt => opt.Ignore())
             .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => RuleStatusParser.Draft))
             .ReverseMap();
 
@@ -43,6 +44,7 @@ public sealed class WorkflowMappingProfile : Profile
             .ForMember(dest => dest.Comments, opt => opt.Ignore())
             .ForMember(dest => dest.EffectiveFromUtc, opt => opt.Ignore())
             .ForMember(dest => dest.EffectiveToUtc, opt => opt.Ignore())
+            .ForMember(dest => dest.WorkflowJson, opt => opt.Ignore())
             .ReverseMap();
 
         CreateMap<RuleResultTree, RuleResultDto>()

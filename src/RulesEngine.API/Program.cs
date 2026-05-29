@@ -48,6 +48,7 @@ await using (var scope = app.Services.CreateAsyncScope())
     if (dbContext.Database.IsRelational())
     {
         await dbContext.Database.MigrateAsync();
+        await BackfillCanonicalJsonAsync(dbContext);
     }
 }
 
@@ -351,5 +352,35 @@ workflows.MapPost("/{id:guid}/execute", async (
     .WithName("ExecuteWorkflow");
 
 await app.RunAsync();
+
+static async Task BackfillCanonicalJsonAsync(RulesEngineEditorDbContext dbContext)
+{
+    var workflows = await dbContext.Workflows
+        .Where(workflow => string.IsNullOrWhiteSpace(workflow.WorkflowJson))
+        .ToListAsync();
+
+    var changed = false;
+    foreach (var workflow in workflows)
+    {
+        workflow.WorkflowJson = JsonPayloadUtilities.ResolveWorkflowJson(workflow.WorkflowJson, workflow.Definition.RuleJson);
+        changed = true;
+    }
+
+    var rules = await dbContext.Rules.ToListAsync();
+    foreach (var rule in rules)
+    {
+        var updatedRuleJson = JsonPayloadUtilities.EnsureRuleJsonContainsExpression(rule.RuleJson, rule.Expression);
+        if (!string.Equals(updatedRuleJson, rule.RuleJson, StringComparison.Ordinal))
+        {
+            rule.RuleJson = updatedRuleJson;
+            changed = true;
+        }
+    }
+
+    if (changed)
+    {
+        await dbContext.SaveChangesAsync();
+    }
+}
 
 public partial class Program;

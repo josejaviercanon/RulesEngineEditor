@@ -182,6 +182,10 @@ public sealed class RulesEngineEditorDbContext(DbContextOptions<RulesEngineEdito
                 .HasColumnType("character varying(256)")
                 .IsRequired();
 
+            entity.Property(workflow => workflow.WorkflowJson)
+                .HasColumnName("WorkflowJson")
+                .HasColumnType("text");
+
             entity.Property(workflow => workflow.IsActive)
                 .HasColumnName("IsActive")
                 .IsRequired();

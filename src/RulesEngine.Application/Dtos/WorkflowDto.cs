@@ -23,6 +23,8 @@ public sealed class WorkflowDto
     [JsonPropertyName("WorkflowsToInject")]
     public IReadOnlyList<string> WorkflowsToInject { get; init; } = [];
 
+    public string WorkflowJson { get; init; } = string.Empty;
+
     public int Version { get; init; }
 
     public bool IsActive { get; init; }

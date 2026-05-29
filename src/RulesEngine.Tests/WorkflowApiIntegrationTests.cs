@@ -42,6 +42,9 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         var loaded = await getByIdResponse.Content.ReadFromJsonAsync<WorkflowResponse>();
         loaded.Should().NotBeNull();
         loaded!.Workflow.WorkflowName.Should().Be(workflowName);
+        loaded.Workflow.WorkflowJson.Should().Contain("\"WorkflowName\":\"CrudWorkflow\"");
+        loaded.Workflow.Rules.Should().ContainSingle();
+        loaded.Workflow.Rules[0].RuleJson.Should().Contain("\"Expression\":\"1 == 1\"");
         loaded.IsEnabled.Should().BeTrue();
 
         var updateRequest = CreateWorkflowRequest("CrudWorkflowUpdated") with
@@ -57,6 +60,7 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         updated!.Version.Should().Be(2);
         updated.IsActive.Should().BeTrue();
         updated.IsEnabled.Should().BeTrue();
+        updated.Workflow.WorkflowJson.Should().Contain("\"WorkflowName\":\"CrudWorkflowUpdated\"");
 
         var versionsResponse = await _client.GetAsync($"/api/workflows/{createdId}/versions");
         versionsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -197,6 +201,24 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         allList.Should().NotBeNull();
         allList!.Should().Contain(item => item.Id == enabledId);
         allList.Should().Contain(item => item.Id == disabledId);
+
+        using var scope = _factory.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<RulesEngineEditorDbContext>();
+        var persisted = await dbContext.Workflows
+            .AsNoTracking()
+            .FirstOrDefaultAsync(workflow => workflow.Id == enabledId && workflow.IsActive);
+
+        persisted.Should().NotBeNull();
+        persisted!.WorkflowJson.Should().NotBeNullOrWhiteSpace();
+        persisted.WorkflowJson.Should().Contain("\"WorkflowName\":\"EnabledFilterWorkflow\"");
+
+        var persistedRule = await dbContext.Rules
+            .AsNoTracking()
+            .FirstOrDefaultAsync(rule => rule.Name == "AlwaysTrue");
+
+        persistedRule.Should().NotBeNull();
+        persistedRule!.RuleJson.Should().Contain("\"Expression\":\"1 == 1\"");
+        persistedRule.RuleJson.Should().Contain("\"RuleName\":\"AlwaysTrue\"");
     }
 
     [Fact]

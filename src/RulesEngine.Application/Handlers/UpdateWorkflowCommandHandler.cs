@@ -40,11 +40,14 @@ public sealed class UpdateWorkflowCommandHandler(
             workflowDefinition = mapper.Map<Workflow>(normalized);
         }
 
+        normalized = AddJsonPayloads(normalized);
+
         var updated = await workflowRepository.UpdateAsync(request.Id, new WorkflowRecord
         {
             Name = normalized.WorkflowName,
             Expression = string.Empty,
-            RuleJson = JsonSerializer.Serialize(normalized),
+            WorkflowJson = normalized.WorkflowJson,
+            RuleJson = normalized.WorkflowJson,
             IsEnabled = normalized.IsEnabled,
             Comments = normalized.Comments,
             EffectiveFromUtc = normalized.EffectiveFromUtc,
@@ -133,6 +136,7 @@ public sealed class UpdateWorkflowCommandHandler(
             GlobalParams = workflow.GlobalParams,
             Rules = normalizedRules,
             WorkflowsToInject = workflow.WorkflowsToInject,
+            WorkflowJson = workflow.WorkflowJson,
             Version = workflow.Version,
             IsActive = workflow.IsActive,
             IsEnabled = workflow.IsEnabled,
@@ -141,6 +145,83 @@ public sealed class UpdateWorkflowCommandHandler(
             EffectiveToUtc = workflow.EffectiveToUtc
         };
     }
+
+    private WorkflowDto AddJsonPayloads(WorkflowDto workflow)
+    {
+        var normalizedRules = workflow.Rules
+            .Select(rule =>
+            {
+                var canonicalRule = mapper.Map<Rule>(rule);
+                var serializedRule = JsonSerializer.Serialize(canonicalRule);
+
+                return new RuleDto
+                {
+                    RuleGuidId = rule.RuleGuidId,
+                    Version = rule.Version,
+                    IsActive = rule.IsActive,
+                    Status = rule.Status,
+                    RuleName = rule.RuleName,
+                    Operator = rule.Operator,
+                    ErrorMessage = rule.ErrorMessage,
+                    Enabled = rule.Enabled,
+                    RuleExpressionType = rule.RuleExpressionType,
+                    Expression = rule.Expression,
+                    RuleJson = serializedRule,
+                    SuccessEvent = rule.SuccessEvent,
+                    LocalParams = rule.LocalParams,
+                    Rules = rule.Rules,
+                    Actions = rule.Actions,
+                    WorkflowsToInject = rule.WorkflowsToInject,
+                    Properties = rule.Properties
+                };
+            })
+            .ToArray();
+
+        return new WorkflowDto
+        {
+            Id = workflow.Id,
+            WorkflowName = workflow.WorkflowName,
+            RuleExpressionType = workflow.RuleExpressionType,
+            GlobalParams = workflow.GlobalParams,
+            Rules = normalizedRules,
+            WorkflowsToInject = workflow.WorkflowsToInject,
+            WorkflowJson = BuildWorkflowJsonPayload(workflow, normalizedRules),
+            Version = workflow.Version,
+            IsActive = workflow.IsActive,
+            IsEnabled = workflow.IsEnabled,
+            Comments = workflow.Comments,
+            EffectiveFromUtc = workflow.EffectiveFromUtc,
+            EffectiveToUtc = workflow.EffectiveToUtc
+        };
+    }
+
+    private static string BuildWorkflowJsonPayload(WorkflowDto workflow, IReadOnlyCollection<RuleDto> rules)
+        => JsonSerializer.Serialize(new
+        {
+            workflow.WorkflowName,
+            workflow.RuleExpressionType,
+            workflow.GlobalParams,
+            Rules = rules.Select(rule => new
+            {
+                rule.RuleGuidId,
+                rule.Version,
+                rule.IsActive,
+                rule.Status,
+                rule.RuleName,
+                rule.Operator,
+                rule.ErrorMessage,
+                rule.Enabled,
+                rule.RuleExpressionType,
+                rule.Expression,
+                rule.SuccessEvent,
+                rule.LocalParams,
+                rule.Rules,
+                rule.Actions,
+                rule.WorkflowsToInject,
+                rule.Properties
+            }),
+            workflow.WorkflowsToInject
+        });
 
     private static void ValidateWorkflowMetadata(WorkflowDto workflow)
     {

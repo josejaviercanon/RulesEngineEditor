@@ -21,6 +21,7 @@ public sealed class WorkflowRepositoryTests
         loaded.Should().NotBeNull();
         loaded!.Name.Should().Be(expected.Name);
         loaded.Expression.Should().Be(expected.Expression);
+        loaded.WorkflowJson.Should().Be(expected.WorkflowJson);
         loaded.RuleJson.Should().Be(expected.RuleJson);
         loaded.Version.Should().Be(1);
         loaded.IsActive.Should().BeTrue();
@@ -50,6 +51,7 @@ public sealed class WorkflowRepositoryTests
         updated.Should().NotBeNull();
         updated!.Name.Should().Be("Updated");
         updated.Version.Should().Be(2);
+        updated.WorkflowJson.Should().Be("{\"WorkflowName\":\"Updated\",\"Rules\":[]}");
 
         var versions = await repository.ListVersionsAsync(created.Id, CancellationToken.None);
         versions.Should().HaveCount(2);
@@ -160,6 +162,7 @@ public sealed class WorkflowRepositoryTests
         Id = Guid.NewGuid(),
         Name = "Sample",
         Expression = "input1.value > 0",
+        WorkflowJson = "{\"WorkflowName\":\"Sample\",\"Rules\":[]}",
         RuleJson = "{\"WorkflowName\":\"Sample\",\"Rules\":[]}",
         Version = 1,
         IsActive = true,

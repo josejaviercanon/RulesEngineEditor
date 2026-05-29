@@ -34,7 +34,10 @@ public sealed class ExecuteWorkflowCommandHandler(
             };
         }
 
-        var workflowDto = JsonSerializer.Deserialize<WorkflowDto>(workflowRecord.RuleJson);
+        var workflowJson = !string.IsNullOrWhiteSpace(workflowRecord.WorkflowJson)
+            ? workflowRecord.WorkflowJson
+            : workflowRecord.RuleJson;
+        var workflowDto = JsonSerializer.Deserialize<WorkflowDto>(workflowJson);
         if (workflowDto is null)
         {
             return new ExecuteWorkflowResultDto
@@ -76,6 +79,7 @@ public sealed class ExecuteWorkflowCommandHandler(
             GlobalParams = workflowDto.GlobalParams,
             Rules = selectedRules.Select(WorkflowDtoProjection.MapRule).ToArray(),
             WorkflowsToInject = workflowDto.WorkflowsToInject,
+            WorkflowJson = workflowJson,
             Version = workflowRecord.Version,
             IsActive = workflowRecord.IsActive,
             EffectiveFromUtc = workflowRecord.EffectiveFromUtc,

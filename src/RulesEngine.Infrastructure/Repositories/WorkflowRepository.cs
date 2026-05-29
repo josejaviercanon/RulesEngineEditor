@@ -156,6 +156,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
     {
         var workflowId = workflow.Id == Guid.Empty ? Guid.NewGuid() : workflow.Id;
         var nextVersion = await GetNextVersionAsync(workflowId, cancellationToken);
+        var workflowJson = JsonPayloadUtilities.ResolveWorkflowJson(workflow.WorkflowJson, workflow.RuleJson);
 
         await DeactivateCurrentActiveAsync(workflowId, cancellationToken);
 
@@ -165,6 +166,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
             Name = workflow.Name,
             Version = nextVersion,
             IsActive = true,
+            WorkflowJson = workflowJson,
             IsEnabled = workflow.IsEnabled,
             Comments = workflow.Comments,
             EffectiveFromUtc = workflow.EffectiveFromUtc,
@@ -172,12 +174,12 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
             Definition = new WorkflowDefinitionEntity
             {
                 Expression = workflow.Expression,
-                RuleJson = workflow.RuleJson
+                RuleJson = workflowJson
             }
         };
 
         dbContext.Workflows.Add(entity);
-        await UpsertWorkflowRulesAsync(workflowId, nextVersion, workflow.RuleJson, cancellationToken);
+        await UpsertWorkflowRulesAsync(workflowId, nextVersion, workflowJson, cancellationToken);
         await SaveChangesAsync(cancellationToken);
 
         return MapToCore(entity);
@@ -195,6 +197,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         }
 
         var nextVersion = existing.Max(entity => entity.Version) + 1;
+        var workflowJson = JsonPayloadUtilities.ResolveWorkflowJson(workflow.WorkflowJson, workflow.RuleJson);
 
         foreach (var entity in existing.Where(entity => entity.IsActive))
         {
@@ -207,6 +210,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
             Name = workflow.Name,
             Version = nextVersion,
             IsActive = true,
+            WorkflowJson = workflowJson,
             IsEnabled = workflow.IsEnabled,
             Comments = workflow.Comments,
             EffectiveFromUtc = workflow.EffectiveFromUtc,
@@ -214,12 +218,12 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
             Definition = new WorkflowDefinitionEntity
             {
                 Expression = workflow.Expression,
-                RuleJson = workflow.RuleJson
+                RuleJson = workflowJson
             }
         };
 
         dbContext.Workflows.Add(entityToAdd);
-        await UpsertWorkflowRulesAsync(id, nextVersion, workflow.RuleJson, cancellationToken);
+        await UpsertWorkflowRulesAsync(id, nextVersion, workflowJson, cancellationToken);
 
         await SaveChangesAsync(cancellationToken);
 
@@ -310,7 +314,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                 return [];
             }
 
-            return ParseTopLevelRules(workflow.Definition.RuleJson)
+            return ParseTopLevelRules(JsonPayloadUtilities.ResolveWorkflowJson(workflow.WorkflowJson, workflow.Definition.RuleJson))
                 .Select(item => new RuleVersionRecord
                 {
                     Id = Guid.Empty,
@@ -538,7 +542,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                 RuleGuidId = item.RuleGuidId,
                 Name = item.Rule.RuleName,
                 Expression = item.Rule.Expression,
-                RuleJson = item.Rule.RawRuleJson,
+                RuleJson = JsonPayloadUtilities.EnsureRuleJsonContainsExpression(item.Rule.RawRuleJson, item.Rule.Expression),
                 Version = nextVersion,
                 IsActive = true,
                 Status = item.Rule.Status,
@@ -641,7 +645,8 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         Id = entity.Id,
         Name = entity.Name,
         Expression = entity.Definition.Expression,
-        RuleJson = entity.Definition.RuleJson,
+        WorkflowJson = JsonPayloadUtilities.ResolveWorkflowJson(entity.WorkflowJson, entity.Definition.RuleJson),
+        RuleJson = JsonPayloadUtilities.ResolveWorkflowJson(entity.WorkflowJson, entity.Definition.RuleJson),
         Version = entity.Version,
         IsActive = entity.IsActive,
         IsEnabled = entity.IsEnabled,

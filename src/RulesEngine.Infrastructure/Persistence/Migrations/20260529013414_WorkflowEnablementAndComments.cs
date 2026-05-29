@@ -23,7 +23,7 @@ namespace RulesEngine.Infrastructure.Persistence.Migrations
                 nullable: false,
                 defaultValue: true);
 
-            migrationBuilder.Sql(@"UPDATE \""workflows\"" SET \""IsEnabled\"" = \""IsActive\"";");
+            migrationBuilder.Sql(@"UPDATE ""workflows"" SET ""IsEnabled"" = ""IsActive"";");
 
             migrationBuilder.CreateIndex(
                 name: "UX_workflows_Id_ActiveEnabled",

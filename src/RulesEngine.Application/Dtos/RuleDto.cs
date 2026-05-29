@@ -36,6 +36,9 @@ public sealed class RuleDto
     [JsonPropertyName("Expression")]
     public string Expression { get; init; } = string.Empty;
 
+    [JsonPropertyName("RuleJson")]
+    public string RuleJson { get; init; } = string.Empty;
+
     [JsonPropertyName("SuccessEvent")]
     public string SuccessEvent { get; init; } = string.Empty;
 

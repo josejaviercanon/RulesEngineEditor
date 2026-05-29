@@ -13,7 +13,8 @@ internal static class WorkflowDtoProjection
         WorkflowRuleQueryMode mode,
         CancellationToken cancellationToken)
     {
-        var workflow = JsonSerializer.Deserialize<WorkflowDto>(record.RuleJson);
+        var workflowJson = ResolveWorkflowJson(record);
+        var workflow = JsonSerializer.Deserialize<WorkflowDto>(workflowJson);
         var projectedRules = await workflowRepository.ListWorkflowRulesAsync(record.Id, record.Version, mode, cancellationToken);
         var rules = projectedRules.Select(MapRule).ToArray();
 
@@ -23,6 +24,7 @@ internal static class WorkflowDtoProjection
             {
                 Id = record.Id,
                 WorkflowName = record.Name,
+                WorkflowJson = workflowJson,
                 Version = record.Version,
                 IsActive = record.IsActive,
                 IsEnabled = record.IsEnabled,
@@ -41,6 +43,7 @@ internal static class WorkflowDtoProjection
             GlobalParams = workflow.GlobalParams,
             Rules = rules,
             WorkflowsToInject = workflow.WorkflowsToInject,
+            WorkflowJson = workflowJson,
             Version = record.Version,
             IsActive = record.IsActive,
             IsEnabled = record.IsEnabled,
@@ -63,6 +66,7 @@ internal static class WorkflowDtoProjection
                 Status = RuleStatusParser.ToValue(record.Status),
                 RuleName = record.Name,
                 Expression = record.Expression,
+                RuleJson = record.RuleJson,
                 Enabled = true
             };
         }
@@ -81,6 +85,7 @@ internal static class WorkflowDtoProjection
             Enabled = parsed.Enabled,
             RuleExpressionType = parsed.RuleExpressionType,
             Expression = parsed.Expression,
+            RuleJson = string.IsNullOrWhiteSpace(parsed.RuleJson) ? record.RuleJson : parsed.RuleJson,
             SuccessEvent = parsed.SuccessEvent,
             LocalParams = parsed.LocalParams,
             Rules = parsed.Rules,
@@ -89,4 +94,7 @@ internal static class WorkflowDtoProjection
             Properties = parsed.Properties
         };
     }
+
+    private static string ResolveWorkflowJson(WorkflowRecord record)
+        => !string.IsNullOrWhiteSpace(record.WorkflowJson) ? record.WorkflowJson : record.RuleJson;
 }

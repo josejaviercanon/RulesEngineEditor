@@ -23,6 +23,7 @@ public sealed class WorkflowDtoSerializationTests
                     RuleName = "AlwaysTrue",
                     Enabled = true,
                     Expression = "1 == 1",
+                    RuleJson = "{\"RuleName\":\"AlwaysTrue\",\"Expression\":\"1 == 1\"}",
                     LocalParams =
                     [
                         new ScopedParamDto
@@ -41,6 +42,7 @@ public sealed class WorkflowDtoSerializationTests
                     Expression = "2"
                 }
             ],
+            WorkflowJson = "{\"WorkflowName\":\"RoundTripWorkflow\",\"Rules\":[{\"RuleName\":\"AlwaysTrue\",\"Expression\":\"1 == 1\"}]}",
             Version = 2,
             IsActive = true
         };
@@ -52,8 +54,10 @@ public sealed class WorkflowDtoSerializationTests
         roundTrip!.WorkflowName.Should().Be(original.WorkflowName);
         roundTrip.Rules.Should().HaveCount(1);
         roundTrip.Rules[0].RuleName.Should().Be("AlwaysTrue");
+        roundTrip.Rules[0].RuleJson.Should().Contain("\"Expression\":\"1 == 1\"");
         roundTrip.Rules[0].LocalParams.Should().HaveCount(1);
         roundTrip.GlobalParams.Should().HaveCount(1);
+        roundTrip.WorkflowJson.Should().Contain("\"WorkflowName\":\"RoundTripWorkflow\"");
         roundTrip.Version.Should().Be(2);
         roundTrip.IsActive.Should().BeTrue();
     }

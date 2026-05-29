@@ -6,6 +6,8 @@ public sealed class WorkflowEntity
 
     public string Name { get; set; } = string.Empty;
 
+    public string? WorkflowJson { get; set; }
+
     public int Version { get; set; }
 
     public bool IsActive { get; set; }

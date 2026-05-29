@@ -1,5 +1,6 @@
 using FluentAssertions;
 using AutoMapper;
+using Microsoft.Extensions.Logging.Abstractions;
 using RulesEngine.Application.Commands;
 using RulesEngine.Application.Dtos;
 using RulesEngine.Application.Handlers;
@@ -19,7 +20,7 @@ public sealed class WorkflowApplicationHandlersTests
     private static readonly IMapper Mapper = new MapperConfiguration(cfg =>
     {
         cfg.AddProfile<WorkflowMappingProfile>();
-    }).CreateMapper();
+    }, NullLoggerFactory.Instance).CreateMapper();
 
     [Fact]
     public async Task CreateWorkflowHandler_ShouldPersistWorkflowUsingRepository()
@@ -39,6 +40,9 @@ public sealed class WorkflowApplicationHandlersTests
         result.WorkflowName.Should().Be("create-handler-test");
         result.Version.Should().Be(1);
         result.IsActive.Should().BeTrue();
+        result.WorkflowJson.Should().Contain("\"WorkflowName\":\"create-handler-test\"");
+        result.Rules.Should().ContainSingle();
+        result.Rules[0].RuleJson.Should().Contain("\"Expression\":\"1 == 1\"");
 
         repository.Store.Should().ContainSingle(item => item.Id == result.Id);
     }
@@ -221,6 +225,7 @@ public sealed class WorkflowApplicationHandlersTests
             Id = Guid.NewGuid(),
             Name = "execute-handler-test",
             Expression = "1 == 1",
+            WorkflowJson = SerializeWorkflowDto(BuildWorkflowDto("execute-handler-test")),
             RuleJson = SerializeWorkflowDto(BuildWorkflowDto("execute-handler-test")),
             Version = 1,
             IsActive = true
@@ -363,7 +368,10 @@ public sealed class WorkflowApplicationHandlersTests
                 return Task.FromResult<IReadOnlyCollection<RuleVersionRecord>>([]);
             }
 
-            var dto = JsonSerializer.Deserialize<WorkflowDto>(workflow.RuleJson);
+            var workflowJson = string.IsNullOrWhiteSpace(workflow.WorkflowJson)
+                ? workflow.RuleJson
+                : workflow.WorkflowJson;
+            var dto = JsonSerializer.Deserialize<WorkflowDto>(workflowJson);
             if (dto is null)
             {
                 return Task.FromResult<IReadOnlyCollection<RuleVersionRecord>>([]);
@@ -402,7 +410,8 @@ public sealed class WorkflowApplicationHandlersTests
                 Id = identity,
                 Name = workflow.Name,
                 Expression = workflow.Expression,
-                RuleJson = workflow.RuleJson,
+                WorkflowJson = string.IsNullOrWhiteSpace(workflow.WorkflowJson) ? workflow.RuleJson : workflow.WorkflowJson,
+                RuleJson = string.IsNullOrWhiteSpace(workflow.WorkflowJson) ? workflow.RuleJson : workflow.WorkflowJson,
                 Version = version,
                 IsActive = true,
                 IsEnabled = workflow.IsEnabled,
@@ -433,7 +442,8 @@ public sealed class WorkflowApplicationHandlersTests
                 Id = id,
                 Name = workflow.Name,
                 Expression = workflow.Expression,
-                RuleJson = workflow.RuleJson,
+                WorkflowJson = string.IsNullOrWhiteSpace(workflow.WorkflowJson) ? workflow.RuleJson : workflow.WorkflowJson,
+                RuleJson = string.IsNullOrWhiteSpace(workflow.WorkflowJson) ? workflow.RuleJson : workflow.WorkflowJson,
                 Version = items.Max(item => item.Version) + 1,
                 IsActive = true,
                 IsEnabled = workflow.IsEnabled,

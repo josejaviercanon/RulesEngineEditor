@@ -26,7 +26,10 @@ public sealed class ActivateWorkflowVersionCommandHandler(
             return null;
         }
 
-        var workflow = JsonSerializer.Deserialize<WorkflowDto>(activated.RuleJson);
+        var workflowJson = !string.IsNullOrWhiteSpace(activated.WorkflowJson)
+            ? activated.WorkflowJson
+            : activated.RuleJson;
+        var workflow = JsonSerializer.Deserialize<WorkflowDto>(workflowJson);
         if (workflow is not null)
         {
             rulesEngineWorkflowService.RefreshWorkflow(activated.Id, mapper.Map<Workflow>(workflow));
