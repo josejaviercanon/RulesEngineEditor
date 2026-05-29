@@ -1,0 +1,164 @@
+﻿@page "/tests/steps"
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Steps</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Steps>
+                    <Step Name="1">Step 1</Step>
+                    <Step Name="2">Step 2</Step>
+                    <Step Name="3">Step 3</Step>
+                    <Step Name="4">Step 4</Step>
+                </Steps>
+            </CardBody>
+            <CardBody>
+                <Steps>
+                    <Step Name="1" Completed>
+                        <Marker>
+                            <Icon Name="IconName.Check" />
+                        </Marker>
+                        <Caption>
+                            Step 1
+                        </Caption>
+                    </Step>
+                    <Step Name="2">Step 2</Step>
+                    <Step Name="3" Color="Color.Info">Step 3</Step>
+                    <Step Name="4">
+                        <Marker>
+                            <Icon Name="IconName.Flag" />
+                        </Marker>
+                        <Caption>
+                            Finish
+                        </Caption>
+                    </Step>
+                </Steps>
+            </CardBody>
+            <CardBody>
+                <Steps>
+                    <Step Name="1" Completed>Step 1</Step>
+                    <Step Name="2" Completed Color="Color.Info">Step 2</Step>
+                    <Step Name="3" Completed Color="Color.Warning">Step 3</Step>
+                    <Step Name="4">
+                        <Marker>
+                            <Icon Name="IconName.Flag" />
+                        </Marker>
+                        <Caption>
+                            Finish
+                        </Caption>
+                    </Step>
+                </Steps>
+            </CardBody>
+            <CardBody>
+                <Steps>
+                    <Step Name="1" Color="Color.Primary">Primary</Step>
+                    <Step Name="2" Color="Color.Secondary">Secondary</Step>
+                    <Step Name="3" Color="Color.Success">Success</Step>
+                    <Step Name="4" Color="Color.Danger">Danger</Step>
+                    <Step Name="5" Color="Color.Warning">Warning</Step>
+                    <Step Name="6" Color="Color.Info">Info</Step>
+                    <Step Name="7" Color="Color.Light">Light</Step>
+                    <Step Name="8" Color="Color.Dark">Dark</Step>
+                </Steps>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card>
+            <CardHeader>
+                <CardTitle>Navigation control</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>To control the navigation based on the user input you can use <Code>NavigationAllowed</Code> function.</CardText>
+            </CardBody>
+            <CardBody>
+                <Steps @ref="stepsRef" @bind-SelectedStep="@selectedStep" NavigationAllowed="NavigationAllowed">
+                    <Items>
+                        <Step Name="1">Step 1</Step>
+                        <Step Name="2">Step 2</Step>
+                        <Step Name="3">Step 3</Step>
+                        <Step Name="4">Step 4</Step>
+                    </Items>
+                    <Content>
+                        <StepPanel Name="1">
+                            Step 1
+                        </StepPanel>
+                        <StepPanel Name="2">
+                            <Field>
+                                <FieldLabel>Email address</FieldLabel>
+                                <FieldBody>
+                                    <TextInput @bind-Value="Email" Placeholder="Enter email" />
+                                </FieldBody>
+                                <FieldHelp>
+                                    This field is required in order to procceed to the next step.
+                                    @if ( showEmailValidationError )
+                                    {
+                                        <Paragraph TextColor="TextColor.Danger">@emailValidationMessage</Paragraph>
+                                    }
+                                </FieldHelp>
+                            </Field>
+                        </StepPanel>
+                        <StepPanel Name="3">
+                            Step 3
+                        </StepPanel>
+                        <StepPanel Name="4">
+                            Step 4
+                        </StepPanel>
+                    </Content>
+                </Steps>
+                <Div Display="Display.Flex" Class="justify-content-center">
+                    <Button Color="Color.Secondary" Margin="Margin.Is2.FromEnd" Clicked="() => stepsRef.PreviousStep()">
+                        Previous
+                    </Button>
+                    <Button Color="Color.Primary" Clicked="() => stepsRef.NextStep()">
+                        Next
+                    </Button>
+                </Div>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+@code {
+    private Steps stepsRef;
+    private string email;
+    private bool showEmailValidationError;
+    private string emailValidationMessage;
+    private string selectedStep = "2";
+
+    private string Email
+    {
+        get => email;
+        set
+        {
+            email = value;
+
+            if ( showEmailValidationError && ValidationRule.IsEmail( email ) )
+            {
+                showEmailValidationError = false;
+                emailValidationMessage = null;
+            }
+        }
+    }
+
+    private Task<bool> NavigationAllowed( StepNavigationContext context )
+    {
+        if ( context.CurrentStepIndex == 2 && context.NextStepIndex > 2 && !ValidationRule.IsEmail( email ) )
+        {
+            showEmailValidationError = true;
+            emailValidationMessage = string.IsNullOrWhiteSpace( email )
+                ? "Email is required to proceed to the next step."
+                : "Please enter a valid email address to proceed to the next step.";
+
+            return Task.FromResult( false );
+        }
+
+        showEmailValidationError = false;
+        emailValidationMessage = null;
+
+        return Task.FromResult( true );
+    }
+}

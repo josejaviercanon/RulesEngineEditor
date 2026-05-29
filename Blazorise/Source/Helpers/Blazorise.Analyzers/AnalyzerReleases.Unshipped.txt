@@ -1,0 +1,18 @@
+## Unshipped
+
+### New Rules
+BLZCSS001: Blazorise Bootstrap 5 stylesheet reference
+BLZJS001: Blazorise Charts static Chart.js reference
+BLZJS002: Blazorise Animate obsolete script reference
+BLZP002: Blazorise parameter type changed
+BLZP003: Blazorise parameter removed
+BLZP004: Blazorise Color.Link is button/alert-only
+BLZR001: Blazorise Razor tag renamed
+BLZS001: Blazorise member renamed
+BLZS002: Blazorise member removed
+BLZTYP001: Blazorise type renamed
+BLZTYP002: Blazorise type removed
+### Removed Rules
+None
+### Changed Rules
+None

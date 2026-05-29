@@ -1,0 +1,215 @@
+﻿@page "/docs/extensions/treeview"
+
+<Seo Canonical="/docs/extensions/treeview" Title="Blazorise TreeView component" Description="Learn how to use the Blazorise TreeView component to display hierarchical data with expandable nodes, templates, selection, lazy loading, and nested structures." />
+
+<DocsPageTitle Path="Extensions/TreeView">
+    Blazorise TreeView component
+</DocsPageTitle>
+
+<DocsPageLead>
+    The <Code>TreeView</Code> component is a graphical control element that presents a hierarchical view of information.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    See <Anchor To="docs/specifications/treeview">TreeView specifications</Anchor> for behavior details and edge cases.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    <LicenseLimitationAlert LimitText="@($"{Licensing.BlazoriseLicenseProvider.DEFAULT_UNLICENSED_LIMIT_TREEVIEW_MAX_ROWS} nodes")" />
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    The TreeView component is a powerful and flexible way to display hierarchical data in a tree-like structure. It allows users to navigate through the tree and perform actions on the nodes, such as expanding or collapsing them, selecting them, or performing other operations.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Features
+</DocsPageSubtitle>
+
+<Paragraph>
+    <UnorderedList>
+        <UnorderedListItem>
+            Display hierarchical data in a tree structure.
+        </UnorderedListItem>
+        <UnorderedListItem>
+            Expand or collapse nodes.
+        </UnorderedListItem>
+        <UnorderedListItem>
+            Select single or multiple nodes (depending on the selection mode).
+        </UnorderedListItem>
+        <UnorderedListItem>
+            Allow Node Items to be disabled for selection.
+        </UnorderedListItem>
+        <UnorderedListItem>
+            Drag and drop nodes between mutable collections.
+        </UnorderedListItem>
+        <UnorderedListItem>
+            Customize the appearance of the nodes using templates.
+        </UnorderedListItem>
+        <UnorderedListItem>
+            Perform actions on the nodes, such as deleting them or performing some other operation.
+        </UnorderedListItem>
+    </UnorderedList>
+</Paragraph>
+
+<DocsPageParagraph>
+    To use the <Code>TreeView</Code> component, install the <Code>Blazorise.TreeView</Code> package first.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader>
+        <Paragraph>
+            To install the Blazorise TreeView component, run the following command in the Package Manager Console:
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="TreeViewNugetInstallExample"></DocsPageSectionSource>
+    <DocsPageSectionHeader>
+        <Paragraph Margin="Margin.Is3.FromTop">
+            Alternatively, you can install the package using the .NET Core CLI:
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="TreeViewNugetInstall2Example"></DocsPageSectionSource>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        <Paragraph>
+            Once the package is installed, you need to configure your Blazor project to use the TreeView component.
+        </Paragraph>
+        <Paragraph>
+            In your main <Badge Color="Color.Light">_Imports.razor</Badge> add:
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="TreeViewImportsExample"></DocsPageSectionSource>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Static files">
+        Include CSS link into your <Code>index.html</Code> or <Code>_Layout.cshtml</Code> / <Code>_Host.cshtml</Code> file, depending if you're using a Blazor WebAssembly or Blazor Server side project.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="TreeViewResourcesExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic example">
+        A basic TreeView that aims to reproduce standard tree-view behavior.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TreeViewExample" Outlined FullWidth>
+        <TreeViewExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Expanding and Collapsing Nodes">
+        By default, all nodes are collapsed except for the root node(s). To expand a node, click on the triangle icon next to its label. To collapse a node, click on the triangle icon again. You can also programmatically expand or collapse nodes using the <Code>ExpandAll()</Code> and <Code>CollapseAll()</Code> property of the TreeView class.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TreeViewExpandExample" Outlined FullWidth>
+        <TreeViewExpandExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Multiple selection">
+        <Paragraph>
+            The TreeView component multiple selection mode, allows users to select multiple nodes at the same time. To enable this mode, set the <Code>SelectionMode</Code> property to <Code>Multiple</Code>. When this mode is enabled, each node in the TreeView will display a checkbox next to its label. Users can then select or deselect nodes by clicking on the checkboxes.
+        </Paragraph>
+        <Paragraph>
+            The selected nodes can be accessed through the <Code>SelectedNodes</Code> property, which returns a list of the selected nodes. You can also use the <Code>SelectedNodesChanged</Code> event to be notified when the selection changes.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TreeViewMultiSelectExample" Outlined FullWidth>
+        <TreeViewMultiSelectExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Observable Lists">
+        <Paragraph>
+            The Observable Lists feature in Blazorise TreeView component enables automatic updates and synchronization of the TreeView data with the underlying data source. This is achieved through the implementation of an observable pattern where the TreeView component listens to changes in the data source, and updates its visual representation accordingly.
+        </Paragraph>
+        <Paragraph>
+            When using Observable Lists in the Blazorise TreeView component, any modifications to the underlying data source, such as adding, removing, or updating nodes, will automatically trigger the necessary updates in the TreeView component. This ensures that the TreeView always reflects the most up-to-date state of the data.
+        </Paragraph>
+        <Paragraph>
+            It is of note that the <Code>Nodes</Code> parameter is a one way bound collection and as such, if you want to add and remove items, it is recommended that it is used as an <Code>ObservableCollection</Code> in order to keep the TreeView properly synced across refreshes.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TreeViewObservableExample" Outlined FullWidth>
+        <TreeViewObservableExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Drag and drop">
+        <Paragraph>
+            Enable <Code>Draggable</Code> to allow users to drag nodes. When the root and child node collections are mutable, such as <Code>ObservableCollection&lt;T&gt;</Code>, the TreeView moves nodes automatically.
+        </Paragraph>
+        <Paragraph>
+            Use <Code>Reorderable</Code> to allow dropping a node before another node. Use <Code>CanDragNode</Code> and <Code>CanDropNode</Code> to restrict drag and drop operations. Handle <Code>NodeDropped</Code> only when you want to override the built-in move behavior.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TreeViewDragDropExample" Outlined FullWidth>
+        <TreeViewDragDropExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Node Context Menu">
+        <Paragraph>
+            To integrate the context menu with the <Strong>TreeView</Strong>, you need to:
+        </Paragraph>
+        <OrderedList>
+            <OrderedListItem>
+                <Paragraph>
+                    Use the TreeView <Code>NodeContextMenu</Code> event to get the current node and show the menu.
+                </Paragraph>
+            </OrderedListItem>
+            <OrderedListItem>
+                <Paragraph>
+                    Use the context menu's <Code>MouseEventArgs</Code> parameter to handle the desired operation.
+                </Paragraph>
+            </OrderedListItem>
+        </OrderedList>
+        <Paragraph>
+            In this example, the context menu is used to show the menu items, put an item in edit mode and delete items.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TreeViewContextMenuExample" Outlined FullWidth>
+        <TreeViewContextMenuExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Virtualization">
+        <Paragraph>
+            This example demonstrates how to use virtualization in a Blazorise <Code Tag>TreeView</Code> component to efficiently render large hierarchical data sets. Virtualization improves performance by only rendering the visible nodes in the viewport, rather than all nodes in the tree. This is particularly useful when dealing with large numbers of nodes, as it reduces the DOM size and enhances responsiveness.
+        </Paragraph>
+        <Paragraph>
+            For virtualization to function correctly, it is essential to specify both the <Strong>Height</Strong> and <Strong>Overflow</Strong> properties
+        </Paragraph>
+        <OrderedList>
+            <OrderedListItem>
+                <Paragraph>
+                    <Strong>Height</Strong>: Defines the fixed height of the TreeView component. Without a specified height, the tree would expand indefinitely, defeating the purpose of virtualization since all nodes would be rendered at once.
+                </Paragraph>
+            </OrderedListItem>
+            <OrderedListItem>
+                <Paragraph>
+                    <Strong>Overflow</Strong>: Ensures that the tree's content is scrollable. This scrollable area allows for dynamic loading of nodes as the user scrolls, effectively utilizing virtualization to render only the nodes currently in view.
+                </Paragraph>
+            </OrderedListItem>
+        </OrderedList>
+        <Paragraph>
+            By default, when <Code>Virtualize</Code> is enabled, we will define <Strong>Height</Strong> and <Strong>Overflow</Strong> for you, if they are not already explicitly defined.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TreeViewVirtualizationExample" Outlined FullWidth>
+        <TreeViewVirtualizationExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof( TreeView<> )]" />

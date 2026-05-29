@@ -1,0 +1,67 @@
+@page "/docs/mcp"
+
+<Seo Canonical="/docs/mcp" Title="Blazorise MCP Server" Description="Connect your AI tools to the Blazorise MCP server to answer UI questions using official Blazorise docs and real code examples." />
+
+<DocsPageTitle Path="MCP Server">
+    Blazorise MCP Server
+</DocsPageTitle>
+
+<DocsPageLead>
+    Connect your AI tools to Blazorise documentation and code examples using the Model Context Protocol (MCP).
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The Blazorise MCP server lets MCP-compatible AI clients query official Blazorise documentation directly instead of relying on generic or outdated training data.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    When you ask a question, your AI client can fetch the exact documentation page, section, or code example it needs and use that content to generate accurate answers.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Supported operations include browsing documentation routes, opening specific pages, retrieving individual example snippets, and searching documentation content by keyword.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Client configuration
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    To use the Blazorise MCP server, add either the streamable HTTP endpoint (<Code>https://mcp.blazorise.com/mcp</Code>) or the SSE endpoint (<Code>https://mcp.blazorise.com/mcp/sse</Code>) to your MCP client configuration. Most clients accept a JSON configuration similar to the example below.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    MCP client configuration is typically stored in a JSON file named <Code>.mcp.json</Code> located in your project root or user configuration directory, depending on the client you are using.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    <Alert Color="Color.Info" Visible>
+        <AlertDescription>
+            <Strong>GitHub.com coding agent:</Strong> add the Blazorise server entry under <Code>mcpServers</Code> and include <Code>"tools": ["search_docs"]</Code>. GitHub currently validates that field before it allows the MCP configuration to be saved.
+        </AlertDescription>
+    </Alert>
+</DocsPageParagraph>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="GitHub.com coding agent entry">
+        <Paragraph>
+            Use this server object inside your <Code>mcpServers</Code> configuration on GitHub.com.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="McpGitHubServerEntryExample" /></DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="HTTP (streamable) config">
+        <Paragraph>
+            Use this for clients that support MCP streamable HTTP transport.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="McpClientConfigExample" /></DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="SSE config">
+        <Paragraph>
+            Use this for clients that connect through the SSE MCP transport.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="McpClientSseConfigExample" /></DocsPageSection>

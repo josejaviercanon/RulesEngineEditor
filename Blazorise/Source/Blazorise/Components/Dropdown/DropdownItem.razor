@@ -1,0 +1,34 @@
+﻿@namespace Blazorise
+@inherits BaseComponent
+
+<a @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" role="menuitem" aria-disabled="@AriaDisabled" aria-labelledby="@AriaLabelledBy" tabindex="@ComputedTabIndex" @onmousedown:preventDefault @onmousedown="@EventCallback.Empty" @onclick="@ClickHandler" @onkeydown="@KeyDownHandler" @attributes="@Attributes">
+    @Core
+</a>
+
+@code {
+    private protected RenderFragment Core =>
+        @<text>
+            @if ( ShowCheckbox )
+            {
+                @* Route checkbox-area pointer down through one controlled handler and suppress native label/input defaults. *@
+                <div style="display: inline-block;"
+                     @onmousedown="@ClickHandler"
+                     @onmousedown:preventDefault
+                     @onmousedown:stopPropagation
+                     @onclick:preventDefault
+                     @onclick:stopPropagation>
+                    <Check Cursor="Cursor.Pointer" TValue="bool" Value="@(@checked)" ValueChanged="@CheckedChangedHandler" ValueExpression="@checkedExpression" Disabled="@Disabled" ReadOnly>
+                        <span id="@AriaLabelledBy">
+                            @ChildContent
+                        </span>
+                    </Check>
+                </div>
+            }
+            else
+            {
+                <span id="@AriaLabelledBy">
+                    @ChildContent
+                </span>
+            }
+        </text>;
+}

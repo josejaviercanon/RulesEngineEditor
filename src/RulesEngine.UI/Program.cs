@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using RulesEngine.UI;
+using RulesEngine.UI.Services;
 using Blazorise;
 using Blazorise.Tailwind;
 using Blazorise.Icons.Lucide;
@@ -14,6 +15,9 @@ builder.Services.AddScoped(_ =>
     var backendUrl = builder.Configuration["BackendUrl"] ?? "https://localhost:7086";
     return new HttpClient { BaseAddress = new Uri(backendUrl) };
 });
+
+builder.Services.AddScoped<WorkflowApiClient>();
+builder.Services.AddScoped<WorkflowManagementService>();
 
 builder.Services
     .AddBlazorise()

@@ -1,0 +1,101 @@
+﻿@page "/docs/components/link"
+
+<Seo Canonical="/docs/components/link" Title="Blazorise Link system" Description="The Link component allows you to easily customize anchor elements with your theme colors and typography styles." />
+
+<DocsPageTitle Path="Components/Link">
+    Blazorise Link component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Provides declarative, accessible navigation around your application.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The <Code Tag>Link</Code> component allows you to easily customize anchor elements with your theme colors and typography styles.
+    Link is the building block for most Blazorise components that offer link functionality. A <Code>Link</Code> component behaves
+    like an <Code Tag>a</Code> element, except it toggles an active CSS class based on whether its <Code>href</Code> matches the
+    current URL.
+</DocsPageParagraph>
+
+<Alert Color="Color.Info" Visible>
+    <AlertDescription>
+        <Strong>Note:</Strong> due to a Visual Studio tooling issue
+        in VisualStudio tooling you should write <Code Tag>Link</Code> as <Code Tag>Anchor</Code> until the issue is resolved.
+        Or if you prefer the alternative, you can also use the <Code Tag>Anchor</Code> alias.
+    </AlertDescription>
+</Alert>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+        By specifying a value in the <Code>To</Code> property, a standard link (<Code Tag>a</Code>) element will be rendered.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicLinkExample" Outlined FullWidth>
+        <BasicLinkExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Anchor Links">
+        A <Code>#</Code> in front of a link location specifies that the link is pointing to an anchor on a page.
+        (Anchor meaning a specific place in the middle of your page).
+
+        Typically <Code Tag>a href="#"</Code> will cause the document to scroll to the top of page when clicked.
+        <Code Tag>Link</Code> addresses this by preventing the default action (scroll to top) when <Code>To</Code> is set to <Code>#</Code>.
+        If you need scroll to top behavior, use a standard <Code Tag>Link To="#"&gt;...&lt;/Link</Code> tag.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="AnchorLinkExample" Outlined FullWidth>
+        <AnchorLinkExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Target">
+        If you want to open link in a new tab or window you can use the <Code>Target</Code> parameter.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LinkTargetExample" Outlined FullWidth>
+        <LinkTargetExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Target iframe">
+        By assigning a name to a frame via the name attribute, you can refer to it as the "target" of links defined by other elements. Our <Code>Target</Code> parameter can also accept string values.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="CustomLinkTargetExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Stretched link">
+        <Paragraph>
+            Add <Code>Stretched</Code> attribute to a link to make its containing block clickable via a <Code>::after</Code> pseudo element. In most cases, this means that an element with <Code>position: relative</Code> that contains a link with the stretched link class is clickable. Please note given how CSS position works, stretched-link cannot be mixed with most table elements.
+        </Paragraph>
+        <Paragraph>
+            Cards have <Code>position: relative</Code> by default, so in this case you can safely add the <Code>Stretched</Code> attribute to a link in the card without any other HTML changes.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LinkStretchedExample" Outlined FullWidth>
+        <LinkStretchedExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Disabled link">
+        <Paragraph>
+            Make links look inactive by adding the <Code>Disabled</Code> boolean attribute to any <Code Tag>Link</Code> element.
+        </Paragraph>
+        <Paragraph>
+            <Alert Visible Color="Color.Info">
+                The disabled class uses <Code>pointer-events: none</Code> to try to disable the link functionality of <Code Tag>a</Code>s, but that CSS property is not yet standardized. In addition, even in browsers that do support <Code>pointer-events: none</Code>, keyboard navigation remains unaffected, meaning that sighted keyboard users and users of assistive technologies will still be able to activate these links. So to be safe, add a <Code>tabindex="-1"</Code> attribute on these links (to prevent them from receiving keyboard focus) and use custom JavaScript to disable their functionality.
+            </Alert>
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LinkDisabledExample" Outlined FullWidth>
+        <LinkDisabledExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(Link)]" />

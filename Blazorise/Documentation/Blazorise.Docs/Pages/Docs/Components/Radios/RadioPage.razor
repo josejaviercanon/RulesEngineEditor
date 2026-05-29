@@ -1,0 +1,109 @@
+﻿@page "/docs/components/radio"
+
+<Seo Canonical="/docs/components/radio" Title="Blazorise Radio system" Description="Learn to use and work with the Blazorise Radio component, or buttons that allow the user to select one option from a set." />
+
+<DocsPageTitle Path="Components/Radio">
+    Blazorise Radio component
+</DocsPageTitle>
+
+<DocsPageLead>
+    The <Code>Radio</Code> allow the user to select a single option from a group.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    Radio Button Group allows the user to select exactly one value from a list of related, but mutually exclusive, options.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Structure
+</DocsPageSubtitle>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>RadioGroup</Code> main component for grouping radios.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>Radio</Code> radio button, used as an option inside a <Code>RadioGroup</Code>.
+                </Paragraph>
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic RadioGroup">
+        <Code>RadioGroup</Code> is a helpful wrapper used to group <Code>Radio</Code> components that provides an easier API,
+        and proper keyboard accessibility to the group.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicRadioGroupExample" Outlined FullWidth>
+        <BasicRadioGroupExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<Paragraph>
+    <Alert Color="Color.Warning" Visible>
+        <AlertMessage>
+            Important Note:
+        </AlertMessage>
+        <AlertDescription>
+            For the <Code>RadioGroup</Code> and <Code>Radio</Code> components to work correctly, the <Code>TValue</Code> type must match across both. This is especially important when using nullable types, as mismatched types can lead to unexpected behavior.
+        </AlertDescription>
+    </Alert>
+</Paragraph>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="RadioGroup in a Grouped Field">
+        When the radio group answers one named question, enable <Code>Group</Code> on <Code Tag>Field</Code> and keep using <Code Tag>FieldLabel</Code>.
+        In grouped mode, the label renders as a <Code Tag>legend</Code> and becomes the semantic group label for the radio group.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="RadioGroupWithLegendExample" Outlined FullWidth>
+        <RadioGroupWithLegendExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="RadioGroup Buttons">
+        By setting the <Code>Buttons</Code> flag, radios will be grouped together and will appear as buttons.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="RadioGroupButtonsExample" Outlined FullWidth>
+        <RadioGroupButtonsExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Custom Button Colors">
+        Changing the color of the radio buttons is as simple as setting the <Code>Color</Code> attribute on a <Code>Radio</Code> component.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="RadioGroupButtonColorsExample" Outlined FullWidth>
+        <RadioGroupButtonColorsExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Binding
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Two-way binding">
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="RadioGroupWithBindExample" Outlined FullWidth>
+        <RadioGroupWithBindExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Manual event binding">
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="RadioGroupWithEventExample" Outlined FullWidth>
+        <RadioGroupWithEventExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(RadioGroup<>),typeof(Radio<>)]" />

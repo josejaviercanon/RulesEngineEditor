@@ -17,9 +17,45 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Animate\Blazorise.Animate.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Barcode\Blazorise.Barcode.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Captcha\Blazorise.Captcha.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Captcha.ReCaptcha\Blazorise.Captcha.ReCaptcha.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Charts\Blazorise.Charts.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Charts.Annotation\Blazorise.Charts.Annotation.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Charts.DataLabels\Blazorise.Charts.DataLabels.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Charts.Streaming\Blazorise.Charts.Streaming.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Charts.Svg\Blazorise.Charts.Svg.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Charts.Trendline\Blazorise.Charts.Trendline.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Charts.Zoom\Blazorise.Charts.Zoom.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Components\Blazorise.Components.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Cropper\Blazorise.Cropper.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.DataGrid\Blazorise.DataGrid.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.FluentValidation\Blazorise.FluentValidation.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Gantt\Blazorise.Gantt.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.AntDesign\Blazorise.Icons.AntDesign.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.Bootstrap\Blazorise.Icons.Bootstrap.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.FluentUI\Blazorise.Icons.FluentUI.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.FontAwesome\Blazorise.Icons.FontAwesome.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.Lucide\Blazorise.Icons.Lucide.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.Material\Blazorise.Icons.Material.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.LoadingIndicator\Blazorise.LoadingIndicator.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.LottieAnimation\Blazorise.LottieAnimation.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Maps\Blazorise.Maps.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Markdown\Blazorise.Markdown.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.PdfViewer\Blazorise.PdfViewer.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.QRCode\Blazorise.QRCode.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.RichTextEdit\Blazorise.RichTextEdit.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Scheduler\Blazorise.Scheduler.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Sidebar\Blazorise.Sidebar.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.SignaturePad\Blazorise.SignaturePad.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Snackbar\Blazorise.Snackbar.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.SpinKit\Blazorise.SpinKit.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Splitter\Blazorise.Splitter.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.TreeView\Blazorise.TreeView.csproj" />
+      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Video\Blazorise.Video.csproj" />
       <ProjectReference Include="..\..\Blazorise\Source\Blazorise.Tailwind\Blazorise.Tailwind.csproj" />
       <ProjectReference Include="..\..\Blazorise\Source\Blazorise\Blazorise.csproj" />
-      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.Lucide\Blazorise.Icons.Lucide.csproj" />
     </ItemGroup>
 
 </Project>

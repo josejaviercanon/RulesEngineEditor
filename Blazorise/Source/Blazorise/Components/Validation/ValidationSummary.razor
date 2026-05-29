@@ -1,0 +1,19 @@
+﻿@namespace Blazorise
+@inherits BaseComponent<ValidationSummaryClasses,ValidationSummaryStyles>
+@if ( HasErrorMessages )
+{
+    <ul @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+        @Label
+
+        @foreach ( var errorMessage in ErrorMessages )
+        {
+            @if ( string.IsNullOrEmpty( errorMessage ) )
+            {
+                continue;
+            }
+
+            <li class="@ErrorClassNames" style="@ErrorStyleNames">@errorMessage</li>
+        }
+        @ChildContent
+    </ul>
+}

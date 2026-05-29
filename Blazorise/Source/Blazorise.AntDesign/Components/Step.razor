@@ -1,0 +1,89 @@
+@inherits Blazorise.Step
+@using Blazorise.Utilities
+<CascadingValue Value="@this" IsFixed>
+    <div @ref="@ElementRef" id="@ElementId" class="@RootClassNames" style="@StyleNames" @onclick="@ClickHandler" @attributes="@Attributes">
+        <div class="@ContainerClassNames" style="@ContainerStyleNames">
+            <div class="@MarkerClassNames" style="@Styles?.Marker">
+                @if ( Completed )
+                {
+                    <span class="ant-steps-item-icon-finish">
+                        &#10003;
+                    </span>
+                }
+                else if ( Marker != null )
+                {
+                    @Marker
+                }
+                else
+                {
+                    <span class="ant-steps-item-icon-number">
+                        @CalculatedIndex
+                    </span>
+                }
+            </div>
+            <div class="@DescriptionClassNames" style="@Styles?.Description">
+                <div class="ant-steps-item-header">
+                    <div class="ant-steps-item-title">
+                        @if ( Caption != null )
+                        {
+                            @Caption
+                        }
+                        else
+                        {
+                            @ChildContent
+                        }
+                    </div>
+                    <div class="@RailClassNames"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</CascadingValue>
+@code {
+    string RootClassNames => new ClassBuilder( classBuilder =>
+    {
+        classBuilder.Append( ClassNames );
+        classBuilder.Append( "ant-steps-item-wait", !Active && !Completed );
+    } ).Class;
+
+    string ContainerClassNames
+    {
+        get
+        {
+            var builder = new ClassBuilder( classBuilder =>
+            {
+                classBuilder.Append( "ant-steps-item-wrapper" );
+                classBuilder.Append( Classes?.Container );
+                AppendWrapperUtilities( classBuilder );
+            } );
+
+            return builder.Class;
+        }
+    }
+
+    string ContainerStyleNames
+    {
+        get
+        {
+            var builder = new StyleBuilder( styleBuilder =>
+            {
+                AppendWrapperUtilities( styleBuilder );
+                styleBuilder.Append( Styles?.Container );
+            } );
+
+            return builder.Styles;
+        }
+    }
+
+    string RailClassNames => new ClassBuilder( classBuilder =>
+    {
+        classBuilder.Append( "ant-steps-item-rail" );
+        classBuilder.Append( Active || Completed ? "ant-steps-item-rail-process" : "ant-steps-item-rail-wait" );
+    } ).Class;
+
+    protected override void BuildMarkerClasses( ClassBuilder builder )
+    {
+        base.BuildMarkerClasses( builder );
+        builder.Append( "ant-wave-target" );
+    }
+}

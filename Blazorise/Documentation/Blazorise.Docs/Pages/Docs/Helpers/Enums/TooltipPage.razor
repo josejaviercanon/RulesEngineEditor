@@ -1,0 +1,69 @@
+@page "/docs/helpers/enums/tooltip"
+
+<Seo Canonical="/docs/helpers/enums/tooltip" Title="Blazorise Tooltip Enums - Placement and Triggers" Description="Tooltip enums control placement and trigger behavior. Learn TooltipPlacement and TooltipTrigger values for predictable tooltips." />
+
+<DocsPageTitle>
+    Enums: Tooltip
+</DocsPageTitle>
+
+<DocsPageLead>
+    Position tooltips and control when they appear.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    Tooltip enums let you align tooltips precisely and pick the interaction model that best fits your UI.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    How it works
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Use <Code>TooltipPlacement</Code> to set where the tooltip appears and <Code>TooltipTrigger</Code> to choose which events show it.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<UnorderedList>
+    <UnorderedListItem><Code>TooltipPlacement.Top</Code> for labels above inputs.</UnorderedListItem>
+    <UnorderedListItem><Code>TooltipPlacement.RightEnd</Code> for compact inline hints.</UnorderedListItem>
+    <UnorderedListItem><Code>TooltipTrigger.Click</Code> for touch-first interfaces.</UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSubtitle>
+    Reference
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="TooltipPlacement">
+        <Paragraph>Defines the placement of an element.</Paragraph>
+        <UnorderedList>
+            <UnorderedListItem><Code>TooltipPlacement.Top</Code> Top-center side.</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipPlacement.TopStart</Code> Top-left side.</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipPlacement.TopEnd</Code> Top-right side.</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipPlacement.Bottom</Code> Bottom-center side.</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipPlacement.BottomStart</Code> Bottom-left side.</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipPlacement.BottomEnd</Code> Bottom-right side.</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipPlacement.Left</Code> Left-center side.</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipPlacement.LeftStart</Code> Left-top side.</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipPlacement.LeftEnd</Code> Left-bottom side.</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipPlacement.Right</Code> Right-center side.</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipPlacement.RightStart</Code> Right-top side.</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipPlacement.RightEnd</Code> Right-bottom side.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="TooltipTrigger">
+        <Paragraph>Determines the events that cause the tooltip to show.</Paragraph>
+        <UnorderedList>
+            <UnorderedListItem><Code>TooltipTrigger.MouseEnterFocus</Code> Tooltip will show on mouse enter and focus event (default option).</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipTrigger.Click</Code> Tooltip will show on click event only.</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipTrigger.Focus</Code> Tooltip will show on focus event only.</UnorderedListItem>
+            <UnorderedListItem><Code>TooltipTrigger.MouseEnterClick</Code> Tooltip will show on mouse enter and click event.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>

@@ -1,0 +1,344 @@
+﻿@page "/tests/typography"
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Display Headings</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Traditional heading elements are designed to work best in the meat of your page content. When you need a heading to stand out, consider using a display heading—a larger, slightly more opinionated heading style.</CardText>
+            </CardBody>
+            <CardBody>
+                <DisplayHeading Size="DisplayHeadingSize.Is1">Display 1</DisplayHeading>
+                <Paragraph>
+                    Suspendisse vel quam malesuada, aliquet sem sit amet, fringilla elit. Morbi tempor tincidunt tempor. Etiam id turpis viverra, vulputate sapien nec, varius sem. Curabitur ullamcorper fringilla eleifend. In ut eros hendrerit est consequat posuere et at velit.
+                </Paragraph>
+                <DisplayHeading Size="DisplayHeadingSize.Is2">Display 2</DisplayHeading>
+                <Paragraph>
+                    In nec rhoncus eros. Vestibulum eu mattis nisl. Quisque viverra viverra magna nec pulvinar. Maecenas pellentesque porta augue, consectetur facilisis diam porttitor sed. Suspendisse tempor est sodales augue rutrum tincidunt. Quisque a malesuada purus.
+                </Paragraph>
+                <DisplayHeading Size="DisplayHeadingSize.Is3">Display 3</DisplayHeading>
+                <Paragraph>
+                    Vestibulum auctor tincidunt semper. Phasellus ut vulputate lacus. Suspendisse ultricies mi eros, sit amet tempor nulla varius sed. Proin nisl nisi, feugiat quis bibendum vitae, dapibus in tellus.
+                </Paragraph>
+                <DisplayHeading Size="DisplayHeadingSize.Is4">Display 4</DisplayHeading>
+                <Paragraph>
+                    Nulla et mattis nunc. Curabitur scelerisque commodo condimentum. Mauris blandit, velit a consectetur egestas, diam arcu fermentum justo, eget ultrices arcu eros vel erat.
+                </Paragraph>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Headings</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>All HTML headings, <code>.h1</code> through <code>.h6</code>, are available. <code>HeadingSize.Is1</code> through <code>HeadingSize.Is6</code> classes are also available, for when you want to match the font styling of a heading but still want your text to be displayed inline.</CardText>
+            </CardBody>
+            <CardBody>
+                <Heading Size="HeadingSize.Is1">This is a Heading 1</Heading>
+                <Paragraph>
+                    Suspendisse vel quam malesuada, aliquet sem sit amet, fringilla elit. Morbi tempor tincidunt tempor. Etiam id turpis viverra, vulputate sapien nec, varius sem. Curabitur ullamcorper fringilla eleifend. In ut eros hendrerit est consequat posuere et at velit.
+                </Paragraph>
+                <Heading Size="HeadingSize.Is2">This is a Heading 2</Heading>
+                <Paragraph>
+                    In nec rhoncus eros. Vestibulum eu mattis nisl. Quisque viverra viverra magna nec pulvinar. Maecenas pellentesque porta augue, consectetur facilisis diam porttitor sed. Suspendisse tempor est sodales augue rutrum tincidunt. Quisque a malesuada purus.
+                </Paragraph>
+                <Heading Size="HeadingSize.Is3">This is a Heading 3</Heading>
+                <Paragraph>
+                    Vestibulum auctor tincidunt semper. Phasellus ut vulputate lacus. Suspendisse ultricies mi eros, sit amet tempor nulla varius sed. Proin nisl nisi, feugiat quis bibendum vitae, dapibus in tellus.
+                </Paragraph>
+                <Heading Size="HeadingSize.Is4">This is a Heading 4</Heading>
+                <Paragraph>
+                    Nulla et mattis nunc. Curabitur scelerisque commodo condimentum. Mauris blandit, velit a consectetur egestas, diam arcu fermentum justo, eget ultrices arcu eros vel erat.
+                </Paragraph>
+                <Heading Size="HeadingSize.Is5">This is a Heading 5</Heading>
+                <Paragraph>
+                    Quisque nec turpis at urna dictum luctus. Suspendisse convallis dignissim eros at volutpat. In egestas mattis dui. Aliquam mattis dictum aliquet. Nulla sapien mauris, eleifend et sem ac, commodo dapibus odio. Vivamus pretium nec odio cursus elementum. Suspendisse molestie ullamcorper ornare.
+                </Paragraph>
+                <Heading Size="HeadingSize.Is6">This is a Heading 6</Heading>
+                <Paragraph>
+                    Donec ultricies, lacus id tempor condimentum, orci leo faucibus sem, a molestie libero lectus ac justo. ultricies mi eros, sit amet tempor nulla varius sed. Proin nisl nisi, feugiat quis bibendum vitae, dapibus in tellus.
+                </Paragraph>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Leading paragraph</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Lead>
+                    Deliver great service experiences fast - without the complexity of traditional ITSM solutions.Accelerate critical development work and deploy.
+                </Lead>
+                <Paragraph>
+                    Track work across the enterprise through an open, collaborative platform. Link issues across Jira and ingest data from other software development tools, so your IT support and operations teams have richer contextual information to rapidly respond to requests, incidents, and changes.
+                </Paragraph>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Blockquote</CardTitle>
+            </CardHeader>
+            <CardBody>
+                For quoting blocks of content from another source within your document.
+            </CardBody>
+            <CardBody>
+                <Blockquote>
+                    A well-known quote, contained in a blockquote element.
+                </Blockquote>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Inline Text Elements</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Your awesome text goes here.</CardText>
+            </CardBody>
+            <CardBody>
+                <Paragraph>You can use the <mark>mark</mark> tag to highlight text.</Paragraph>
+                <Paragraph>
+                    <del>
+                        This line of text is meant to be treated as deleted text.
+                    </del>
+                </Paragraph>
+                <Paragraph>
+                    <s>
+                        This line of text is meant to be treated as no longer accurate.
+                    </s>
+                </Paragraph>
+                <Paragraph>
+                    <ins>
+                        This line of text is meant to be treated as an addition to the document.
+                    </ins>
+                </Paragraph>
+                <Paragraph>
+                    <u>
+                        This line of text will render as underlined
+                    </u>
+                </Paragraph>
+                <Paragraph>
+                    <small>
+                        This line of text is meant to be treated as fine print.
+                    </small>
+                </Paragraph>
+                <Paragraph>
+                    <strong>
+                        This line rendered as bold text.
+                    </strong>
+                </Paragraph>
+                <Paragraph>
+                    <em>
+                        This line rendered as italicized text.
+                    </em>
+                </Paragraph>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Contextual Text Colors</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Your awesome text goes here.</CardText>
+            </CardBody>
+            <CardBody>
+                <Paragraph TextColor="TextColor.Muted">
+                    Fusce dapibus, tellus ac cursus commodo, tortor mauris nibh.
+                </Paragraph>
+                <Paragraph TextColor="TextColor.Primary">
+                    Nullam id dolor id nibh ultricies vehicula ut id elit.
+                </Paragraph>
+                <Paragraph TextColor="TextColor.Success">
+                    Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+                </Paragraph>
+                <Paragraph TextColor="TextColor.Info">
+                    Maecenas sed diam eget risus varius blandit sit amet non magna.
+                </Paragraph>
+                <Paragraph TextColor="TextColor.Warning">
+                    Etiam porta sem malesuada magna mollis euismod.
+                </Paragraph>
+                <Paragraph TextColor="TextColor.Danger">
+                    Donec ullamcorper nulla non metus auctor fringilla.
+                </Paragraph>
+                <Paragraph TextColor="TextColor.Dark">
+                    Nullam id dolor id nibh ultricies vehicula ut id elit.
+                </Paragraph>
+                <Paragraph TextColor="TextColor.Body">
+                    Maecenas sed diam eget risus varius blandit sit amet non magna.
+                </Paragraph>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Text wrapping and overflow</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Wrap text with a <code>TextOverflow.Wrap</code> utility.</CardText>
+            </CardBody>
+            <CardBody>
+                <Badge Color="Color.Primary" TextOverflow="TextOverflow.Wrap" Style="width: 6rem;">
+                    This text should wrap.
+                </Badge>
+            </CardBody>
+            <Divider />
+            <CardBody>
+                <CardText>Prevent text from wrapping with a <code>TextOverflow.NoWrap</code> utility.</CardText>
+            </CardBody>
+            <CardBody>
+                <Div Background="Background.Secondary" TextOverflow="TextOverflow.NoWrap" Style="width: 8rem;">
+                    This text should overflow the parent.
+                </Div>
+            </CardBody>
+            <Divider />
+            <CardBody>
+                <CardText>For longer content, you can add a <code>TextOverflow.Truncate</code> class to truncate the text with an ellipsis. Requires <code>Display.InlineBlock</code> or <code>Display.Block</code>.</CardText>
+            </CardBody>
+            <CardBody>
+                <Row>
+                    <Column ColumnSize="ColumnSize.Is2" TextOverflow="TextOverflow.Truncate">
+                        Praeterea iter est quasdam res quas ex communi.
+                    </Column>
+                </Row>
+                <Span Display="Display.InlineBlock" TextOverflow="TextOverflow.Truncate" Style="max-width: 150px;">
+                    Praeterea iter est quasdam res quas ex communi.
+                </Span>
+            </CardBody>
+            <Divider />
+            <CardBody>
+                <CardText>Transform text in components with text capitalization classes.</CardText>
+            </CardBody>
+            <CardBody>
+                <Paragraph TextTransform="TextTransform.Lowercase">Lowercased text.</Paragraph>
+                <Paragraph TextTransform="TextTransform.Uppercase">Uppercased text.</Paragraph>
+                <Paragraph TextTransform="TextTransform.Capitalize">CapiTaliZed text.</Paragraph>
+            </CardBody>
+            <Divider />
+            <CardBody>
+                <CardText>Quickly change the <code>TextWeight</code> of text with these utilities.</CardText>
+            </CardBody>
+            <CardBody>
+                <Paragraph TextWeight="TextWeight.Bold">Bold text.</Paragraph>
+                <Paragraph TextWeight="TextWeight.SemiBold">SemiBold text.</Paragraph>
+                <Paragraph TextWeight="TextWeight.Normal">Normal weight text.</Paragraph>
+                <Paragraph TextWeight="TextWeight.Light">Light weight text.</Paragraph>
+                <Paragraph Italic>Italic text.</Paragraph>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Text Sizes</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Quickly change the <Code>font-size</Code> of text. </CardText>
+            </CardBody>
+            <CardBody>
+                <Paragraph TextSize="TextSize.ExtraSmall">
+                    TextSize.ExtraSmall
+                </Paragraph>
+                <Paragraph TextSize="TextSize.Small">
+                    TextSize.Small
+                </Paragraph>
+                <Paragraph TextSize="TextSize.Default">
+                    TextSize.Default
+                </Paragraph>
+                <Paragraph TextSize="TextSize.Medium">
+                    TextSize.Medium
+                </Paragraph>
+                <Paragraph TextSize="TextSize.Large">
+                    TextSize.Large
+                </Paragraph>
+                <Paragraph TextSize="TextSize.ExtraLarge">
+                    TextSize.ExtraLarge
+                </Paragraph>
+
+                <Paragraph TextSize="TextSize.Heading1">
+                    TextSize.Heading1
+                </Paragraph>
+                <Paragraph TextSize="TextSize.Heading2">
+                    TextSize.Heading2
+                </Paragraph>
+                <Paragraph TextSize="TextSize.Heading3">
+                    TextSize.Heading3
+                </Paragraph>
+                <Paragraph TextSize="TextSize.Heading4">
+                    TextSize.Heading4
+                </Paragraph>
+                <Paragraph TextSize="TextSize.Heading5">
+                    TextSize.Heading5
+                </Paragraph>
+                <Paragraph TextSize="TextSize.Heading6">
+                    TextSize.Heading6
+                </Paragraph>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Text Decoration</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Paragraph TextDecoration="TextDecoration.Underline">
+                    The quick brown fox jumps over the lazy dog.
+                </Paragraph>
+                <Paragraph TextDecoration="TextDecoration.Overline">
+                    The quick brown fox jumps over the lazy dog.
+                </Paragraph>
+                <Paragraph TextDecoration="TextDecoration.LineThrough">
+                    The quick brown fox jumps over the lazy dog.
+                </Paragraph>
+                <Paragraph>
+                    <Anchor To="#" TextDecoration="TextDecoration.None">
+                        This link has its text decoration removed
+                    </Anchor>
+                </Paragraph>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Links</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>
+                    Links allow users to navigate between different locations. They can be used as standalone controls or inline with text.
+                </CardText>
+            </CardBody>
+            <CardBody>
+                <Paragraph>
+                    This is a <Anchor To="#">link</Anchor> used within other text, and this is a <Anchor To="#" Disabled>disabled link</Anchor>.
+                </Paragraph>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>

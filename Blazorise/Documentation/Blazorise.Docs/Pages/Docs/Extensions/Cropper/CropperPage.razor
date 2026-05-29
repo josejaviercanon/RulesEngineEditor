@@ -1,0 +1,72 @@
+﻿@page "/docs/extensions/cropper"
+
+<Seo Canonical="/docs/extensions/cropper" Title="Blazorise Cropper component" Description="Learn how to use the Blazorise Cropper component to crop, preview, resize, and export images in Blazor applications across all major browsers." />
+
+<DocsPageTitle Path="Extensions/Cropper" AddedVersion="Added in v1.2">
+    Blazorise Cropper component
+</DocsPageTitle>
+
+<DocsPageLead>
+    A component used to crop images.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    When building an application, best practice requires reducing an image's surrounding noise and directing a user's attention to a specific part of the image. Image cropping is a method for manipulating images to remove any unwanted elements. By changing the aspect ratio or orientation, we can draw viewers' eyes to the photograph's primary subject and improve the overall composition. This applies to profile pictures or uploading images with specific dimensions.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    The <Code>Cropper</Code> component handles all of that. You can upload an image and then select part of it, rotate, scale, and crop it. You can also add a preview by placing a <Code>CropperViewer</Code> anywhere on a page, and it will automatically synchronize with the latest selection.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    To use the <Code>Cropper</Code> component, install the <Code>Blazorise.Cropper</Code> package first.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="CropperNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        In your main <Badge Color="Color.Light">_Imports.razor</Badge> add:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="ImportCropperExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Message Size">
+        This step is recommended for Blazor Server only. In a default Blazor Server project template, the SignalR settings might be too small for some components like Cropper. To make it work, you should increase the <Code>MaximumReceiveMessageSize</Code> in your projects <Strong>Startup.cs</Strong>.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="CropperMessageSizeExample" />
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+        The image cropper is straightforward. You need to define a Source parameter and a reference.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicCropperExample" Outlined FullWidth>
+        <BasicCropperExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Viewer">
+        To add preview support, use a <Code Tag>CropperViewer</Code> component. Once added you need to connect it to a <Code Tag>Cropper</Code> by assigning the <Code>CropperState</Code> parameter. This parameter is used as a synchronization context between the cropper and a viewer.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="CropperViewerExample" Outlined FullWidth>
+        <CropperViewerExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof( Cropper ), typeof( CropperViewer ), typeof( CropperCropOptions ), typeof( CropperImageOptions ), typeof( CropperSelectionOptions ), typeof( CropperGridOptions )]" />

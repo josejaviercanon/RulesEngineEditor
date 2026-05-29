@@ -1,0 +1,58 @@
+﻿@page "/docs/extensions/chart-trendline"
+@using Blazorise.Charts.Trendline
+
+<Seo Canonical="/docs/extensions/chart-trendline" Title="Blazorise Chart Trendline component" Description="Learn how to use the Blazorise Chart Trendline component to draw linear trendlines on Chart.js charts." />
+
+<DocsPageTitle Path="Extensions/Chart Trendline">
+    Blazorise Chart Trendline component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Draw a linear trendline on your chart.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    <LicenseLimitationAlert LimitText="@($"{Licensing.BlazoriseLicenseProvider.DEFAULT_UNLICENSED_LIMIT_CHARTS_MAX_ROWS} points per chart")" />
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Trendline is made possible with the help of <Anchor To="https://github.com/Makanz/chartjs-plugin-trendline" Title="Link to chart trendline plugin" Target="Target.Blank">chartjs-plugin-trendline</Anchor>.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    To use Chart Trendline, install the <Code>Blazorise.Charts.Trendline</Code> package. It depends on <Code>Blazorise.Charts</Code>.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install chart trendline extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="ChartTrendlineNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        <Paragraph>
+            In your main <Code>_Imports.razor</Code> add:
+        </Paragraph>
+        <Paragraph>
+            <Code>@@using Blazorise.Charts</Code>
+        </Paragraph>
+        <Paragraph>
+            <Code>@@using Blazorise.Charts.Trendline</Code>
+        </Paragraph>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Example" />
+    <DocsPageSectionContent Code="ChartTrendlineExample" Outlined FullWidth>
+        <ChartTrendlineExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(ChartTrendline<>)]" />

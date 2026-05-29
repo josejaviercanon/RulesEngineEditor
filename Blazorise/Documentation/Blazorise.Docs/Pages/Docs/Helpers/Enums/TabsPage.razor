@@ -1,0 +1,64 @@
+@page "/docs/helpers/enums/tabs"
+
+<Seo Canonical="/docs/helpers/enums/tabs" Title="Blazorise Tabs Enums - Position and Render Modes" Description="Tabs enums control tab placement and rendering behavior. Learn TabPosition and TabsRenderMode values for responsive layouts." />
+
+<DocsPageTitle>
+    Enums: Tabs
+</DocsPageTitle>
+
+<DocsPageLead>
+    Configure tab placement and rendering behavior with enums.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    Tabs enums help you place tab headers around the content and decide when tab panels are rendered.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    How it works
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Use <Code>TabPosition</Code> to place tabs, and use <Code>TabsRenderMode</Code> to control whether panels render immediately or on demand.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<UnorderedList>
+    <UnorderedListItem><Code>TabPosition.Start</Code> for vertical tabs aligned to the left.</UnorderedListItem>
+    <UnorderedListItem><Code>TabsRenderMode.LazyLoad</Code> to render panels on first visit.</UnorderedListItem>
+    <UnorderedListItem><Code>TabsRenderMode.LazyReload</Code> to render only the active panel.</UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSubtitle>
+    Reference
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="TabPosition">
+        <Paragraph>
+            Defines the placement of a tab items.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem><Code>TabPosition.Top</Code> Top side.</UnorderedListItem>
+            <UnorderedListItem><Code>TabPosition.Bottom</Code> Bottom side.</UnorderedListItem>
+            <UnorderedListItem><Code>TabPosition.Start</Code> Start side.</UnorderedListItem>
+            <UnorderedListItem><Code>TabPosition.End</Code> End side.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="TabsRenderMode">
+        <Paragraph>
+            With <Code>TabsRenderMode</Code> you can control how the tabs content will behave. For example you can postpone rendering until the tab is selected or you can just render them all at once.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem><Code>TabsRenderMode.Default</Code> Always renders the tabs html content to the DOM.</UnorderedListItem>
+            <UnorderedListItem><Code>TabsRenderMode.LazyLoad</Code> Lazy loads tabs, meaning each tab will only be rendered/loaded the first time it is visited.</UnorderedListItem>
+            <UnorderedListItem><Code>TabsRenderMode.LazyReload</Code> Lazy loads tabs everytime, meaning only the active tab will have it's html rendered to the DOM.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>

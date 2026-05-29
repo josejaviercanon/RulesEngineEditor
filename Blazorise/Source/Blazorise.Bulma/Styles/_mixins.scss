@@ -1,0 +1,249 @@
+﻿@mixin media-breakpoint-up($name, $breakpoints: $grid-breakpoints) {
+    $min: breakpoint-min($name, $breakpoints);
+
+    @if $min {
+        @media (min-width: $min) {
+            @content;
+        }
+    }
+    @else {
+        @content;
+    }
+}
+
+@mixin tablet($min-width: $tablet) {
+    @media screen and (min-width: $min-width), print {
+        @content;
+    }
+}
+
+@mixin overflow-touch () {
+    -webkit-overflow-scrolling: touch;
+}
+
+// source: https://github.com/Wikiki/bulma-switch
+@mixin switch-size($size) {
+    $switch-height: $size * 1.5;
+    $switch-width: $switch-height * 2;
+    $paddle-height: $switch-height - ($switch-paddle-offset * 2);
+    $paddle-width: $switch-height - ($switch-paddle-offset * 2);
+    $paddle-active-offest: $switch-width - $paddle-width - ($switch-paddle-offset * 1.5);
+
+    + label {
+        position: relative;
+        display: initial;
+        font-size: $size;
+        line-height: $control-line-height;
+        padding-left: $switch-width + .5;
+        padding-top: .2rem;
+        cursor: pointer;
+
+        &::before, &:before {
+            position: absolute;
+            display: block;
+            top: calc( 50% - #{$switch-height} / 2 );
+            left: 0;
+            width: $switch-width;
+            height: $switch-height;
+            border: $switch-border;
+            border-radius: $switch-radius;
+            background: $switch-background;
+            content: '';
+        }
+
+        &::after, &:after {
+            display: block;
+            position: absolute;
+            top: calc( 50% - #{$paddle-height} / 2 );
+            left: $switch-paddle-offset;
+            width: $paddle-width;
+            height: $paddle-height;
+            transform: translate3d(0, 0, 0);
+            border-radius: $switch-radius;
+            background: $switch-paddle-background;
+            transition: $switch-paddle-transition;
+            content: '';
+        }
+    }
+
+    &:checked {
+        + label {
+            &::before, &:before {
+                background: $switch-background-active;
+            }
+
+            &::after {
+                left: $paddle-active-offest;
+            }
+        }
+    }
+}
+
+@mixin block($spacing: $block-spacing) {
+    &:not(:last-child) {
+        margin-bottom: $spacing;
+    }
+}
+
+@mixin row-cols($count) {
+    & > * {
+        flex: 0 0 100% / $count;
+        max-width: 100% / $count;
+    }
+}
+
+@mixin hover() {
+    &:hover {
+        @content;
+    }
+}
+
+@mixin hover-focus() {
+    &:hover,
+    &:focus {
+        @content;
+    }
+}
+
+@mixin plain-hover-focus() {
+    &,
+    &:hover,
+    &:focus {
+        @content;
+    }
+}
+
+@mixin hover-focus-active() {
+    &:hover,
+    &:focus,
+    &:active {
+        @content;
+    }
+}
+
+@function valid-radius($radius) {
+    $return: ();
+
+    @each $value in $radius {
+        @if type-of($value) == number {
+            $return: append($return, max($value, 0));
+        }
+        @else {
+            $return: append($return, $value);
+        }
+    }
+
+    @return $return;
+}
+
+@mixin border-radius($radius-value: $radius, $fallback-border-radius: false) {
+    border-radius: valid-radius($radius-value);
+}
+
+
+@mixin border-top-radius($radius) {
+    border-top-left-radius: valid-radius($radius);
+    border-top-right-radius: valid-radius($radius);
+}
+
+@mixin border-right-radius($radius) {
+    border-top-right-radius: valid-radius($radius);
+    border-bottom-right-radius: valid-radius($radius);
+}
+
+@mixin border-bottom-radius($radius) {
+    border-bottom-right-radius: valid-radius($radius);
+    border-bottom-left-radius: valid-radius($radius);
+}
+
+@mixin border-left-radius($radius) {
+    border-top-left-radius: valid-radius($radius);
+    border-bottom-left-radius: valid-radius($radius);
+}
+
+@mixin border-top-left-radius($radius) {
+    border-top-left-radius: valid-radius($radius);
+}
+
+@mixin border-top-right-radius($radius) {
+    border-top-right-radius: valid-radius($radius);
+}
+
+@mixin border-bottom-right-radius($radius) {
+    border-bottom-right-radius: valid-radius($radius);
+}
+
+@mixin border-bottom-left-radius($radius) {
+    border-bottom-left-radius: valid-radius($radius);
+}
+
+// Gradients
+
+@mixin gradient-striped($color: rgba($white, .15), $angle: 45deg) {
+    background-image: linear-gradient($angle, $color 25%, transparent 25%, transparent 50%, $color 50%, $color 75%, transparent 75%, transparent);
+}
+
+
+@mixin caret-down() {
+    border-top: $caret-width solid;
+    border-right: $caret-width solid transparent;
+    border-bottom: 0;
+    border-left: $caret-width solid transparent;
+}
+
+@mixin caret-up() {
+    border-top: 0;
+    border-right: $caret-width solid transparent;
+    border-bottom: $caret-width solid;
+    border-left: $caret-width solid transparent;
+}
+
+@mixin caret-right() {
+    border-top: $caret-width solid transparent;
+    border-right: 0;
+    border-bottom: $caret-width solid transparent;
+    border-left: $caret-width solid;
+}
+
+@mixin caret-left() {
+    border-top: $caret-width solid transparent;
+    border-right: $caret-width solid;
+    border-bottom: $caret-width solid transparent;
+}
+
+@mixin caret($direction: down) {
+    &::after {
+        display: inline-block;
+        margin-left: $caret-spacing;
+        vertical-align: $caret-vertical-align;
+        content: "";
+
+        @if $direction == down {
+            @include caret-down();
+        }
+        @else if $direction == up {
+            @include caret-up();
+        }
+        @else if $direction == right {
+            @include caret-right();
+        }
+    }
+
+    @if $direction == left {
+        &::after {
+            display: none;
+        }
+
+        &::before {
+            display: inline-block;
+            margin-right: $caret-spacing;
+            vertical-align: $caret-vertical-align;
+            content: "";
+            @include caret-left();
+        }
+    }
+
+    &:empty::after {
+        margin-left: 0;
+    }
+}

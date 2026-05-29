@@ -1,0 +1,864 @@
+﻿@page "/tests/forms/validations"
+@using System.Threading
+@using Blazorise.FluentValidation
+@using System.ComponentModel.DataAnnotations;
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Auto Validation</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Example on how to validate input fields by using the <code>Validator</code> handlers.</CardText>
+            </CardBody>
+            <CardBody>
+                <Validations Mode="ValidationMode.Auto" ValidateOnLoad="false">
+                    <Validation AsyncValidator="@ValidateNameAsync">
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Full Name</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Autofocus Placeholder="First and last name">
+                                    <Feedback>
+                                        <ValidationError>Enter full name!</ValidationError>
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation Validator="@ValidationRule.IsEmail">
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Email address</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Placeholder="Enter email">
+                                    <Feedback>
+                                        <ValidationSuccess>Email is good</ValidationSuccess>
+                                        <ValidationError>Enter valid email!</ValidationError>
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation Validator="@ValidatePassword">
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Password</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Role="TextRole.Password" Placeholder="Password" @bind-Value="@passwordAuto">
+                                    <Feedback>
+                                        <ValidationError>Password must be at least 6 characters long!</ValidationError>
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation Validator="@ValidatePassword2Auto">
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Re Password</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+
+                                <TextInput Role="TextRole.Password" Placeholder="Retype password">
+                                    <Feedback>
+                                        <ValidationError>Password does not match!</ValidationError>
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation Validator="@ValidationRule.IsSelected">
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Input Select</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <Select TValue="int?">
+                                    <ChildContent>
+                                        <SelectItem Value="@((int?)null)"></SelectItem>
+                                        <SelectItem Value="@((int?)1)">1</SelectItem>
+                                        <SelectItem Value="@((int?)2)">2</SelectItem>
+                                        <SelectItem Value="@((int?)3)">3</SelectItem>
+                                        <SelectItem Value="@((int?)4)">4</SelectItem>
+                                    </ChildContent>
+                                    <Feedback>
+                                        <ValidationError>Select one value!</ValidationError>
+                                    </Feedback>
+                                </Select>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation Validator="@ValidateDateOfBirth">
+                        <Field Horizontal JustifyContent="JustifyContent.End">
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Date</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <DateInput TValue="DateOnly ?">
+                                    <Feedback>
+                                        <ValidationError>You must enter date of birth!</ValidationError>
+                                    </Feedback>
+                                </DateInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation UsePattern>
+                        <Field Horizontal JustifyContent="JustifyContent.End">
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Pattern</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Pattern="[A-Za-z]{3}">
+                                    <Feedback>
+                                        <ValidationError>Pattern [A-Za-z]{3} does not match!</ValidationError>
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation Validator="ValidationRule.IsChecked">
+                        <Field Horizontal JustifyContent="JustifyContent.End">
+                            <FieldBody ColumnSize="ColumnSize.Is9.Is3.WithOffset">
+                                <Check TValue="bool">
+                                    <ChildContent>
+                                        Check me out
+                                    </ChildContent>
+                                    <Feedback>
+                                        <ValidationError>You must check me out!</ValidationError>
+                                    </Feedback>
+                                </Check>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                </Validations>
+                <Field Horizontal JustifyContent="JustifyContent.End">
+                    <FieldBody ColumnSize="ColumnSize.Is9.Is3.WithOffset">
+                        <Button Color="Color.Primary">Submit</Button>
+                    </FieldBody>
+                </Field>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Manual Validation</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Example on how to validate manually on submit.</CardText>
+            </CardBody>
+            <CardBody>
+                <Validations @ref="validations" Mode="ValidationMode.Manual">
+                    <Validation AsyncValidator="@ValidateNameAsync">
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Full Name</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Placeholder="First and last name">
+                                    <Feedback>
+                                        <ValidationError>Enter full name!</ValidationError>
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation Validator="@ValidationRule.IsEmail">
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Email address</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Placeholder="Enter email">
+                                    <Feedback>
+                                        <ValidationSuccess>Email is good</ValidationSuccess>
+                                        <ValidationError>Enter valid email!</ValidationError>
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation Validator="@ValidatePassword">
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Password</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Role="TextRole.Password" Placeholder="Password" @bind-Value="@passwordManual">
+                                    <Feedback>
+                                        <ValidationError>Password must be at least 6 characters long!</ValidationError>
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation Validator="@ValidatePassword2Manual">
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Re Password</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Role="TextRole.Password" Placeholder="Retype password">
+                                    <Feedback>
+                                        <ValidationError>Password does not match!</ValidationError>
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation Validator="@ValidationRule.IsSelected">
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Input Select</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <Select TValue="int?">
+                                    <ChildContent>
+                                        <SelectItem Value="@((int?)null)"></SelectItem>
+                                        <SelectItem Value="@((int?)1)">1</SelectItem>
+                                        <SelectItem Value="@((int?)2)">2</SelectItem>
+                                        <SelectItem Value="@((int?)3)">3</SelectItem>
+                                        <SelectItem Value="@((int?)4)">4</SelectItem>
+                                    </ChildContent>
+                                    <Feedback>
+                                        <ValidationError>Select one value!</ValidationError>
+                                    </Feedback>
+                                </Select>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation Validator="@ValidateDateOfBirth">
+                        <Field Horizontal JustifyContent="JustifyContent.End">
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Date</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <DateInput TValue="DateOnly ?">
+                                    <Feedback>
+                                        <ValidationError>You must enter date of birth!</ValidationError>
+                                    </Feedback>
+                                </DateInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation UsePattern>
+                        <Field Horizontal JustifyContent="JustifyContent.End">
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Pattern</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Pattern="[A-Za-z]{3}">
+                                    <Feedback>
+                                        <ValidationError>Pattern [A-Za-z]{3} does not match!</ValidationError>
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation Validator="ValidationRule.IsChecked">
+                        <Field Horizontal JustifyContent="JustifyContent.End">
+                            <FieldBody ColumnSize="ColumnSize.Is9.Is3.WithOffset">
+                                <Check TValue="bool">
+                                    <ChildContent>
+                                        Check me out
+                                    </ChildContent>
+                                    <Feedback>
+                                        <ValidationError>You must check me out!</ValidationError>
+                                    </Feedback>
+                                </Check>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Field Horizontal JustifyContent="JustifyContent.End">
+                        <FieldBody ColumnSize="ColumnSize.Is9.Is3.WithOffset">
+                            <Button Color="Color.Primary" Clicked="@Submit">Submit</Button>
+                        </FieldBody>
+                    </Field>
+                </Validations>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Validation Feedback</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Example on how to use the <code>ValidationFeedback</code> component for all validation states.</CardText>
+            </CardBody>
+            <CardBody>
+                <Validations Mode="ValidationMode.Auto" ValidateOnLoad="false">
+                    <Validation Validator="@ValidateFeedbackName">
+                        <Field>
+                            <FieldLabel RequiredIndicator>Display name</FieldLabel>
+                            <TextInput Placeholder="Enter display name" @bind-Value="@feedbackName">
+                                <Feedback>
+                                    <ValidationFeedback>
+                                        <None>Please enter a display name.</None>
+                                        <Warning>Short display names are allowed, but longer names are easier to recognize.</Warning>
+                                        <Success>Display name looks good.</Success>
+                                        <Error>Display name is required.</Error>
+                                    </ValidationFeedback>
+                                </Feedback>
+                            </TextInput>
+                        </Field>
+                    </Validation>
+                </Validations>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Annotation Validation</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Example on how to validate model using data annotations.</CardText>
+            </CardBody>
+            <CardBody>
+                <Validations Mode="ValidationMode.Auto" Model="@user">
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Full Name</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Placeholder="First and last name" @bind-Value="@user.Name">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Email</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Placeholder="Enter email" @bind-Value="@user.Email">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Password</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Role="TextRole.Password" Placeholder="Password" @bind-Value="@user.Password">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Re Password</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Role="TextRole.Password" Placeholder="Retype password" @bind-Value="@user.ConfirmPassword">
+                                    <Feedback>
+                                        <ValidationError Multiline />
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Title</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <Select TValue="string" @bind-Value="@user.Title">
+                                    <ChildContent>
+                                        <SelectItem Value="@(string.Empty)"></SelectItem>
+                                        <SelectItem Value="@("Mr")">Mr.</SelectItem>
+                                        <SelectItem Value="@("Mrs")">Mrs.</SelectItem>
+                                    </ChildContent>
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </Select>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field Horizontal JustifyContent="JustifyContent.End">
+                            <FieldBody ColumnSize="ColumnSize.Is9.Is3.WithOffset">
+                                <Check @bind-Value="@user.TermsAndConditions">
+                                    <ChildContent>
+                                        Terms and Conditions
+                                    </ChildContent>
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </Check>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Field Horizontal JustifyContent="JustifyContent.End">
+                        <FieldBody ColumnSize="ColumnSize.Is9.Is3.WithOffset">
+                            <Button Color="Color.Primary">Submit</Button>
+                        </FieldBody>
+                    </Field>
+                </Validations>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Manual Annotation Validation</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Example on how to manually validate model using data annotations.</CardText>
+            </CardBody>
+            <CardBody>
+                <Validations @ref="annotationsValidations" Mode="ValidationMode.Manual" Model="@manualUser">
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Full Name</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Placeholder="First and last name" @bind-Value="@manualUser.Name">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Email</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Placeholder="Enter email" @bind-Value="@manualUser.Email">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Password</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Role="TextRole.Password" Placeholder="Password" @bind-Value="@manualUser.Password">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Re Password</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <TextInput Role="TextRole.Password" Placeholder="Retype password" @bind-Value="@manualUser.ConfirmPassword">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field Horizontal>
+                            <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Title</FieldLabel>
+                            <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                <Select TValue="string" @bind-Value="@manualUser.Title">
+                                    <ChildContent>
+                                        <SelectItem Value="@(string.Empty)"></SelectItem>
+                                        <SelectItem Value="@("Mr")">Mr.</SelectItem>
+                                        <SelectItem Value="@("Mrs")">Mrs.</SelectItem>
+                                    </ChildContent>
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </Select>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field Horizontal JustifyContent="JustifyContent.End">
+                            <FieldBody ColumnSize="ColumnSize.Is9.Is3.WithOffset">
+                                <Check @bind-Value="@manualUser.TermsAndConditions">
+                                    <ChildContent>
+                                        Terms and Conditions
+                                    </ChildContent>
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </Check>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Field Horizontal JustifyContent="JustifyContent.End">
+                        <FieldBody ColumnSize="ColumnSize.Is9.Is3.WithOffset">
+                            <Button Color="Color.Primary" Clicked="@AnnotationsSubmit">Submit</Button>
+                        </FieldBody>
+                    </Field>
+                </Validations>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Modal Validation</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Example on how to use data-annotations by using the <code>Modal</code> dialog.</CardText>
+            </CardBody>
+            <CardBody>
+                <Button Color="Color.Primary" Clicked="@OpenUserModal">Launch User Modal</Button>
+            </CardBody>
+        </Card>
+        <Modal @ref="modalRef" Centered>
+            <ModalContent>
+                <ModalHeader>
+                    <ModalTitle>
+                        <Icon Name="IconName.Edit" />
+                        User edit
+                    </ModalTitle>
+                    <CloseButton />
+                </ModalHeader>
+                <ModalBody>
+                    <Validations @ref="modalValidations" Model="@modalUser" ValidateOnLoad="false">
+                        <Validation>
+                            <Field Horizontal>
+                                <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Full Name</FieldLabel>
+                                <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                    <TextInput Placeholder="First and last name" @bind-Value="@modalUser.Name">
+                                        <Feedback>
+                                            <ValidationError />
+                                        </Feedback>
+                                    </TextInput>
+                                </FieldBody>
+                            </Field>
+                        </Validation>
+                        <Validation>
+                            <Field Horizontal>
+                                <FieldLabel RequiredIndicator ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Email</FieldLabel>
+                                <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                                    <TextInput Placeholder="Enter email" @bind-Value="@modalUser.Email">
+                                        <Feedback>
+                                            <ValidationError />
+                                        </Feedback>
+                                    </TextInput>
+                                </FieldBody>
+                            </Field>
+                        </Validation>
+                    </Validations>
+                </ModalBody>
+                <ModalFooter>
+                    <Button Color="Color.Secondary" Clicked="@CloseUserModal">Close</Button>
+                    <Button Color="Color.Primary" Clicked="@CloseUserModal">Save Changes</Button>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card>
+            <CardHeader>
+                <CardTitle>Fluent Validation</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Validations @ref="@fluentValidations" Mode="ValidationMode.Manual" Model="@person" HandlerType="typeof( FluentValidationHandler )">
+                    <Validation>
+                        <Field>
+                            <FieldLabel RequiredIndicator>First name</FieldLabel>
+                            <TextInput Placeholder="Enter first name..." @bind-Value="@person.FirstName">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextInput>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field>
+                            <FieldLabel RequiredIndicator>Last name</FieldLabel>
+                            <TextInput Placeholder="Enter last name..." @bind-Value="@person.LastName">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextInput>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field>
+                            <FieldLabel RequiredIndicator>Age</FieldLabel>
+                            <NumericInput Placeholder="Enter age..." @bind-Value="@person.Age">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </NumericInput>
+                        </Field>
+                    </Validation>
+                </Validations>
+
+                <Button Color="Color.Primary" Clicked="@OnSavePerson">Save</Button>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card>
+            <CardHeader>
+                <CardTitle>Validation with <Code>IValidatableObject</Code></CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Validations @ref="@validationsRef" Model="@Company" Mode="ValidationMode.Auto">
+                    <Validation>
+                        <Field>
+                            <FieldLabel>Name</FieldLabel>
+                            <FieldBody>
+                                <TextInput @bind-Value="@Company.Name">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Validation>
+                        <Field>
+                            <FieldLabel>Description</FieldLabel>
+                            <FieldBody>
+                                <TextInput @bind-Value="@Company.Description">
+                                    <Feedback>
+                                        <ValidationError />
+                                    </Feedback>
+                                </TextInput>
+                            </FieldBody>
+                        </Field>
+                    </Validation>
+                    <Field>
+                        <Switch TValue="bool" Value="@Company.UseAlphaCode" ValueChanged="@OnUseAlphaCodeChanged" ValueExpression="@(() => Company.UseAlphaCode)">Use AlphaCode</Switch>
+                    </Field>
+                    <Fields>
+                        <Validation>
+                            <Field>
+                                <FieldLabel>AlphaCode</FieldLabel>
+                                <FieldBody>
+                                    <TextInput @bind-Value="@Company.AlphaCode">
+                                        <Feedback>
+                                            <ValidationError />
+                                        </Feedback>
+                                    </TextInput>
+                                </FieldBody>
+                            </Field>
+                        </Validation>
+                        <Validation>
+                            <Field>
+                                <FieldLabel>BetaCode</FieldLabel>
+                                <FieldBody>
+                                    <TextInput @bind-Value="@Company.BetaCode">
+                                        <Feedback>
+                                            <ValidationError />
+                                        </Feedback>
+                                    </TextInput>
+                                </FieldBody>
+                            </Field>
+                        </Validation>
+                    </Fields>
+                </Validations>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+@code {
+    Validations validations;
+    Validations annotationsValidations;
+    Validations fluentValidations;
+
+    Modal modalRef;
+    Validations modalValidations;
+    User modalUser = new();
+
+    User user = new();
+    User manualUser = new();
+
+    Person person = new();
+
+    string passwordAuto;
+    string passwordManual;
+    string feedbackName;
+
+    Random random = new();
+
+    [Inject] PersonValidator PersonValidator { get; set; }
+
+
+    async Task ValidateNameAsync( ValidatorEventArgs e, System.Threading.CancellationToken cancellationToken )
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await Task.Delay( random.Next( 600 ) );
+
+        e.Status = string.IsNullOrEmpty( Convert.ToString( e.Value ) )
+            ? ValidationStatus.Error
+            : ValidationStatus.Success;
+    }
+
+    void ValidatePassword( ValidatorEventArgs e )
+    {
+        e.Status = Convert.ToString( e.Value )?.Length >= 6 ? ValidationStatus.Success : ValidationStatus.Error;
+    }
+
+    void ValidatePassword2Auto( ValidatorEventArgs e )
+    {
+        var password2 = Convert.ToString( e.Value );
+
+        if ( password2?.Length < 6 )
+        {
+            e.Status = ValidationStatus.Error;
+            e.ErrorText = "Password must be at least 6 characters long!";
+        }
+        else if ( password2 != passwordAuto )
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Success;
+        }
+    }
+
+    void ValidatePassword2Manual( ValidatorEventArgs e )
+    {
+        var password2 = Convert.ToString( e.Value );
+
+        if ( password2?.Length < 6 )
+        {
+            e.Status = ValidationStatus.Error;
+            e.ErrorText = "Password must be at least 6 characters long!";
+        }
+        else if ( password2 != passwordManual )
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Success;
+        }
+    }
+
+    void ValidateDateOfBirth( ValidatorEventArgs e )
+    {
+        var date = e.Value as DateOnly?;
+
+        if ( date == null )
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else if ( date?.Year < 1900 )
+        {
+            e.Status = ValidationStatus.Error;
+            e.ErrorText = "Date cannot be less then 01.01.1900!";
+        }
+        else
+        {
+            e.Status = ValidationStatus.Success;
+        }
+    }
+
+    void ValidateFeedbackName( ValidatorEventArgs e )
+    {
+        string displayName = Convert.ToString( e.Value );
+
+        if ( string.IsNullOrWhiteSpace( displayName ) )
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else if ( displayName.Length < 4 )
+        {
+            e.Status = ValidationStatus.Warning;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Success;
+        }
+    }
+
+    async Task Submit()
+    {
+        if ( await validations.ValidateAll() )
+        {
+            await validations.ClearAll();
+        }
+    }
+
+    async Task AnnotationsSubmit()
+    {
+        if ( await annotationsValidations.ValidateAll() )
+        {
+            await annotationsValidations.ClearAll();
+        }
+    }
+
+    async Task OpenUserModal()
+    {
+        // re-initiate model will be act as a "first load" for validations inside of modal dialog
+        modalUser = new();
+
+        await modalValidations.ClearAll();
+
+        await modalRef.Show();
+    }
+
+    Task CloseUserModal()
+    {
+        return modalRef.Hide();
+    }
+
+    protected async Task OnSavePerson()
+    {
+        //var result = await PersonValidator.ValidateAsync( person, CancellationToken.None );
+
+        //Console.WriteLine( "Validated: " + result.IsValid );
+
+        if ( !await fluentValidations.ValidateAll() )
+            return;
+    }
+
+    async Task OnUseAlphaCodeChanged( bool value )
+    {
+        Company.UseAlphaCode = value;
+
+        if ( validationsRef != null )
+        {
+            // retrigger validation for dependent properties
+            await validationsRef.RetriggerValidation(
+                () => Company.AlphaCode,
+                () => Company.BetaCode );
+        }
+    }
+
+    Validations validationsRef;
+
+    CompanyInfo Company = new CompanyInfo()
+    {
+        UseAlphaCode = true,
+    };
+
+    public class CompanyInfo : IValidatableObject
+    {
+        [Required( ErrorMessage = "Name is required" )]
+        public string Name { get; set; }
+
+        [Required( ErrorMessage = "Description is required" )]
+        public string Description { get; set; }
+
+        public bool UseAlphaCode { get; set; }
+
+        public string AlphaCode { get; set; }
+
+        public string BetaCode { get; set; }
+
+        [Range( 0, 999.99 )]
+        public decimal Price { get; set; }
+
+        public IEnumerable<ValidationResult> Validate( ValidationContext validationContext )
+        {
+            if ( UseAlphaCode )
+            {
+                if ( String.IsNullOrWhiteSpace( AlphaCode ) )
+                {
+                    yield return new ValidationResult( "AlphaCode is required", new[] { "AlphaCode" } );
+                }
+            }
+            else
+            {
+                if ( String.IsNullOrWhiteSpace( BetaCode ) )
+                {
+                    yield return new ValidationResult( "BetaCode is required", new[] { "BetaCode" } );
+                }
+            }
+        }
+    }
+}

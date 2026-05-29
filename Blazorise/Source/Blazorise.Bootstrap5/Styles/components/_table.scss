@@ -1,0 +1,167 @@
+﻿table.table {
+    tbody {
+        tr:not(.table-group).selected {
+            background-color: var(--bs-primary);
+        }
+
+        tr.table-group {
+            cursor: pointer;
+            background-color: var(--b-theme-light, var(--bs-light, #f5f5f5));
+            font-weight: 700;
+        }
+    }
+
+    .table-caption {
+        &-top {
+            caption-side: top;
+        }
+
+        &-bottom {
+            caption-side: bottom;
+        }
+    }
+}
+
+tr {
+    &.table-row-selectable {
+        &:hover {
+            cursor: pointer;
+        }
+
+        &:focus[tabindex="0"] {
+            outline: none;
+        }
+    }
+}
+
+.table-fixed-header {
+    overflow-y: auto;
+
+    > .table {
+        border-collapse: separate;
+        border-spacing: 0;
+
+        > thead:not(.table-thead-theme) > tr > th {
+            background: var(--bs-table-bg, white);
+        }
+
+        > thead > tr > th {
+            border-top: none;
+            position: sticky;
+            z-index: 10;
+        }
+
+        > thead > tr:nth-child(1) > th {
+            top: 0;
+        }
+    }
+
+    > .table-bordered > :not(caption) > * > * {
+        border-width: 1px 1px;
+    }
+}
+
+.table-fixed-columns {
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    position: relative;
+
+    .table {
+        table-layout: fixed;
+        overflow-x: auto;
+        white-space: nowrap;
+        border-collapse: separate;
+        border-spacing: 0;
+
+        .table-header-cell-fixed,
+        .table-row-header-fixed,
+        .table-row-cell-fixed {
+            &-start {
+                position: sticky;
+                border-left: none;
+                z-index: 11;
+                background-color: var(--bs-table-bg, white);
+                border-inline-start-width: 0;
+                left: 0;
+            }
+
+            &-end {
+                position: sticky;
+                border-left: none;
+                z-index: 11;
+                background-color: var(--bs-table-bg, white);
+                border-inline-start-width: 0;
+                right: 0;
+            }
+        }
+
+        &.table-bordered {
+            td:not(.table-header-cell-fixed-start):not(.table-row-header-fixed-start):not(.table-row-cell-fixed-start),
+            th:not(.table-header-cell-fixed-start):not(.table-row-header-fixed-start):not(.table-row-cell-fixed-start) {
+                border-left: 1px;
+                border-inline-start-width: 1px;
+            }
+        }
+    }
+}
+
+.table-fixed-header.table-fixed-columns {
+    > .table {
+        > thead > tr > th[data-fixed-position] {
+            z-index: 12 !important;
+        }
+    }
+}
+
+
+td:focus {
+    outline: -webkit-focus-ring-color auto 1px;
+}
+
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+
+    .table-mobile {
+
+        [data-caption]:before {
+            content: attr(data-caption);
+        }
+        /* Force table to not be like tables anymore */
+        thead, tbody, th, td, tr {
+            display: block;
+        }
+        /* Hide table headers (but not display: none;, for accessibility) */
+        thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        td, th {
+            /* Behave  like a "row" */
+            position: relative;
+            width: 100% !important;
+            min-width: 0 !important;
+            max-width: none !important;
+            inline-size: 100% !important;
+            max-inline-size: none !important;
+            left: auto !important;
+            right: auto !important;
+            inset-inline-start: auto !important;
+            inset-inline-end: auto !important;
+            box-sizing: border-box;
+            padding-top: 1.5rem !important;
+
+            &:before {
+                position: absolute;
+                top: 0;
+                white-space: nowrap;
+                font-weight: bold;
+            }
+        }
+
+        &:not(.table-borderless) tr {
+            border-bottom: 1px solid;
+        }
+    }
+}

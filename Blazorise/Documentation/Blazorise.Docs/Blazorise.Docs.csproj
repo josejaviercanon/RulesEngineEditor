@@ -1,0 +1,117 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <Import Project="..\..\Build\Blazorise.Docs.props" />
+
+  <PropertyGroup>
+    <LangVersion>14.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Source\Helpers\Blazorise.Analyzers\Blazorise.Analyzers.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" PrivateAssets="all" />
+    <ProjectReference Include="..\..\Shared\Blazorise.Shared\Blazorise.Shared.csproj" />
+    <ProjectReference Include="..\..\Source\Blazorise\Blazorise.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Animate\Blazorise.Animate.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Barcode\Blazorise.Barcode.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Captcha.ReCaptcha\Blazorise.Captcha.ReCaptcha.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Captcha\Blazorise.Captcha.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Charts.Streaming\Blazorise.Charts.Streaming.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Charts.Trendline\Blazorise.Charts.Trendline.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Charts.DataLabels\Blazorise.Charts.DataLabels.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Charts.Annotation\Blazorise.Charts.Annotation.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Charts.Zoom\Blazorise.Charts.Zoom.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Charts.Svg\Blazorise.Charts.Svg.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Charts\Blazorise.Charts.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Components\Blazorise.Components.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.DataGrid\Blazorise.DataGrid.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Icons.FontAwesome\Blazorise.Icons.FontAwesome.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Markdown\Blazorise.Markdown.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.QRCode\Blazorise.QRCode.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.RichTextEdit\Blazorise.RichTextEdit.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Sidebar\Blazorise.Sidebar.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Snackbar\Blazorise.Snackbar.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.SpinKit\Blazorise.SpinKit.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.LoadingIndicator\Blazorise.LoadingIndicator.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.TreeView\Blazorise.TreeView.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Video\Blazorise.Video.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.FluentValidation\Blazorise.FluentValidation.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.LottieAnimation\Blazorise.LottieAnimation.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Cropper\Blazorise.Cropper.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.SignaturePad\Blazorise.SignaturePad.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Splitter\Blazorise.Splitter.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.PdfViewer\Blazorise.PdfViewer.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Scheduler\Blazorise.Scheduler.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Gantt\Blazorise.Gantt.csproj" />
+    <ProjectReference Include="..\..\Source\Extensions\Blazorise.Maps\Blazorise.Maps.csproj" />
+    <PackageReference Include="MailKit" />
+    <PackageReference Include="MimeKit" />
+    <PackageReference Include="Blazored.LocalStorage" />
+    <PackageReference Include="ColorCode.HTML" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <ApiDocsIntermediatePath>$(IntermediateOutputPath)ApiDocs</ApiDocsIntermediatePath>
+  </PropertyGroup>
+
+  <!--Project path for code generator-->
+  <PropertyGroup>
+    <ProjectDocsCompiler>dotnet run --configuration $(Configuration) --project "$(MSBuildProjectDirectory)/../../Documentation/Blazorise.Docs.Compiler/Blazorise.Docs.Compiler.csproj" --</ProjectDocsCompiler>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ApiDocs\**\*.cs" />
+  </ItemGroup>
+
+  <!--Execute the code generator-->
+  <Target Name="CompileDocs" BeforeTargets="BeforeBuild">
+    <!--Command-line for the code generator-->
+    <Message Text="Generating Docs and Tests" Importance="high" />
+    <Exec Command="$(ProjectDocsCompiler) --api-docs-path &quot;$(ApiDocsIntermediatePath)&quot;" />
+  </Target>
+
+  <Target Name="IncludeApiDocs" BeforeTargets="CoreCompile" DependsOnTargets="CompileDocs">
+    <ItemGroup>
+      <Compile Include="$(ApiDocsIntermediatePath)\**\*.ApiDocs.cs" />
+    </ItemGroup>
+  </Target>
+
+  <!--This file contains any ExampleCode that is new and needs including in the build -->
+  <Target Name="ReadFromFile" DependsOnTargets="CompileDocs">
+    <ItemGroup>
+      <NewFiles Include="NewFilesToBuild.txt" />
+    </ItemGroup>
+    <ReadLinesFromFile File="@(NewFiles)">
+      <Output TaskParameter="Lines" ItemName="NewExampleCodeToBuild" />
+    </ReadLinesFromFile>
+  </Target>
+
+  <!--Update ExampleCode-->
+  <ItemGroup>
+    <EmbeddedResource Include="Pages\**\*.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Markdig" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <!--Is this a rebuild - Dont clean generated files as this breaks rebuild behaviour-->
+  <Target Name="ShouldCleanGeneratedFiles" BeforeTargets="BeforeRebuild">
+    <PropertyGroup>
+      <CleanGeneratedFiles>false</CleanGeneratedFiles>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CleanGeneratedFiles" BeforeTargets="Clean" Condition="'$(CleanGeneratedFiles)' != 'false'">
+    <ItemGroup>
+      <FilesToClean Include="./Pages/**/*ExampleCode.*" />
+      <FilesToClean Include="./NewFilesToBuild.txt" />
+    </ItemGroup>
+    <Delete Files="@(FilesToClean)" />
+  </Target>
+
+</Project>

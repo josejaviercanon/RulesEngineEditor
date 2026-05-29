@@ -1,0 +1,34 @@
+﻿@typeparam TNode
+@inherits BaseComponent<TreeViewClasses<TNode>, TreeViewStyles<TNode>>
+<CascadingValue Value="@this" IsFixed>
+    <CascadingValue Value="@treeViewState">
+        <div class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+            <_TreeViewNode @ref="@treeViewNodeRef"
+                           NodeStates="@treeViewNodeStates"
+                           NodeContent="@NodeContent"
+                           GetChildNodes="@GetChildNodes"
+                           GetChildNodesAsync="@GetChildNodesAsync"
+                           ExpandedNodes="@ExpandedNodes"
+                           ExpandedNodesChanged="@ExpandedNodesChanged"
+                           Expanded
+                           AutoExpandAll="@AutoExpandAll"
+                           HasChildNodes="@HasChildNodes"
+                           IsDisabled="@IsDisabled"
+                           HasChildNodesAsync="@HasChildNodesAsync"
+                           NodeStyling="@NodeStyling"
+                           SelectedNodeStyling="@SelectedNodeStyling"
+                           DisabledNodeStyling="@DisabledNodeStyling"
+                           SelectionMode="@SelectionMode"
+                           ExpandIconName="@ExpandIconName"
+                           ExpandIconStyle="@ExpandIconStyle"
+                           ExpandIconSize="@ExpandIconSize"
+                           CollapseIconName="@CollapseIconName"
+                           CollapseIconStyle="@CollapseIconStyle"
+                           CollapseIconSize="@CollapseIconSize"
+                           ContextMenu="@NodeContextMenu"
+                           ContextMenuPreventDefault="@NodeContextMenuPreventDefault"
+                           Virtualize="@Virtualize">
+            </_TreeViewNode>
+        </div>
+    </CascadingValue>
+</CascadingValue>

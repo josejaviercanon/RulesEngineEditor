@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsRoslynComponent>true</IsRoslynComponent>
+    <LangVersion>14.0</LangVersion>
+    <!--    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>-->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(EnableApiDocsGenerator)' == 'true'">
+    <DefineConstants>$(DefineConstants);ENABLE_APIDOCS_GENERATOR</DefineConstants>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Blazorise.Generator.Features\Blazorise.Generator.Features.csproj" />
+  </ItemGroup>
+
+</Project>

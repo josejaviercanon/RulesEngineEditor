@@ -1,0 +1,81 @@
+﻿@page "/docs/components/carousel"
+
+<Seo Canonical="/docs/components/carousel" Title="Blazorise Carousel component" Description="Learn to use and work with the Blazorise Carousel, a slideshow component for cycling through elements - images or slides of text - like a carousel." />
+
+<DocsPageTitle Path="Components/Carousel">
+    Blazorise Carousel component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Loop a series of images or texts in a limited space.
+</DocsPageLead>
+
+<DocsPageSubtitle>
+    Overview
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    The <Code>Carousel</Code> component in Blazorise is a versatile and dynamic user interface element that facilitates the display of sequential content. This could include images, text, or any other HTML elements arranged in individual <Code>CarouselSlide</Code> components. The Carousel seamlessly transitions from one slide to another, either through user interaction or automatically over time, providing an interactive and engaging method of content presentation. It's highly customizable, fitting various use cases from image galleries to text-based slideshows, making it a valuable component in any modern web application.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    <UnorderedList>
+        <UnorderedListItem>
+            <Paragraph>
+                <Code Tag>Carousel</Code> main container.
+            </Paragraph>
+            <UnorderedList>
+                <UnorderedListItem>
+                    <Paragraph>
+                        <Code Tag>CarouselSlide</Code> individual slide content, such as images, text, or other HTML elements.
+                    </Paragraph>
+                </UnorderedListItem>
+            </UnorderedList>
+        </UnorderedListItem>
+    </UnorderedList>
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+        A basic example of a Blazorise <Code>Carousel</Code> component includes multiple <Code>CarouselSlide</Code> components, each containing individual content. This Carousel displays one slide at a time, allowing users to navigate between the slides manually or automatically. Despite its simplicity, CarouselSlide components can house a variety of content, such as images, videos, or complex HTML structures.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="CarouselExample" Outlined>
+        <CarouselExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Swipeable">
+        Enable <Code>Swipeable</Code> to let users navigate between slides with horizontal swipe gestures. Swipe handling is attached to the Carousel root element, so no extra wrapper markup is rendered. For image slides, native browser dragging is prevented by default while swiping; set <Code>SwipePreventNativeDrag="false"</Code> to keep native drag behavior.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="CarouselSwipeableExample" Outlined>
+        <CarouselSwipeableExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Custom Templates">
+        Use <Code>IndicatorTemplate</Code>, <Code>PreviousButtonTemplate</Code>, and <Code>NextButtonTemplate</Code> to replace the default navigation UI. Add <Code>Caption</Code> content to individual <Code>CarouselSlide</Code> components when slides need custom descriptive overlays.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="CarouselCustomTemplatesExample" Outlined>
+        <CarouselCustomTemplatesExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Best Practices
+</DocsPageSubtitle>
+
+<Heading Size="HeadingSize.Is3">
+    Uniform Sizes
+</Heading>
+
+<DocsPageParagraph>
+    For optimal Carousel functionality in Blazorise, maintain uniform dimensions across all slides. Inconsistent sizes can cause disruptive resizing during transitions. This can be prevented by defining consistent widths and heights through additional CSS styles. Uniform slide dimensions provide a smoother user experience and a more visually appealing Carousel component.
+</DocsPageParagraph>
+
+<ComponentApiDocs ComponentTypes="[typeof(Carousel), typeof(CarouselSlide)]" />

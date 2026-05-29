@@ -1,0 +1,15 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+
+<Heading>Counter</Heading>
+
+<Paragraph>@Value</Paragraph>
+
+<Button Color="Color.Primary" Clicked="Increment">Increment</Button>
+@code {
+    [Parameter] public long Value { get; set; }
+
+    private void Increment()
+    {
+        Value++;
+    }
+}

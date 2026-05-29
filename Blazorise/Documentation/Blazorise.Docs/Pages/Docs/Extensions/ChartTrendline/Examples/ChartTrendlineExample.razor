@@ -1,0 +1,103 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+
+@using Blazorise.Charts
+@using Blazorise.Charts.Trendline
+
+<Button Color="Color.Primary" Clicked="@OnButtonClicked">Toggle trendline and redraw</Button>
+
+<Chart @ref="chart" TItem="double?" Type="ChartType.Line">
+    <ChartTrendline @ref="chartTrendline" TItem="double?" />
+</Chart>
+
+@code {
+    Chart<double?> chart;
+    ChartTrendline<double?> chartTrendline;
+
+    protected override async Task OnAfterRenderAsync( bool firstRender )
+    {
+        if ( firstRender )
+        {
+            await HandleRedraw();
+        }
+    }
+
+    bool trendlinesOn = true;
+    async Task OnButtonClicked()
+    {
+        trendlinesOn = !trendlinesOn;
+
+        await HandleRedraw();
+    }
+
+    async Task HandleRedraw()
+    {
+        await chart.Clear();
+
+        await chart.AddLabels( Labels );
+        await chart.AddDataSet( GetLineChartDataset() );
+        await chart.AddDataSet( GetLineChartDataset() );
+
+        await chart.Update();
+
+        // Add the trendline(s) after you have added the datasets and called await chart.Update();
+        if ( trendlinesOn )
+        {
+            // This will add a trendline to the second dataset.
+            // If you want to add it to the first dataset, set DatasetIndex = 0 (or don't set it at all as 0 is default)
+            var trendlineData = new List<ChartTrendlineData>
+            {
+                new ChartTrendlineData
+                {
+                    DatasetIndex = 1,
+                    Width = 10,
+                    Color = ChartColor.FromRgba( 54, 162, 235, .6f )
+                }
+            };
+
+            await chartTrendline.AddTrendLineOptions( trendlineData );
+        }
+    }
+
+    LineChartDataset<double?> GetLineChartDataset()
+    {
+        return new LineChartDataset<double?>
+        {
+            Label = "# of randoms",
+            Data = RandomizeData(),
+            BackgroundColor = BackgroundColors,
+            BorderColor = BorderColors,
+            Fill = true,
+            PointRadius = 2,
+            BorderDash = new List<int> { }
+        };
+    }
+
+    private static string[] Labels = { "A", "B", "C", "D", "E", "F" };
+
+    private static List<string> BackgroundColors = new()
+    {
+        ChartColor.FromRgba( 76, 110, 245, 0.25f ),   // Indigo
+        ChartColor.FromRgba( 18, 184, 134, 0.25f ),   // Teal
+        ChartColor.FromRgba( 245, 159, 0, 0.25f ),    // Amber
+        ChartColor.FromRgba( 240, 62, 62, 0.25f ),    // Red
+        ChartColor.FromRgba( 132, 94, 247, 0.25f ),   // Purple
+        ChartColor.FromRgba( 34, 139, 230, 0.25f )    // Blue
+    };
+
+    private static List<string> BorderColors = new()
+    {
+        ChartColor.FromRgba( 76, 110, 245, 1f ),      // Indigo
+        ChartColor.FromRgba( 18, 184, 134, 1f ),      // Teal
+        ChartColor.FromRgba( 245, 159, 0, 1f ),       // Amber
+        ChartColor.FromRgba( 240, 62, 62, 1f ),       // Red
+        ChartColor.FromRgba( 132, 94, 247, 1f ),      // Purple
+        ChartColor.FromRgba( 34, 139, 230, 1f )       // Blue
+    };
+
+    List<double?> RandomizeData()
+    {
+        var r = new Random( DateTime.Now.Millisecond );
+
+        return new List<double?> { r.Next( 3, 20 ) * r.NextDouble(), r.Next( 3, 30 ) * r.NextDouble(), r.Next( 3, 40 ) * r.NextDouble(), r.Next( 3, 50 ) * r.NextDouble(), r.Next( 3, 60 ) * r.NextDouble(), r.Next( 3, 70 ) * r.NextDouble() };
+    }
+}

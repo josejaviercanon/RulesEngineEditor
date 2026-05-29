@@ -1,0 +1,21 @@
+﻿@inherits Blazorise.Badge
+@if ( Link != null )
+{
+    <a @ref="@ElementRef" id="@ElementId" href="@Link" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+        <span>@ChildContent</span>
+        @if ( Closable )
+        {
+            <span class="@CloseClassBuilder.Class" style="@Styles?.Close" aria-label="close" tabindex="0" @onclick="@OnCloseClickedHandler" @onclick:preventDefault @onkeydown="@OnCloseKeyDownHandler"></span>
+        }
+    </a>
+}
+else
+{
+    <span @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+        <span>@ChildContent</span>
+        @if ( Closable )
+        {
+            <span class="@CloseClassBuilder.Class" style="@Styles?.Close" aria-label="close" tabindex="0" @onclick="@OnCloseClickedHandler" @onclick:preventDefault @onkeydown="@OnCloseKeyDownHandler"></span>
+        }
+    </span>
+}

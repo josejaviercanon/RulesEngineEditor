@@ -1,0 +1,15 @@
+﻿@inherits Blazorise.FieldHelp
+@if ( ParentIsFieldBody )
+{
+    <div class="field">
+        <small @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+            @ChildContent
+        </small>
+    </div>
+}
+else
+{
+    <small @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+        @ChildContent
+    </small>
+}

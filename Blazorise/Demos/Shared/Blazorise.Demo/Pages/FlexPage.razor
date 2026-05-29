@@ -1,0 +1,749 @@
+﻿@page "/tests/utilities/flex"
+
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Direction</CardTitle>
+            </CardHeader>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph>
+                    Set the direction of flex items in a flex container with direction utilities.
+                </Paragraph>
+                <Paragraph Margin="Margin.Is0.FromBottom">
+                    Use <Code>Flex="Flex.Row"</Code> to set a horizontal direction (the browser default), or <Code>Flex="Flex.ReverseRow"</Code> to start the horizontal direction from the opposite side.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <Div Flex="Flex.Row" Margin="Margin.Is3.FromBottom" Style="@flexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Flex="Flex.ReverseRow" Margin="Margin.Is3.FromBottom" Style="@flexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+            </CardBody>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.OnY">
+                    Use <Code>Flex="Flex.Column"</Code> to set a vertical direction, or <Code>Flex="Flex.ReverseColumn"</Code> to start the vertical direction from the opposite side.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <Div Flex="Flex.Column" Margin="Margin.Is3.FromBottom" Style="@flexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Flex="Flex.ReverseColumn" Margin="Margin.Is3.FromBottom" Style="@flexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+            </CardBody>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.OnY">
+                    Responsive variations also exist for <Code>flex-direction</Code>.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <UnorderedList>
+                    <UnorderedListItem><Code>Flex="Flex.Row"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.ReverseRow"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Column"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.ReverseColumn"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Row.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.ReverseRow.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Column.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.ReverseColumn.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Row.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.ReverseRow.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Column.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.ReverseColumn.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Row.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.ReverseRow.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Column.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.ReverseColumn.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Row.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.ReverseRow.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Column.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.ReverseColumn.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Row.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.ReverseRow.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Column.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.ReverseColumn.OnQuadHD"</Code></UnorderedListItem>
+                </UnorderedList>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Justify content</CardTitle>
+            </CardHeader>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.FromBottom">
+                    Use <Code>JustifyContent</Code> utilities on flexbox containers to change the alignment of flex items on the main axis (the x-axis to start, y-axis if flex-direction: column). Choose from <Code>Start</Code> (browser default), <Code>End</Code>, <Code>Center</Code>, <Code>Between</Code>, or <Code>Around</Code>.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <Div Flex="Flex.JustifyContent.Start" Margin="Margin.Is3.FromBottom" Style="@flexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Flex="Flex.JustifyContent.End" Margin="Margin.Is3.FromBottom" Style="@flexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Flex="Flex.JustifyContent.Center" Margin="Margin.Is3.FromBottom" Style="@flexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Flex="Flex.JustifyContent.Between" Margin="Margin.Is3.FromBottom" Style="@flexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Flex="Flex.JustifyContent.Around" Margin="Margin.Is3.FromBottom" Style="@flexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+            </CardBody>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.OnY">
+                    Responsive variations also exist for <Code>justify-content</Code>.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <UnorderedList>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Start"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.End"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Center"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Between"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Around"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Start.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.End.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Center.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Between.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Around.OnTablet"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Start.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.End.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Center.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Between.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Around.OnDesktop"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Start.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.End.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Center.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Between.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Around.OnWidescreen"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Start.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.End.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Center.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Between.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Around.OnFullHD"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Start.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.End.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Center.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Between.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.JustifyContent.Around.OnQuadHD"</Code></UnorderedListItem>
+                </UnorderedList>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Align items</CardTitle>
+            </CardHeader>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.FromBottom">
+                    Use <Code>AlignItems</Code> utilities on flexbox containers to change the alignment of flex items on the cross axis (the y-axis to start, x-axis if flex-direction: column). Choose from <Code>Start</Code>, <Code>End</Code>, <Code>Center</Code>, <Code>Baseline</Code>, or <Code>Stretch</Code> (browser default).
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <Div Flex="Flex.AlignItems.Start" Margin="Margin.Is3.FromBottom" Style="@alignItemsFlexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Flex="Flex.AlignItems.End" Margin="Margin.Is3.FromBottom" Style="@alignItemsFlexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Flex="Flex.AlignItems.Center" Margin="Margin.Is3.FromBottom" Style="@alignItemsFlexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Flex="Flex.AlignItems.Baseline" Margin="Margin.Is3.FromBottom" Style="@alignItemsFlexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Flex="Flex.AlignItems.Stretch" Margin="Margin.Is3.FromBottom" Style="@alignItemsFlexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+            </CardBody>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.OnY">
+                    Responsive variations also exist for <Code>align-items</Code>.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <UnorderedList>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Start"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.End"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Center"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Baseline"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Stretch"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Start.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.End.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Center.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Baseline.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Stretch.OnTablet"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Start.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.End.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Center.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Baseline.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Stretch.OnDesktop"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Start.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.End.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Center.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Baseline.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Stretch.OnWidescreen"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Start.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.End.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Center.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Baseline.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Stretch.OnFullHD"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Start.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.End.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Center.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Baseline.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignItems.Stretch.OnQuadHD"</Code></UnorderedListItem>
+                </UnorderedList>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Align self</CardTitle>
+            </CardHeader>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.FromBottom">
+                    Use <Code>AlignSelf</Code> utilities on flexbox items to individually change their alignment on the cross axis (the y-axis to start, x-axis if flex-direction: column). Choose from the same options as align-items: <Code>Start</Code>, <Code>End</Code>, <Code>Center</Code>, <Code>Baseline</Code>, or <Code>Stretch</Code> (browser default).
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <Div Display="Display.Flex" Margin="Margin.Is3.FromBottom" Style="@alignItemsFlexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Flex="Flex.AlignSelf.Start" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Display="Display.Flex" Margin="Margin.Is3.FromBottom" Style="@alignItemsFlexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Flex="Flex.AlignSelf.End" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Display="Display.Flex" Margin="Margin.Is3.FromBottom" Style="@alignItemsFlexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Flex="Flex.AlignSelf.Center" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Display="Display.Flex" Margin="Margin.Is3.FromBottom" Style="@alignItemsFlexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Flex="Flex.AlignSelf.Baseline" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+                <Div Display="Display.Flex" Margin="Margin.Is3.FromBottom" Style="@alignItemsFlexContainerStyle">
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 1
+                    </Div>
+                    <Div Flex="Flex.AlignSelf.Stretch" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 2
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item 3
+                    </Div>
+                </Div>
+            </CardBody>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.OnY">
+                    Responsive variations also exist for <Code>align-items</Code>.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <UnorderedList>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Start"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.End"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Center"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Baseline"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Stretch"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Start.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.End.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Center.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Baseline.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Stretch.OnTablet"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Start.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.End.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Center.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Baseline.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Stretch.OnDesktop"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Start.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.End.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Center.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Baseline.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Stretch.OnWidescreen"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Start.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.End.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Center.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Baseline.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Stretch.OnFullHD"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Start.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.End.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Center.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Baseline.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignSelf.Stretch.OnQuadHD"</Code></UnorderedListItem>
+                </UnorderedList>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Align content</CardTitle>
+            </CardHeader>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.FromBottom">
+                    Use <Code>AlignContent</Code> utilities on flexbox containers to align flex items together on the cross axis. Choose from <Code>Start</Code> (browser default), <Code>End</Code>, <Code>Center</Code>, <Code>Between</Code>,<Code>Around</Code>, or <Code>Stretch</Code>. To demonstrate these utilities, we’ve enforced flex-wrap: wrap and increased the number of flex items.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <Div Flex="Flex.AlignContent.Start.Wrap" Margin="Margin.Is3.FromBottom" Style="@alignContentFlexContainerStyle">
+                    @for ( int i = 0; i < 20; ++i )
+                    {
+                        var index = i.ToString();
+                        <Div @key="@i" Padding="Padding.Is2" Style="@flexItemStyle">Flex item @index</Div>
+                    }
+                </Div>
+                <Div Flex="Flex.AlignContent.End.Wrap" Margin="Margin.Is3.FromBottom" Style="@alignContentFlexContainerStyle">
+                    @for ( int i = 0; i < 20; ++i )
+                    {
+                        var index = i.ToString();
+                        <Div @key="@i" Padding="Padding.Is2" Style="@flexItemStyle">Flex item @index</Div>
+                    }
+                </Div>
+                <Div Flex="Flex.AlignContent.Center.Wrap" Margin="Margin.Is3.FromBottom" Style="@alignContentFlexContainerStyle">
+                    @for ( int i = 0; i < 20; ++i )
+                    {
+                        var index = i.ToString();
+                        <Div @key="@i" Padding="Padding.Is2" Style="@flexItemStyle">Flex item @index</Div>
+                    }
+                </Div>
+                <Div Flex="Flex.AlignContent.Between.Wrap" Margin="Margin.Is3.FromBottom" Style="@alignContentFlexContainerStyle">
+                    @for ( int i = 0; i < 20; ++i )
+                    {
+                        var index = i.ToString();
+                        <Div @key="@i" Padding="Padding.Is2" Style="@flexItemStyle">Flex item @index</Div>
+                    }
+                </Div>
+                <Div Flex="Flex.AlignContent.Around.Wrap" Margin="Margin.Is3.FromBottom" Style="@alignContentFlexContainerStyle">
+                    @for ( int i = 0; i < 20; ++i )
+                    {
+                        var index = i.ToString();
+                        <Div @key="@i" Padding="Padding.Is2" Style="@flexItemStyle">Flex item @index</Div>
+                    }
+                </Div>
+                <Div Flex="Flex.AlignContent.Stretch.Wrap" Margin="Margin.Is3.FromBottom" Style="@alignContentFlexContainerStyle">
+                    @for ( int i = 0; i < 20; ++i )
+                    {
+                        var index = i.ToString();
+                        <Div @key="@i" Padding="Padding.Is2" Style="@flexItemStyle">Flex item @index</Div>
+                    }
+                </Div>
+            </CardBody>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.OnY">
+                    Responsive variations also exist for <Code>align-items</Code>.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <UnorderedList>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Start"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.End"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Center"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Between"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Around"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Stretch"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Start.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.End.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Center.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Between.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Around.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Stretch.OnTablet"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Start.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.End.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Center.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Between.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Around.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Stretch.OnDesktop"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Start.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.End.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Center.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Between.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Around.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Stretch.OnWidescreen"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Start.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.End.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Center.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Between.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Around.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Stretch.OnFullHD"</Code></UnorderedListItem>
+
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Start.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.End.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Center.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Between.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Around.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.AlignContent.Stretch.OnQuadHD"</Code></UnorderedListItem>
+                </UnorderedList>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Grow and shrink</CardTitle>
+            </CardHeader>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.FromBottom">
+                    Use <Code>Flex.Grow</Code> utilities to toggle a flex item’s ability to grow to fill available space. In the example below, the <Code>Flex.Grow.Is1</Code> elements uses all available space it can, while allowing the remaining two flex items their necessary space.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <Div Display="Display.Flex" Margin="Margin.Is3.FromBottom" Style="@flexContainerStyle">
+                    <Div Flex="Flex.Grow.Is1" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item
+                    </Div>
+                    <Div Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item
+                    </Div>
+                </Div>
+            </CardBody>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.OnY">
+                    Use <Code>Flex.Shrink</Code> utilities to toggle a flex item’s ability to shrink if necessary. In the example below, the second flex item with <Code>Flex.Shrink.Is1</Code> is forced to wrap its contents to a new line, “shrinking” to allow more space for the previous flex item with <Code>Width.Is100</Code>.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <Div Display="Display.Flex" Margin="Margin.Is3.FromBottom" Style="@flexContainerStyle">
+                    <Div Padding="Padding.Is2" Width="Width.Is100" Style="@shrinkItemStyle">
+                        Flex item
+                    </Div>
+                    <Div Flex="Flex.Shrink.Is1" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item
+                    </Div>
+                </Div>
+            </CardBody>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.OnY">
+                    Responsive variations also exist for <Code>flex-grow</Code> and <Code>flex-shrink</Code>.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <UnorderedList>
+                    <UnorderedListItem><Code>Flex="Flex.{Grow|Shrink}.Is0"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.{Grow|Shrink}.Is1"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.{Grow|Shrink}.Is0.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.{Grow|Shrink}.Is1.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.{Grow|Shrink}.Is0.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.{Grow|Shrink}.Is1.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.{Grow|Shrink}.Is0.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.{Grow|Shrink}.Is1.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.{Grow|Shrink}.Is0.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.{Grow|Shrink}.Is1.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.{Grow|Shrink}.Is0.OnQuadHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.{Grow|Shrink}.Is1.OnQuadHD"</Code></UnorderedListItem>
+                </UnorderedList>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Grow and shrink</CardTitle>
+            </CardHeader>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.FromBottom">
+                    Use the <Code>Flex.Fill</Code> class on a series of sibling elements to force them into widths equal to their content (or equal widths if their content does not surpass their border-boxes) while taking up all available horizontal space.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <Div Flex="Flex._" Display="Display.Flex" Margin="Margin.Is3.FromBottom" Style="@flexContainerStyle">
+                    <Div Flex="Flex.Fill" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item with a lot of content
+                    </Div>
+                    <Div Flex="Flex.Fill" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item
+                    </Div>
+                    <Div Flex="Flex.Fill" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Flex item
+                    </Div>
+                </Div>
+            </CardBody>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.OnY">
+                    Responsive variations also exist for <Code>flex-fill</Code>.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <UnorderedList>
+                    <UnorderedListItem><Code>Flex="Flex.Fill"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Fill.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Fill.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Fill.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Fill.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Fill.OnQuadHD"</Code></UnorderedListItem>
+                </UnorderedList>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Order</CardTitle>
+            </CardHeader>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.FromBottom">
+                    Change the visual order of specific flex items with a handful of order utilities. We only provide options for making an item first or last, as well as a reset to use the DOM order. As order takes any integer value (e.g., 5), add custom CSS for any additional values needed.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <Div Flex="Flex._" Display="Display.Flex" Margin="Margin.Is3.FromBottom" Style="@flexContainerStyle">
+                    <Div Flex="Flex.Order.Is3" Padding="Padding.Is2" Style="@flexItemStyle">
+                        First flex item
+                    </Div>
+                    <Div Flex="Flex.Order.Is2" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Second flex item
+                    </Div>
+                    <Div Flex="Flex.Order.Is1" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Third flex item
+                    </Div>
+                </Div>
+            </CardBody>
+            <CardBody Padding="Padding.Is0.FromBottom">
+                <Paragraph Margin="Margin.Is0.OnY">
+                    Responsive variations also exist for <Code>order</Code>.
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <UnorderedList>
+                    <UnorderedListItem><Code>Flex="Flex.Order.Is{0-12}"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Order.Is{0-12}.OnTablet"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Order.Is{0-12}.OnDesktop"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Order.Is{0-12}.OnWidescreen"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Order.Is{0-12}.OnFullHD"</Code></UnorderedListItem>
+                    <UnorderedListItem><Code>Flex="Flex.Order.Is{0-12}.OnQuadHD"</Code></UnorderedListItem>
+                </UnorderedList>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Basis</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Div Flex="Flex.Row">
+                    <Div Flex="Flex.Basis.Auto" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Auto
+                    </Div>
+                    <Div Flex="Flex.Basis.Is0" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Zero
+                    </Div>
+                    <Div Flex="Flex.Basis.Full" Padding="Padding.Is2" Style="@flexItemStyle">
+                        Full
+                    </Div>
+                </Div>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+@code {
+    const string ContainerBackgroundColor = "rgba(165, 181, 167,.15)";
+    const string ContainerBorderColor = "rgba(165, 181, 167,.15)";
+
+    const string ItemBackgroundColor = "rgba(95, 163, 103,.15)";
+    const string ItemBorderColor = "rgba(95, 163, 103,.15)";
+
+    string flexContainerStyle = $"background-color: {ContainerBackgroundColor};border: 1px solid {ContainerBorderColor};";
+    string alignItemsFlexContainerStyle = $"background-color: {ContainerBackgroundColor};border: 1px solid {ContainerBorderColor};height: 100px;";
+    string alignContentFlexContainerStyle = $"background-color: {ContainerBackgroundColor};border: 1px solid {ContainerBorderColor};height: 200px;";
+
+    string flexItemStyle = $"background-color: {ItemBackgroundColor}; border: 1px solid {ItemBorderColor};";
+    string shrinkItemStyle = $"background-color: {ItemBackgroundColor}; border: 1px solid {ItemBorderColor};";
+}

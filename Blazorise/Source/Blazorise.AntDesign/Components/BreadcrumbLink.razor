@@ -1,0 +1,13 @@
+﻿@inherits Blazorise.BreadcrumbLink
+<span id="@ElementId" class="@ClassNames" style="@StyleNames">
+    @if ( ParentBreadcrumbItem?.Active == true )
+    {
+        @ChildContent
+    }
+    else
+    {
+        <Anchor To="@To" Target="@Target" Title="@Title" Match="@Match" Clicked="@ClickHandler" Attributes="@Attributes">
+            @ChildContent
+        </Anchor>
+    }
+</span>

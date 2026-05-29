@@ -1,0 +1,50 @@
+@inherits Blazorise.Offcanvas
+@using System.Text;
+<CascadingValue Value="@this" IsFixed>
+    <CascadingValue Value="@State">
+        <div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" role="dialog" aria-modal="@AriaModal" aria-labelledby="@AriaLabelledBy" aria-describedby="@AriaDescribedBy" @attributes="@Attributes">
+            @if ( ShowBackdrop && BackdropVisible )
+            {
+                <_OffcanvasBackdrop Animated="@Animated" AnimationDuration="@AnimationDuration" />
+            }
+            <div tabindex="0" aria-hidden="true" data-sentinel="start" style="width: 0px; height: 0px; overflow: hidden; outline: none; position: absolute;"></div>
+            <div class="@GetContentWrapperClassNames()" style="@GetContentWrapperStyleNames()">
+                <div class="ant-drawer-content">
+                    <div class="ant-drawer-wrapper-body">
+                        @ChildContent
+                    </div>
+                </div>
+            </div>
+        </div>
+    </CascadingValue>
+</CascadingValue>
+
+@code {
+    string GetContentWrapperClassNames()
+    {
+        var sb = new StringBuilder( "ant-drawer-content-wrapper" );
+
+        if ( !State.Visible && !State.Showing && !State.Hiding )
+        {
+            sb.Append( " ant-drawer-content-wrapper-hidden" );
+        }
+
+        return sb.ToString();
+    }
+
+    string GetContentWrapperStyleNames()
+    {
+        var sb = new StringBuilder();
+
+        if ( Placement == Placement.Top || Placement == Placement.Bottom )
+        {
+            sb.Append( "height: var(--b-ant-drawer-size);" );
+        }
+        else
+        {
+            sb.Append( "width: var(--b-ant-drawer-size);" );
+        }
+
+        return sb.ToString();
+    }
+}

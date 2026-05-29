@@ -1,0 +1,115 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+@using System.ComponentModel.DataAnnotations
+<Validations @ref="@validationsRef" Model="@Company" Mode="ValidationMode.Auto">
+    <Validation>
+        <Field>
+            <FieldLabel>Name</FieldLabel>
+            <FieldBody>
+                <TextInput @bind-Value="@Company.Name">
+                    <Feedback>
+                        <ValidationError />
+                    </Feedback>
+                </TextInput>
+            </FieldBody>
+        </Field>
+    </Validation>
+    <Validation>
+        <Field>
+            <FieldLabel>Description</FieldLabel>
+            <FieldBody>
+                <TextInput @bind-Value="@Company.Description">
+                    <Feedback>
+                        <ValidationError />
+                    </Feedback>
+                </TextInput>
+            </FieldBody>
+        </Field>
+    </Validation>
+    <Field>
+        <Switch TValue="bool" Value="@Company.UseAlphaCode" ValueChanged="@OnUseAlphaCodeChanged" ValueExpression="@(() => Company.UseAlphaCode)">Use AlphaCode</Switch>
+    </Field>
+    <Fields>
+        <Validation>
+            <Field>
+                <FieldLabel>AlphaCode</FieldLabel>
+                <FieldBody>
+                    <TextInput @bind-Value="@Company.AlphaCode">
+                        <Feedback>
+                            <ValidationError />
+                        </Feedback>
+                    </TextInput>
+                </FieldBody>
+            </Field>
+        </Validation>
+        <Validation>
+            <Field>
+                <FieldLabel>BetaCode</FieldLabel>
+                <FieldBody>
+                    <TextInput @bind-Value="@Company.BetaCode">
+                        <Feedback>
+                            <ValidationError />
+                        </Feedback>
+                    </TextInput>
+                </FieldBody>
+            </Field>
+        </Validation>
+    </Fields>
+</Validations>
+
+@code {
+    async Task OnUseAlphaCodeChanged( bool value )
+    {
+        Company.UseAlphaCode = value;
+
+        if ( validationsRef != null )
+        {
+            // retrigger validation for dependent properties
+            await validationsRef.RetriggerValidation(
+                () => Company.AlphaCode,
+                () => Company.BetaCode );
+        }
+    }
+
+    Validations validationsRef;
+
+    CompanyInfo Company = new CompanyInfo()
+    {
+        UseAlphaCode = true,
+    };
+
+    public class CompanyInfo : IValidatableObject
+    {
+        [Required( ErrorMessage = "Name is required" )]
+        public string Name { get; set; }
+
+        [Required( ErrorMessage = "Description is required" )]
+        public string Description { get; set; }
+
+        public bool UseAlphaCode { get; set; }
+
+        public string AlphaCode { get; set; }
+
+        public string BetaCode { get; set; }
+
+        [Range( 0, 999.99 )]
+        public decimal Price { get; set; }
+
+        public IEnumerable<ValidationResult> Validate( ValidationContext validationContext )
+        {
+            if ( UseAlphaCode )
+            {
+                if ( String.IsNullOrWhiteSpace( AlphaCode ) )
+                {
+                    yield return new ValidationResult( "AlphaCode is required", new[] { "AlphaCode" } );
+                }
+            }
+            else
+            {
+                if ( String.IsNullOrWhiteSpace( BetaCode ) )
+                {
+                    yield return new ValidationResult( "BetaCode is required", new[] { "BetaCode" } );
+                }
+            }
+        }
+    }
+}

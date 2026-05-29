@@ -1,0 +1,44 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+@using System.Globalization
+@using Blazorise.Localization
+
+<Field>
+    <FileInput />
+</Field>
+<Field>
+    <Addons>
+        <Addon AddonType="AddonType.Start">
+            <SelectList TItem="CultureInfo"
+                        TValue="string"
+                        Data="@LocalizationService.AvailableCultures"
+                        TextField="@((item)=>item.IsNeutralCulture ? item.EnglishName : item.Parent.EnglishName)"
+                        ValueField="@((item)=>item.Name)"
+                        @bind-Value="selectedCulture"
+                        DefaultItemText="Choose your culture" />
+        </Addon>
+        <Addon AddonType="AddonType.Body">
+            <Button Clicked="OnButtonClick">Change culture</Button>
+        </Addon>
+    </Addons>
+</Field>
+
+@code {
+    [Inject] ITextLocalizerService LocalizationService { get; set; }
+
+    private string selectedCulture;
+
+    Task OnButtonClick()
+    {
+        if ( string.IsNullOrWhiteSpace( selectedCulture ) )
+            return Task.CompletedTask;
+
+        return SelectCulture( selectedCulture );
+    }
+
+    Task SelectCulture( string name )
+    {
+        LocalizationService.ChangeLanguage( name, false );
+
+        return Task.CompletedTask;
+    }
+}

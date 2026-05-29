@@ -1,0 +1,33 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+
+<Card>
+    <CardBody>
+        <Switch TValue="bool" @bind-Value="@focusTrapActive">Active</Switch>
+    </CardBody>
+    <CardBody>
+        <FocusTrap Active="@focusTrapActive">
+            <Field Horizontal>
+                <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is2.OnDesktop">First Name</FieldLabel>
+                <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is10.OnDesktop">
+                    <TextInput Autofocus />
+                </FieldBody>
+            </Field>
+            <Field Horizontal>
+                <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is2.OnDesktop">Last Name</FieldLabel>
+                <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is10.OnDesktop">
+                    <TextInput />
+                </FieldBody>
+            </Field>
+            <Field Horizontal>
+                <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is2.OnDesktop">Address</FieldLabel>
+                <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is10.OnDesktop">
+                    <TextInput />
+                </FieldBody>
+            </Field>
+        </FocusTrap>
+    </CardBody>
+</Card>
+
+@code {
+    bool focusTrapActive = false;
+}

@@ -1,0 +1,179 @@
+#region Using directives
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Blazorise.Utilities;
+using Microsoft.AspNetCore.Components;
+#endregion
+
+namespace Blazorise;
+
+/// <summary>
+/// Placeholder for the list of <see cref="Validation"/> error messages.
+/// </summary>
+public partial class ValidationSummary : BaseComponent<ValidationSummaryClasses, ValidationSummaryStyles>, IDisposable
+{
+    #region Members
+
+    private Validations previousParentValidations;
+
+    private string[] internalErrorMessages;
+
+    #endregion
+
+    #region Constructors
+
+    /// <summary>
+    /// A default <see cref="ValidationSummary"/> constructor.
+    /// </summary>
+    public ValidationSummary()
+    {
+        ErrorClassBuilder = new( BuildErrorClasses, builder => builder.Append( Classes?.Error ) );
+        ErrorStyleBuilder = new( BuildErrorStyles, builder => builder.Append( Styles?.Error ) );
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// <inheritdoc/>
+    protected override void BuildClasses( ClassBuilder builder )
+    {
+        builder.Append( ClassProvider.ValidationSummary() );
+
+        base.BuildClasses( builder );
+    }
+
+    /// <summary>
+    /// Builds the classnames for a summary placeholder.
+    /// </summary>
+    /// <param name="builder">Class builder used to append the classnames.</param>
+    private void BuildErrorClasses( ClassBuilder builder )
+    {
+        builder.Append( ClassProvider.ValidationSummaryError() );
+    }
+
+    /// <summary>
+    /// Builds the styles for a summary placeholder.
+    /// </summary>
+    /// <param name="builder">Style builder used to append the styles.</param>
+    private void BuildErrorStyles( StyleBuilder builder )
+    {
+    }
+
+    /// <inheritdoc/>
+    protected internal override void DirtyClasses()
+    {
+        ErrorClassBuilder.Dirty();
+
+        base.DirtyClasses();
+    }
+
+    /// <inheritdoc/>
+    protected internal override void DirtyStyles()
+    {
+        ErrorStyleBuilder.Dirty();
+
+        base.DirtyStyles();
+    }
+
+    /// <inheritdoc/>
+    protected override void Dispose( bool disposing )
+    {
+        if ( disposing )
+        {
+            DetachAllListener();
+        }
+
+        base.Dispose( disposing );
+    }
+
+    /// <inheritdoc/>
+    protected override void OnParametersSet()
+    {
+        if ( ParentValidations != previousParentValidations )
+        {
+            DetachAllListener();
+
+            ParentValidations.StatusChangedInternal += OnValidationsStatusChanged;
+
+            previousParentValidations = ParentValidations;
+        }
+    }
+
+    private void DetachAllListener()
+    {
+        if ( previousParentValidations is not null )
+        {
+            previousParentValidations.StatusChangedInternal -= OnValidationsStatusChanged;
+        }
+    }
+
+    private async void OnValidationsStatusChanged( ValidationsStatusChangedEventArgs eventArgs )
+    {
+        internalErrorMessages = eventArgs.Status == ValidationStatus.Error
+            ? eventArgs.Messages?.Where( x => !string.IsNullOrEmpty( x ) )?.ToArray()
+            : null;
+
+        await InvokeAsync( StateHasChanged );
+    }
+
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Summary placeholder class builder.
+    /// </summary>
+    protected ClassBuilder ErrorClassBuilder { get; private set; }
+
+    /// <summary>
+    /// Summary placeholder style builder.
+    /// </summary>
+    protected StyleBuilder ErrorStyleBuilder { get; private set; }
+
+    /// <summary>
+    /// Gets the classnames for the summary placeholder.
+    /// </summary>
+    protected string ErrorClassNames => ErrorClassBuilder.Class;
+
+    /// <summary>
+    /// Gets the styles for the summary placeholder.
+    /// </summary>
+    protected string ErrorStyleNames => ErrorStyleBuilder.Styles;
+
+    /// <summary>
+    /// True if any error message has received.
+    /// </summary>
+    protected bool HasErrorMessages
+        => internalErrorMessages?.Length > 0 || Errors?.Length > 0;
+
+    /// <summary>
+    /// Gets the list of error messages.
+    /// </summary>
+    protected IEnumerable<string> ErrorMessages
+        => ( internalErrorMessages ?? [] ).Concat( Errors ?? [] );
+
+    /// <summary>
+    /// Label showed before the error messages.
+    /// </summary>
+    [Parameter] public string Label { get; set; }
+
+    /// <summary>
+    /// List of custom error messages for the validations summary.
+    /// </summary>
+    [Parameter] public string[] Errors { get; set; }
+
+    /// <summary>
+    /// Specifies the content to be rendered inside this <see cref="ValidationSummary"/>.
+    /// </summary>
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    /// <summary>
+    /// Provides the reference to the parent <see cref="Validations"/> component.
+    /// </summary>
+    [CascadingParameter] protected Validations ParentValidations { get; set; }
+
+    #endregion
+}

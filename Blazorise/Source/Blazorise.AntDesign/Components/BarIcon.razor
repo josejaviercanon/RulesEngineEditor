@@ -1,0 +1,11 @@
+﻿@inherits Blazorise.BarIcon
+<span class="anticon ant-menu-item-icon">
+    @if ( IconName is RenderFragment )
+    {
+        @( IconName as RenderFragment )
+    }
+    else
+    {
+        <Icon ElementId="@ElementId" Class="@ClassNames" Style="@StyleNames" Name="@IconName" IconStyle="@IconStyle" IconSize="@IconSize" Attributes="@Attributes" />
+    }
+</span>

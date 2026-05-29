@@ -1,0 +1,65 @@
+@inherits Blazorise.Carousel
+<CascadingValue Value="@this" IsFixed>
+    <CascadingValue Value="@State">
+        @ChildContent
+
+        <div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+            <div class="@SlidesClassNames" style="@SlidesStyleNames">
+                @for ( int i = 0; i < carouselSlides.Count; ++i )
+                {
+                    int index = i;
+                    <div class="@carouselSlides[index].ClassNames" style="@carouselSlides[index].StyleNames" @attributes="@carouselSlides[index].Attributes">
+                        @RenderSlideContent( carouselSlides[index] )
+                    </div>
+                }
+
+                @if ( ShowControls )
+                {
+                    <div class="carousel-arrow is-hovered">
+                        @if ( PreviousButtonTemplate is not null )
+                        {
+                            @PreviousButtonTemplate( CreateNavigationContext( CarouselDirection.Previous ) )
+                        }
+                        else
+                        {
+                            <span class="icon has-icons-left" @onclick="@SelectPrevious">
+                                <Icon Name="IconName.ChevronLeft" />
+                            </span>
+                        }
+
+                        @if ( NextButtonTemplate is not null )
+                        {
+                            @NextButtonTemplate( CreateNavigationContext( CarouselDirection.Next ) )
+                        }
+                        else
+                        {
+                            <span class="icon has-icons-right" @onclick="@SelectNext">
+                                <Icon Name="IconName.ChevronRight" />
+                            </span>
+                        }
+                    </div>
+                }
+            </div>
+
+            @if ( ShowIndicators )
+            {
+                <div class="@IndicatorsClassNames" style="@IndicatorsStyleNames">
+                    @for ( int i = 0; i < carouselSlides.Count; ++i )
+                    {
+                        int index = i;
+                        @if ( IndicatorTemplate is not null )
+                        {
+                            @IndicatorTemplate( CreateIndicatorContext( index ) )
+                        }
+                        else
+                        {
+                            <a @onclick="@carouselSlides[index].Activate" class="@carouselSlides[index].IndicatorClassNames" style="@carouselSlides[index].IndicatorStyleNames">
+                                <span class="indicator-style is-dots"></span>
+                            </a>
+                        }
+                    }
+                </div>
+            }
+        </div>
+    </CascadingValue>
+</CascadingValue>

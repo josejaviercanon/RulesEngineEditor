@@ -1,0 +1,121 @@
+﻿@page "/docs/components/progress"
+
+<Seo Canonical="/docs/components/progress" Title="Blazorise Progress system" Description="Learn to use and work with the Blazorise Progress component, an indicators that inform users about the status of ongoing processes, such as loading an app, submitting a form, or saving updates." />
+
+<DocsPageTitle Path="Components/Progress">
+    Blazorise Progress component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Progress bars are used to show the status of an ongoing operation.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    Use our progress component for displaying simple or complex progress bars, featuring support for horizontally stacked bars, animated backgrounds, and text labels.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Structure
+</DocsPageSubtitle>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>Progress</Code> main component for single progress value or wrapper for multiple bars.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>ProgressBar</Code> progress bar for single progress value.
+                </Paragraph>
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Progress components are built with two components.
+
+    <UnorderedList>
+        <UnorderedListItem>
+            We use the <Code>Progress</Code> as a wrapper to indicate the max value of the progress bar.
+        </UnorderedListItem>
+        <UnorderedListItem>
+            We use the inner <Code>ProgressBar</Code> to indicate the progress so far.
+        </UnorderedListItem>
+    </UnorderedList>
+</DocsPageParagraph>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Single bar">
+        Put that all together, and you have the following examples.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicProgressExample" Outlined FullWidth>
+        <BasicProgressExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Multiple bars">
+        Include multiple ProgressBar sub-components in a Progress component to build a horizontally stacked set of progress bars.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="MultipleProgressExample" Outlined FullWidth>
+        <MultipleProgressExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Animated">
+        Use an animated effect Progress Bar to show that progress is still ongoing.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="AnimatedProgressExample" Outlined FullWidth>
+        <AnimatedProgressExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Indeterminate">
+        Add a <Code>Indeterminate</Code> to any <Code>Progress</Code> make the progres to the linear animation. Indeterminate Progress is best used to show that an operation is being executed.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="IndeterminateProgressExample" Outlined FullWidth>
+        <IndeterminateProgressExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Max">
+        You can specify the maximum value of the determinate Progress. This is useful for instances where you want to show capacity, or how much of a total has been uploaded/downloaded.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ProgressWithMaxExample" Outlined FullWidth>
+        <ProgressWithMaxExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Page progress
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    You can also show a small progress bar at the top of the page. Note that unlike regular <Code>Progress</Code> component,
+    for <Code>PageProgress</Code> you must set the <Code>Visible</Code> parameter to make it active.
+</DocsPageParagraph>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+        To show page progress just set the <Code>Value</Code> and <Code>Visible</Code> parameters.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="BasicPageProgressExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Indeterminate">
+        To make an indeterminate progress bar, simply remove <Code>Value</Code> or make it a <Code>null</Code>.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="IndeterminatePageProgressExample" />
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(Progress),typeof(ProgressBar), typeof(PageProgress)]" />

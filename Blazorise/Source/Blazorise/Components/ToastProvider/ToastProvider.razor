@@ -1,0 +1,38 @@
+﻿@namespace Blazorise
+@using Blazorise.Extensions
+@inherits BaseComponent
+<CascadingValue Value="@this" IsFixed>
+    <Toaster ElementId="@ElementId" Class="@Class" Style="@Style" Float="@Float" Clearfix="@Clearfix" Visibility="@Visibility" Width="@Width" Height="@Height" Margin="@Margin" Padding="@Padding" Gap="@Gap" Display="@Display" Border="@Border" Flex="@Flex" Position="@Position" Overflow="@Overflow" Casing="@Casing" TextColor="@TextColor" TextAlignment="@TextAlignment" TextTransform="@TextTransform" TextDecoration="@TextDecoration" TextWeight="@TextWeight" TextOverflow="@TextOverflow" TextSize="@TextSize" ObjectFit="@ObjectFit" VerticalAlignment="@VerticalAlignment" Background="@Background" Shadow="@Shadow"
+             Placement="@Placement" PlacementStrategy="@PlacementStrategy"
+             Attributes="@Attributes">
+        @foreach ( var toastInstance in toastInstances ?? Enumerable.Empty<ToastInstance>() )
+        {
+            <Toast @key="@toastInstance.ToastId" @ref="toastInstance.ToastRef" @bind-Visible="@toastInstance.Visible"
+                   Opening="@toastInstance.Opening"
+                   Opened="@toastInstance.Opened"
+                   Closing="@toastInstance.Closing"
+                   Closed="@(() => OnToastClosed( toastInstance ))"
+                   Animated="@toastInstance.Animated"
+                   AnimationDuration="@toastInstance.AnimationDuration"
+                   Autohide="@toastInstance.Autohide"
+                   AutohideDelay="@toastInstance.AutohideDelay"
+                   Style="@toastInstance.Style"
+                   Class="@toastInstance.Class">
+                <ToastHeader>
+                    @if ( toastInstance.ShowIcon ?? ShowIntentIcon )
+                    {
+                        <Icon Name="@(GetIconName( toastInstance ))" IconStyle="toastInstance.IconStyle" IconSize="toastInstance.IconSize" TextColor="@GetIconColor( toastInstance.Intent )" Margin="Blazorise.Margin.Is2.FromEnd" />
+                    }
+                    <Strong>@toastInstance.Title</Strong>
+                    @if ( ShowCloseButton )
+                    {
+                        <CloseButton Clicked="@toastInstance.ToastRef.Hide" Margin="Blazorise.Margin.IsAuto.FromStart" />
+                    }
+                </ToastHeader>
+                <ToastBody>
+                    @toastInstance.Message
+                </ToastBody>
+            </Toast>
+        }
+    </Toaster>
+</CascadingValue>

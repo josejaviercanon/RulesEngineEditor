@@ -1,0 +1,56 @@
+﻿@if ( UseBadgeTemplate )
+{
+    <Autocomplete @ref="AutoCompleteRef"
+              TItem="Country"
+              TValue="string"
+              Data="@Countries"
+              TextField="@(( item ) => item.Name)"
+              ValueField="@(( item ) => item.Iso)"
+              @bind-SelectedValues="SelectedValues"
+              @bind-SelectedTexts="SelectedTexts"
+              Placeholder="Search..."
+                    FreeTyping
+              SelectionMode="AutocompleteSelectionMode.Multiple">
+    <NotFoundTemplate> Sorry... @context was not found! :( </NotFoundTemplate>
+    <TagTemplate>
+        <Badge Color="Color.Primary" Margin="Margin.Is2.FromStart" CloseClicked="@context.Remove">@context.Text</Badge>
+    </TagTemplate>
+</Autocomplete>
+}
+else
+{
+    <Autocomplete @ref="AutoCompleteRef"
+              TItem="Country"
+              TValue="string"
+              Data="@Countries"
+              TextField="@(( item ) => item.Name)"
+              ValueField="@(( item ) => item.Iso)"
+              @bind-SelectedValues="SelectedValues"
+              @bind-SelectedTexts="SelectedTexts"
+              Placeholder="Search..."
+                    FreeTyping
+              SelectionMode="AutocompleteSelectionMode.Multiple">
+    <NotFoundTemplate> Sorry... @context was not found! :( </NotFoundTemplate>
+    </Autocomplete>
+}
+
+@code {
+    [Inject] public CountryData CountryData { get; set; }
+
+    public IEnumerable<Country> Countries;
+
+    public Autocomplete<Country, string> AutoCompleteRef { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Countries = await CountryData.GetDataAsync();
+        await base.OnInitializedAsync();
+    }
+
+    [Parameter] public List<string> SelectedValues { get; set; }
+
+    [Parameter] public List<string> SelectedTexts { get; set; }
+
+    [Parameter] public bool UseBadgeTemplate { get; set; }
+}

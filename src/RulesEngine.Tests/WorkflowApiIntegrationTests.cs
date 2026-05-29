@@ -132,6 +132,10 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
 
         var disableOldResponse = await _client.PostAsync($"/api/workflows/{createdId}/versions/1/disable", null);
         disableOldResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var disableOldValidation = await disableOldResponse.Content.ReadFromJsonAsync<ValidationErrorResponse>();
+        disableOldValidation.Should().NotBeNull();
+        disableOldValidation!.Errors.Should().ContainSingle(error =>
+            error.Contains("Only the active workflow version can be enabled or disabled.", StringComparison.Ordinal));
 
         var disableActiveResponse = await _client.PostAsync($"/api/workflows/{createdId}/versions/2/disable", null);
         disableActiveResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -148,6 +152,54 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         enabled.Should().NotBeNull();
         enabled!.Version.Should().Be(2);
         enabled.IsEnabled.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task CreateWorkflow_ShouldReturnStructuredValidationAndNotPersist_WhenRuleExpressionIsInvalid()
+    {
+        var invalidWorkflow = CreateInvalidWorkflowDto("InvalidCreateWorkflow");
+
+        var invalidRequest = new WorkflowRequest(invalidWorkflow, 1);
+
+        var createResponse = await _client.PostAsJsonAsync("/api/workflows", invalidRequest);
+
+        createResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var validation = await createResponse.Content.ReadFromJsonAsync<ValidationErrorResponse>();
+        validation.Should().NotBeNull();
+        validation!.Errors.Should().NotBeEmpty();
+
+        var listResponse = await _client.GetAsync("/api/workflows");
+        listResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var workflows = await listResponse.Content.ReadFromJsonAsync<List<WorkflowResponse>>();
+        workflows.Should().NotBeNull();
+        workflows!.Should().NotContain(item => item.Workflow.WorkflowName == "InvalidCreateWorkflow");
+    }
+
+    [Fact]
+    public async Task UpdateWorkflow_ShouldReturnStructuredValidationAndNotMutate_WhenRuleExpressionIsInvalid()
+    {
+        var createResponse = await _client.PostAsJsonAsync("/api/workflows", CreateWorkflowRequest("InvalidUpdateWorkflow"));
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        var createdId = ResolveWorkflowId(createResponse);
+
+        var invalidWorkflow = CreateInvalidWorkflowDto("InvalidUpdateWorkflow");
+
+        var invalidUpdate = new WorkflowRequest(invalidWorkflow, 1);
+
+        var updateResponse = await _client.PutAsJsonAsync($"/api/workflows/{createdId}", invalidUpdate);
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        var validation = await updateResponse.Content.ReadFromJsonAsync<ValidationErrorResponse>();
+        validation.Should().NotBeNull();
+        validation!.Errors.Should().NotBeEmpty();
+
+        var versionsResponse = await _client.GetAsync($"/api/workflows/{createdId}/versions");
+        versionsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var versions = await versionsResponse.Content.ReadFromJsonAsync<List<WorkflowResponse>>();
+        versions.Should().NotBeNull();
+        versions!.Should().HaveCount(1);
+        versions[0].Version.Should().Be(1);
+        versions[0].Workflow.WorkflowName.Should().Be("InvalidUpdateWorkflow");
     }
 
     [Fact]
@@ -628,6 +680,24 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
                 RuleName = "AlwaysTrue",
                 Enabled = true,
                 Expression = "1 == 1"
+            }
+        ],
+        Version = 1,
+        IsActive = true,
+        IsEnabled = true,
+        Comments = "workflow comment"
+    };
+
+    private static WorkflowDto CreateInvalidWorkflowDto(string workflowName) => new()
+    {
+        WorkflowName = workflowName,
+        Rules =
+        [
+            new RuleDto
+            {
+                RuleName = "BrokenRule",
+                Enabled = true,
+                Expression = string.Empty
             }
         ],
         Version = 1,

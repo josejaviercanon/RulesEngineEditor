@@ -1,0 +1,114 @@
+:root {
+    --b-bar-horizontal-height: 60px;
+}
+
+$theme-color-interval: 8% !default;
+
+$yiq-text-light: $white !default;
+$yiq-text-dark: $black !default;
+
+// The yiq lightness value that determines when the lightness of color changes from "dark" to "light". Acceptable values are between 0 and 255.
+$yiq-contrasted-threshold: 150 !default;
+
+$secondary: $grey !default;
+
+$theme-colors: ( "primary": $primary, "secondary": $secondary, "success": $success, "info": $info, "warning": $warning, "danger": $danger, "light": $light, "dark": $dark, "link": $link );
+
+/*https://github.com/jgthms/bulma/issues/451#issuecomment-331758839*/
+$mobile: 0;
+$quadhd: 2560px;
+
+$spacer: 1rem !default;
+$spacers: () !default;
+
+$spacers: map-merge(( 0: 0, 1: ($spacer * .25), 2: ($spacer * .5), 3: $spacer, 4: ($spacer * 1.5), 5: ($spacer * 3) ), $spacers);
+
+$gutters: $spacers !default;
+
+$grid-columns: 12 !default;
+$grid-rows: 12 !default;
+$grid-row-columns: 6 !default;
+$grid-breakpoints: ( xs: 0, mobile: $mobile, tablet: $tablet, desktop: $desktop, widescreen: $widescreen, fullhd: $fullhd, quadhd: $quadhd ) !default;
+
+$dimensions: 256 512 !default;
+
+$size-8: 0.65rem !default;
+
+$size-extra-small: $size-8 !default;
+$size-extra-large: $size-3 !default;
+
+$switch-background: rgba(0,0,0,.125) !default;
+$switch-border: .1rem solid transparent !default;
+$switch-background-active: var(--b-theme-primary, hsl(171, 100%, 41%)) !default;
+$switch-radius: 4px !default;
+$switch-paddle-background: var(--b-theme-white, #fff) !default;
+$switch-paddle-background-active: var(--b-theme-primary, hsl(171, 100%, 41%)) !default;
+$switch-paddle-offset: 0.25rem !default;
+$switch-paddle-transition: all 0.25s ease-out !default;
+$switch-focus: 1px dotted rgba(0,0,0,.125) !default;
+
+$speed-slow: 150ms !default;
+$speed-slower: 250ms !default;
+
+$caret-width: .3em !default;
+$caret-vertical-align: $caret-width * .85 !default;
+$caret-spacing: $caret-width * .85 !default;
+
+// Cards
+
+$grid-gutter-width: 1.5rem !default;
+
+$card-group-margin: $grid-gutter-width / 2 !default;
+$card-deck-margin: $card-group-margin !default;
+
+// Steps
+
+$steps-marker-default-color: $grey-light !default;
+$steps-marker-default-border: .2em solid #fff !default;
+$steps-default-color: $grey-lighter !default;
+$steps-completed-color: $success !default;
+$steps-active-color: $primary !default;
+$steps-divider-height: .2em !default;
+
+$sizes-percentages: () !default;
+$sizes-percentages: map-merge( ( 25: 25%, 33: 33.333333%, 50: 50%, 66: 66.666667%, 75: 75%, 100: 100%, auto: auto ), $sizes-percentages );
+
+$box-shadow-sm: 0 .125rem .25rem rgba($black, .075) !default;
+$box-shadow: 0 .5rem 1rem rgba($black, .15) !default;
+$box-shadow-lg: 0 1rem 3rem rgba($black, .175) !default;
+
+$dropdown-padding-y: .5rem !default;
+$dropdown-item-padding-y: .375rem !default;
+$dropdown-item-padding-x: 1rem !default;
+
+$dropdown-header-color: $text-weak !default;
+$dropdown-header-padding: $dropdown-padding-y $dropdown-item-padding-x !default;
+
+// List group
+
+$list-group-color: null !default;
+$list-group-bg: $scheme-main !default;
+$list-group-border-color: $border !default;
+$list-group-border-width: $control-border-width !default;
+$list-group-border-radius: $radius !default;
+
+$list-group-item-padding-y: .75rem !default;
+$list-group-item-padding-x: 1.25rem !default;
+
+$list-group-hover-bg: $background !default;
+$list-group-active-color: $scheme-invert !default;
+$list-group-active-bg: $primary !default;
+$list-group-active-border-color: $list-group-active-bg !default;
+
+$list-group-disabled-color: $text-weak !default;
+$list-group-disabled-bg: $list-group-bg !default;
+
+$list-group-action-color: $text !default;
+$list-group-action-hover-color: $text-strong !default;
+
+$list-group-action-active-color: $text-strong !default;
+$list-group-action-active-bg: $background !default;
+
+// Position
+
+$position-values: ( 0: 0, 50: 50%, 100: 100% ) !default;

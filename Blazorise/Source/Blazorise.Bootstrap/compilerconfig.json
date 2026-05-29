@@ -1,0 +1,10 @@
+﻿[
+  {
+    "outputFile": "wwwroot/blazorise.bootstrap.css",
+    "inputFile": "Styles/blazorise.bootstrap.scss"
+  },
+  {
+    "outputFile": "Styles/_offcanvas.css",
+    "inputFile": "Styles/_offcanvas.scss"
+  }
+]

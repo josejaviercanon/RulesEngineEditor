@@ -1,0 +1,86 @@
+@page "/tests/datagrid/pager"
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Datagrid: Pager</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <DataGrid TItem="Employee"
+                          Data="inMemoryData"
+                          Responsive
+                          ShowPager
+                          ShowPageSizes
+                          PagerPosition="DataGridPagerPosition.TopAndBottom"
+                          PagerOptions="new(){ ButtonSize=Size.Small }">
+                    <DataGridColumns>
+                        <DataGridColumn TextAlignment="TextAlignment.Center" TItem="Employee" Field="@nameof( Employee.Id )" Caption="#" Width="Width.Px( 60 )" SortDirection="SortDirection.Descending" />
+                        <DataGridColumn TItem="Employee" Field="@nameof( Employee.FirstName )" Caption="First Name">
+                        </DataGridColumn>
+                        <DataGridColumn TItem="Employee" Field="@nameof( Employee.LastName )" Caption="Last Name" />
+                        <DataGridColumn TItem="Employee" Field="@nameof( Employee.Email )" Caption="Email" />
+                        <DataGridColumn TItem="Employee" Field="@nameof( Employee.City )" Caption="City">
+                            <CaptionTemplate>
+                                <Icon Name="IconName.City" /> @context.Caption
+                            </CaptionTemplate>
+                        </DataGridColumn>
+                        <DataGridColumn TItem="Employee" Field="@nameof( Employee.Zip )" Caption="Zip">
+                        </DataGridColumn>
+                        <DataGridDateColumn TItem="Employee" Field="@nameof( Employee.DateOfBirth )" DisplayFormat="{0:dd.MM.yyyy}" Caption="Birth Date" Editable />
+                        <DataGridNumericColumn TItem="Employee" Field="@nameof( Employee.Childrens )" Caption="Childrens" Editable Filterable="false" />
+                        <DataGridSelectColumn TItem="Employee" Field="@nameof( Employee.Gender )" Caption="Gender" Editable Data="EmployeeData.Genders" ValueField="( x ) => ( (Gender)x ).Code" TextField="( x ) => ( (Gender)x ).Description" />
+                        <DataGridColumn TItem="Employee" Field="@nameof( Employee.Salary )" Caption="Salary" Editable Width="Width.Px( 140 )" DisplayFormat="{0:C}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo( "fr-FR" )" TextAlignment="TextAlignment.End">
+                        </DataGridColumn>
+                        <DataGridCheckColumn TItem="Employee" Field="@nameof( Employee.IsActive )" Caption="Active" Editable Filterable="false">
+                            <DisplayTemplate>
+                                <Check TValue="bool" Value="context.Item.IsActive" Disabled ReadOnly />
+                            </DisplayTemplate>
+                        </DataGridCheckColumn>
+                    </DataGridColumns>
+                    <PageButtonTemplate>
+                        <Span TextColor="TextColor.Success">
+                            @context.PageNumber
+                        </Span>
+                    </PageButtonTemplate>
+                    <NextPageButtonTemplate><Icon Name="IconName.StepForward" TextColor="TextColor.Success" /></NextPageButtonTemplate>
+                    <PreviousPageButtonTemplate><Icon Name="IconName.StepBackward" TextColor="TextColor.Success" /></PreviousPageButtonTemplate>
+                    <LastPageButtonTemplate><Icon Name="IconName.Forward" TextColor="TextColor.Success" /></LastPageButtonTemplate>
+                    <FirstPageButtonTemplate><Icon Name="IconName.Backward" TextColor="TextColor.Success" /></FirstPageButtonTemplate>
+                    <TotalItemsTemplate><Badge Color="Color.Success">@context.TotalItems total items</Badge></TotalItemsTemplate>
+                    <TotalItemsShortTemplate><Badge Color="Color.Success">@context.TotalItems</Badge></TotalItemsShortTemplate>
+                    <ItemsPerPageTemplate></ItemsPerPageTemplate>
+                    <PageSelectorTemplate>
+                        <Select TextColor="TextColor.Success" @bind-Value="@context.Page" Size="Size.Small">
+                            @for ( int i = context.FirstVisiblePage; i <= context.LastVisiblePage; ++i )
+                            {
+                                var pageNumber = i;
+                                <SelectItem Value="@pageNumber">@pageNumber</SelectItem>
+                            }
+                        </Select>
+                    </PageSelectorTemplate>
+                    <PageSizesTemplate>
+                        <Select TextColor="TextColor.Success" @bind-Value="@context.PageSize" Size="Size.Small">
+                            @foreach ( var curPageSize in context.PageSizes )
+                            {
+                                <SelectItem Value="@curPageSize">@curPageSize</SelectItem>
+                            }
+                        </Select>
+                    </PageSizesTemplate>
+                </DataGrid>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+@code {
+
+    [Inject] EmployeeData EmployeeData { get; set; }
+
+    private IEnumerable<Employee> inMemoryData;
+
+    protected override async Task OnInitializedAsync()
+    {
+        inMemoryData = ( await EmployeeData.GetDataAsync().ConfigureAwait( false ) ).Take( 25 );
+        await base.OnInitializedAsync();
+    }
+}

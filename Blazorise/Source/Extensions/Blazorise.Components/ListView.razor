@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNetCore.Components.Web.Virtualization
+@typeparam TItem
+<ListGroup Class="@ListGroupClassNames" Style="@ListGroupStyleNames" Flush="@Flush" Scrollable="@Scrollable" Mode="@Mode" SelectionMode="@SelectionMode" SelectedItem="@GetItemValue( SelectedItem )" SelectedItemChanged="@SelectedListGroupItemChanged" SelectedItems="@GetItemValues( SelectedItems )" SelectedItemsChanged="@SelectedListGroupItemsChanged" Attributes="@Attributes">
+    @{
+        var listViewData = GetData();
+
+        @if ( listViewData is not null )
+        {
+            @if ( ShouldVirtualize( listViewData, out var virtualizedData ) )
+            {
+                <Virtualize TItem="TItem" Context="item" Items="@virtualizedData">
+                    @itemFragment( item )
+                </Virtualize>
+            }
+            else
+            {
+                @foreach ( var item in listViewData ?? Enumerable.Empty<TItem>() )
+                {
+                    @itemFragment( item )
+                }
+            }
+        }
+    }
+    @ChildContent
+</ListGroup>
+@code {
+    protected RenderFragment<TItem> itemFragment => item => __builder =>
+    {
+        var itemText = GetItemText( item );
+        var itemValue = GetItemValue( item );
+        var itemDisabled = GetItemDisabled( item );
+        var itemTextColor = GetItemTextColor( item );
+        var itemBackground = GetItemBackground( item );
+        var itemPadding = GetItemPadding( item );
+        var itemMargin = GetItemMargin( item );
+        var itemClass = GetItemClass( item );
+        var itemStyles = GetItemStyle( item );
+        var itemKey = GetItemRenderKey( item, itemValue );
+
+        @if ( ItemTemplate is not null )
+        {
+            <ListGroupItem @key="@itemKey" Disabled=@itemDisabled TextColor="@itemTextColor" Background="@itemBackground" Padding="@itemPadding" Margin="@itemMargin" Class="@itemClass" Style="@itemStyles" Name="@itemValue" data-listview-template="true">@ItemTemplate( new( item, itemText, itemValue ) )</ListGroupItem>
+        }
+        else
+        {
+            <ListGroupItem @key="@itemKey" Disabled=@itemDisabled TextColor="@itemTextColor" Background="@itemBackground" Padding="@itemPadding" Margin="@itemMargin" Class="@itemClass" Style="@itemStyles" Name="@itemValue" data-listview-text="true">@itemText</ListGroupItem>
+        }
+    };
+}

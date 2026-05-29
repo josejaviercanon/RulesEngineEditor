@@ -1,0 +1,368 @@
+@page "/rules"
+@inject WorkflowApiClient WorkflowApiClient
+@inject WorkflowManagementService WorkflowManagementService
+
+<PageTitle>Rules</PageTitle>
+
+<Heading Size="HeadingSize.Is2" Margin="Margin.Is3.FromBottom">Rules</Heading>
+
+@if (!string.IsNullOrWhiteSpace(statusMessage))
+{
+    <Alert Color="@statusColor" Visible Margin="Margin.Is3.FromBottom">
+        <AlertDescription>@statusMessage</AlertDescription>
+    </Alert>
+}
+
+<Card>
+    <CardHeader>
+        <CardTitle>Workflow Rules</CardTitle>
+    </CardHeader>
+    <CardBody>
+        <Table Striped Hoverable Bordered FullWidth>
+            <TableHeader>
+                <TableRow>
+                    <TableHeaderCell></TableHeaderCell>
+                    <TableHeaderCell>Actions</TableHeaderCell>
+                    <TableHeaderCell>Guid ID</TableHeaderCell>
+                    <TableHeaderCell>Last Version</TableHeaderCell>
+                    <TableHeaderCell>Workflow Name</TableHeaderCell>
+                    <TableHeaderCell>Is Enabled</TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                @foreach (var workflow in workflowRows)
+                {
+                    <TableRow>
+                        <TableRowCell>
+                            <Button Color="Color.Light" Size="Size.Small" Clicked="@(() => ToggleRuleDetailAsync(workflow))">
+                                <Icon Name="@(expandedWorkflowIds.Contains(workflow.Id) ? IconName.ChevronDown : IconName.ChevronRight)" />
+                            </Button>
+                        </TableRowCell>
+                        <TableRowCell>
+                            <Button Color="Color.Primary" Size="Size.Small" Clicked="@(() => OpenCreateRuleModalAsync(workflow))">
+                                <Icon Name="IconName.Plus" />
+                                New Rule
+                            </Button>
+                        </TableRowCell>
+                        <TableRowCell>@workflow.Id</TableRowCell>
+                        <TableRowCell>@workflow.Version</TableRowCell>
+                        <TableRowCell>@workflow.WorkflowName</TableRowCell>
+                        <TableRowCell>
+                            <Badge Color="@(workflow.IsEnabled ? Color.Success : Color.Warning)">
+                                @(workflow.IsEnabled ? "Enabled" : "Disabled")
+                            </Badge>
+                        </TableRowCell>
+                    </TableRow>
+
+                    @if (expandedWorkflowIds.Contains(workflow.Id))
+                    {
+                        var rules = rulesByWorkflow.TryGetValue(workflow.Id, out var value)
+                            ? value
+                            : [];
+
+                        <TableRow>
+                            <TableRowCell ColSpan="6">
+                                <Table Striped Bordered FullWidth>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHeaderCell>Actions</TableHeaderCell>
+                                            <TableHeaderCell>Guid ID</TableHeaderCell>
+                                            <TableHeaderCell>Name</TableHeaderCell>
+                                            <TableHeaderCell>Version</TableHeaderCell>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        @foreach (var rule in rules)
+                                        {
+                                            <TableRow>
+                                                <TableRowCell>
+                                                    <Button Color="Color.Primary" Size="Size.Small" Clicked="@(() => OpenEditRuleModalAsync(workflow.Id, rule))">
+                                                        <Icon Name="IconName.Pen" />
+                                                        Edit
+                                                    </Button>
+                                                </TableRowCell>
+                                                <TableRowCell>@rule.RuleGuidId</TableRowCell>
+                                                <TableRowCell>@rule.RuleName</TableRowCell>
+                                                <TableRowCell>@rule.Version</TableRowCell>
+                                            </TableRow>
+                                        }
+                                    </TableBody>
+                                </Table>
+                            </TableRowCell>
+                        </TableRow>
+                    }
+                }
+            </TableBody>
+        </Table>
+    </CardBody>
+</Card>
+
+<Modal @ref="ruleModalRef" Centered Size="ModalSize.Large">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>@(isCreateRuleMode ? "New Rule" : "Edit Rule")</ModalTitle>
+            <CloseButton Clicked="CloseRuleModal" />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel>Rule Name</FieldLabel>
+                <TextInput @bind-Value="ruleForm.RuleName" Placeholder="Enter rule name" />
+            </Field>
+            <Field>
+                <FieldLabel>Expression</FieldLabel>
+                <MemoInput @bind-Value="ruleForm.Expression" Rows="6" Placeholder="Enter rule expression" />
+            </Field>
+
+            @if (ruleValidationErrors.Count > 0)
+            {
+                <Alert Color="Color.Danger" Visible>
+                    <AlertMessage>Rule validation failed</AlertMessage>
+                    <AlertDescription>
+                        <UnorderedList>
+                            @foreach (var item in ruleValidationErrors)
+                            {
+                                <UnorderedListItem>@item</UnorderedListItem>
+                            }
+                        </UnorderedList>
+                    </AlertDescription>
+                </Alert>
+            }
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="CloseRuleModal">Cancel</Button>
+            <Button Color="Color.Primary" Clicked="SaveRuleAsync">Save</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+    private readonly List<WorkflowGridRow> workflowRows = [];
+    private readonly Dictionary<Guid, IReadOnlyList<RuleGridRow>> rulesByWorkflow = new();
+    private readonly List<string> ruleValidationErrors = [];
+    private readonly HashSet<Guid> expandedWorkflowIds = [];
+    private Modal ruleModalRef = default!;
+    private Guid selectedWorkflowId;
+    private Guid selectedRuleGuidId;
+    private int selectedRuleVersion;
+    private bool isCreateRuleMode;
+    private RuleFormModel ruleForm = new();
+    private string statusMessage = string.Empty;
+    private Color statusColor = Color.Info;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ReloadWorkflowRowsAsync();
+    }
+
+    private async Task ReloadWorkflowRowsAsync()
+    {
+        workflowRows.Clear();
+        workflowRows.AddRange(await WorkflowManagementService.ListWorkflowGridRowsAsync());
+    }
+
+    private async Task ToggleRuleDetailAsync(WorkflowGridRow row)
+    {
+        if (!rulesByWorkflow.ContainsKey(row.Id))
+        {
+            await LoadRulesForWorkflowAsync(row.Id);
+        }
+
+        if (!expandedWorkflowIds.Add(row.Id))
+        {
+            expandedWorkflowIds.Remove(row.Id);
+        }
+    }
+
+    private async Task LoadRulesForWorkflowAsync(Guid workflowId)
+    {
+        var workflow = await WorkflowApiClient.GetWorkflowByIdAsync(workflowId, "IncludeHistory");
+        if (workflow is null)
+        {
+            rulesByWorkflow[workflowId] = [];
+            return;
+        }
+
+        rulesByWorkflow[workflowId] = WorkflowManagementService.ToRuleGridRows(workflow.Workflow);
+    }
+
+    private async Task OpenCreateRuleModalAsync(WorkflowGridRow workflow)
+    {
+        selectedWorkflowId = workflow.Id;
+        selectedRuleGuidId = Guid.Empty;
+        selectedRuleVersion = 0;
+        isCreateRuleMode = true;
+        ruleValidationErrors.Clear();
+        ruleForm = new RuleFormModel();
+        await ruleModalRef.Show();
+    }
+
+    private async Task OpenEditRuleModalAsync(Guid workflowId, RuleGridRow rule)
+    {
+        selectedWorkflowId = workflowId;
+        selectedRuleGuidId = rule.RuleGuidId;
+        selectedRuleVersion = rule.Version;
+        isCreateRuleMode = false;
+        ruleValidationErrors.Clear();
+        ruleForm = new RuleFormModel
+        {
+            RuleName = rule.RuleName,
+            Expression = rule.Expression
+        };
+
+        await ruleModalRef.Show();
+    }
+
+    private Task CloseRuleModal() => ruleModalRef.Hide();
+
+    private async Task SaveRuleAsync()
+    {
+        ruleValidationErrors.Clear();
+
+        if (selectedWorkflowId == Guid.Empty)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(ruleForm.RuleName) || string.IsNullOrWhiteSpace(ruleForm.Expression))
+        {
+            ruleValidationErrors.Add("Rule name and expression are required.");
+            return;
+        }
+
+        try
+        {
+            var workflow = await WorkflowApiClient.GetWorkflowByIdAsync(selectedWorkflowId, "ActiveOnly");
+
+            if (workflow is null)
+            {
+                SetStatus("Workflow not found.", Color.Warning);
+                return;
+            }
+
+            var updatedWorkflow = CloneWorkflow(workflow.Workflow);
+            var rules = updatedWorkflow.Rules.ToList();
+
+            if (isCreateRuleMode)
+            {
+                rules.Add(new RulePayload
+                {
+                    RuleGuidId = Guid.NewGuid(),
+                    Version = 1,
+                    IsActive = true,
+                    Status = "draft",
+                    RuleName = ruleForm.RuleName.Trim(),
+                    Enabled = true,
+                    Expression = ruleForm.Expression.Trim()
+                });
+            }
+            else
+            {
+                if (selectedRuleGuidId == Guid.Empty)
+                {
+                    SetStatus("Invalid rule identifier.", Color.Warning);
+                    return;
+                }
+
+                if (selectedRuleVersion > 0)
+                {
+                    await WorkflowApiClient.ActivateRuleVersionAsync(selectedWorkflowId, selectedRuleGuidId, selectedRuleVersion);
+                    workflow = await WorkflowApiClient.GetWorkflowByIdAsync(selectedWorkflowId, "ActiveOnly");
+                    if (workflow is null)
+                    {
+                        SetStatus("Unable to load active workflow after activating rule version.", Color.Warning);
+                        return;
+                    }
+
+                    updatedWorkflow = CloneWorkflow(workflow.Workflow);
+                    rules = updatedWorkflow.Rules.ToList();
+                }
+
+                var existingRule = rules.FirstOrDefault(item => item.RuleGuidId == selectedRuleGuidId);
+
+                if (existingRule is null)
+                {
+                    SetStatus("Rule was not found in active workflow state.", Color.Warning);
+                    return;
+                }
+
+                existingRule.RuleName = ruleForm.RuleName.Trim();
+                existingRule.Expression = ruleForm.Expression.Trim();
+            }
+
+            updatedWorkflow.Rules = rules;
+
+            var validation = await WorkflowApiClient.ValidateWorkflowAsync(updatedWorkflow);
+            if (!validation.IsValid)
+            {
+                ruleValidationErrors.AddRange(validation.Errors);
+                return;
+            }
+
+            await WorkflowApiClient.UpdateWorkflowAsync(selectedWorkflowId, updatedWorkflow);
+
+            await ReloadWorkflowRowsAsync();
+            await LoadRulesForWorkflowAsync(selectedWorkflowId);
+            await CloseRuleModal();
+
+            SetStatus(isCreateRuleMode ? "Rule created successfully." : "Rule updated successfully.", Color.Success);
+        }
+        catch (WorkflowApiException exception)
+        {
+            ruleValidationErrors.AddRange(exception.Errors);
+            SetStatus(string.Join(" ", exception.Errors), Color.Danger);
+        }
+    }
+
+    private static WorkflowPayload CloneWorkflow(WorkflowPayload workflow)
+        => new()
+        {
+            Id = workflow.Id,
+            WorkflowName = workflow.WorkflowName,
+            RuleExpressionType = workflow.RuleExpressionType,
+            GlobalParams = workflow.GlobalParams.Select(item => new ScopedParamPayload { Name = item.Name, Expression = item.Expression }).ToArray(),
+            Rules = workflow.Rules.Select(CloneRule).ToArray(),
+            WorkflowsToInject = workflow.WorkflowsToInject.ToArray(),
+            WorkflowJson = workflow.WorkflowJson,
+            Version = workflow.Version,
+            IsActive = workflow.IsActive,
+            IsEnabled = workflow.IsEnabled,
+            Comments = workflow.Comments,
+            EffectiveFromUtc = workflow.EffectiveFromUtc,
+            EffectiveToUtc = workflow.EffectiveToUtc
+        };
+
+    private static RulePayload CloneRule(RulePayload rule)
+        => new()
+        {
+            RuleGuidId = rule.RuleGuidId,
+            Version = rule.Version,
+            IsActive = rule.IsActive,
+            Status = rule.Status,
+            RuleName = rule.RuleName,
+            Operator = rule.Operator,
+            ErrorMessage = rule.ErrorMessage,
+            Enabled = rule.Enabled,
+            RuleExpressionType = rule.RuleExpressionType,
+            Expression = rule.Expression,
+            RuleJson = rule.RuleJson,
+            SuccessEvent = rule.SuccessEvent,
+            LocalParams = rule.LocalParams.Select(item => new ScopedParamPayload { Name = item.Name, Expression = item.Expression }).ToArray(),
+            Rules = rule.Rules.Select(CloneRule).ToArray(),
+            Actions = rule.Actions,
+            WorkflowsToInject = rule.WorkflowsToInject.ToArray(),
+            Properties = new Dictionary<string, string>(rule.Properties)
+        };
+
+    private void SetStatus(string message, Color color)
+    {
+        statusMessage = message;
+        statusColor = color;
+    }
+
+    private sealed class RuleFormModel
+    {
+        public string RuleName { get; set; } = string.Empty;
+
+        public string Expression { get; set; } = string.Empty;
+    }
+}

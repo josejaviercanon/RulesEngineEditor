@@ -1,0 +1,146 @@
+﻿@page "/tests/progressbars"
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Basic Example</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Default progress bar.</CardText>
+            </CardBody>
+            <CardBody>
+                <Progress Margin="Margin.Is3.FromBottom" />
+                <Progress Value="50" Margin="Margin.Is3.FromBottom" />
+                <Progress Value="50" Margin="Margin.Is3.FromBottom" />
+                <Progress Value="75" Margin="Margin.Is3.FromBottom" />
+                <Progress Value="100" Margin="Margin.Is3.FromBottom" />
+                <Progress Value="25" Margin="Margin.Is3.FromBottom">
+                    25%
+                </Progress>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Contextual Alternatives</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Progress bars use some of the same button and alert classes for consistent styles.</CardText>
+            </CardBody>
+            <CardBody>
+                <Progress Color="Color.Success" Value="25" Margin="Margin.Is3.FromBottom" />
+                <Progress Color="Color.Info" Value="50" Margin="Margin.Is3.FromBottom" />
+                <Progress Color="Color.Warning" Value="75" Margin="Margin.Is3.FromBottom" />
+                <Progress Color="Color.Danger" Value="100" Margin="Margin.Is3.FromBottom" />
+                <Progress Margin="Margin.Is3.FromBottom">
+                    <ProgressBar Value="15" />
+                    <ProgressBar Color="Color.Success" Value="30" />
+                    <ProgressBar Color="Color.Info" Value="20" />
+                </Progress>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Striped Example</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Uses a gradient to create a striped effect.</CardText>
+            </CardBody>
+            <CardBody>
+                <CardBody>
+                    <Progress Striped Value="10" Margin="Margin.Is3.FromBottom" />
+                    <Progress Color="Color.Success" Striped Value="25" Margin="Margin.Is3.FromBottom" />
+                    <Progress Color="Color.Info" Striped Value="50" Margin="Margin.Is3.FromBottom" />
+                    <Progress Color="Color.Warning" Striped Value="75" Margin="Margin.Is3.FromBottom" />
+                    <Progress Color="Color.Danger" Striped Value="100" Margin="Margin.Is3.FromBottom" />
+                    <Progress Striped Animated Value="75" Margin="Margin.Is3.FromBottom" />
+                    <Progress Indeterminate Margin="Margin.Is3.FromBottom" />
+                </CardBody>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Size example</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Your awesome text goes here.</CardText>
+            </CardBody>
+            <CardBody>
+                <Progress Color="Color.Success" Value="15" Margin="Margin.Is3.FromBottom" Size="Size.ExtraSmall" />
+                <Progress Color="Color.Info" Value="20" Margin="Margin.Is3.FromBottom" Size="Size.Small" />
+                <Progress Color="Color.Primary" Value="35" Margin="Margin.Is3.FromBottom" />
+                <Progress Color="Color.Info" Value="50" Margin="Margin.Is3.FromBottom" Size="Size.Medium" />
+                <Progress Color="Color.Warning" Value="75" Margin="Margin.Is3.FromBottom" Size="Size.Large" />
+                <Progress Color="Color.Danger" Value="100" Margin="Margin.Is3.FromBottom" Size="Size.ExtraLarge" />
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Page Progress</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Shows a small progress at the top of the page.</CardText>
+            </CardBody>
+            <CardBody>
+                <PageProgress @ref="@pageProgress" Color="@pageProgressColor" Visible="@pageProgressVisible" />
+
+                <Button Color="Color.Primary" Disabled="@pageProgressVisible" Clicked="@OnShowPageProgress">Show</Button>
+                <Button Color="Color.Primary" Disabled="@pageProgressVisible" Clicked="@OnShowPageProgressIndeterminate">Indeterminate progress</Button>
+                <Button Color="Color.Danger" Disabled="@pageProgressVisible" Clicked="@OnShowPageProgressDanger">Danger progress</Button>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+@code{
+    PageProgress pageProgress;
+    Color pageProgressColor = Color.Default;
+    bool pageProgressVisible = false;
+
+    private async Task OnShowPageProgress()
+    {
+        pageProgressColor = Color.Default;
+        pageProgressVisible = true;
+
+        for ( int i = 0; i <= 100; i += 10 )
+        {
+            await pageProgress.SetValueAsync( i );
+
+            await Task.Delay( TimeSpan.FromSeconds( .4 ) );
+        }
+
+        await pageProgress.SetValueAsync( null );
+
+        pageProgressVisible = false;
+    }
+
+    private async Task OnShowPageProgressIndeterminate()
+    {
+        pageProgressColor = Color.Default;
+        pageProgressVisible = true;
+
+        await Task.Delay( TimeSpan.FromSeconds( 4 ) );
+
+        pageProgressVisible = false;
+    }
+
+    private async Task OnShowPageProgressDanger()
+    {
+        pageProgressColor = Color.Danger;
+        pageProgressVisible = true;
+
+        await Task.Delay( TimeSpan.FromSeconds( 4 ) );
+
+        pageProgressVisible = false;
+    }
+}

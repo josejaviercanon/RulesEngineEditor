@@ -1,0 +1,139 @@
+.offcanvas {
+    --offcanvas-size: 20rem;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    z-index: 1050;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+
+    &.is-active {
+        transform: translateX(0);
+    }
+}
+
+.is-showing,
+.is-active:not(.is-hiding) {
+    transform: none;
+}
+
+.is-showing,
+.is-hiding,
+.is-showing {
+    visibility: visible;
+}
+
+.is-start {
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: var(--offcanvas-size);
+    transform-origin: left;
+}
+
+.is-end {
+    top: 0;
+    right: 0;
+    height: 100%;
+    transform: translateX(100%);
+
+    &.is-active {
+        transform: none;
+        width: var(--offcanvas-size);
+    }
+}
+
+.is-top {
+    top: 0;
+    left: 0;
+    right: 0;
+    transform-origin: top;
+    transform: translateY(-100%);
+    width: 100%;
+
+    &.is-active {
+        transform: none;
+        height: var(--offcanvas-size);
+    }
+}
+
+.is-bottom {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform-origin: bottom;
+    transform: translateY(100%);
+    width: 100%;
+
+    &.is-active {
+        transform: none;
+        height: var(--offcanvas-size);
+    }
+}
+
+.offcanvas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.offcanvas-footer {
+    position: sticky;
+    bottom: 0;
+    top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.offcanvas-body {
+    display: flex;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.offcanvas-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 1040;
+
+    &.is-active {
+        opacity: 1;
+    }
+}
+
+.offcanvas {
+    &.is-small {
+        --offcanvas-size: 16rem;
+    }
+
+    &.is-large {
+        --offcanvas-size: 24rem;
+    }
+
+    &.is-extra-large {
+        --offcanvas-size: 32rem;
+    }
+
+    &.is-fullscreen {
+        &.is-start,
+        &.is-end {
+            --offcanvas-size: 100vw;
+        }
+
+        &.is-top,
+        &.is-bottom {
+            --offcanvas-size: 100vh;
+        }
+    }
+}

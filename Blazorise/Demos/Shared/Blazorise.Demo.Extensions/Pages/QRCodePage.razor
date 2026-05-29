@@ -1,0 +1,145 @@
+﻿@page "/tests/qrcode"
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>QR Code Component (based on <Anchor To="https://github.com/kozakdenys/qr-code-styling">qr-code-styling</Anchor> library)</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Row>
+                    <Column>
+                        <Fields>
+                            <Field>
+                                <FieldLabel>
+                                    Value
+                                </FieldLabel>
+                                <FieldBody>
+                                    <TextInput @bind-Value="text" />
+                                </FieldBody>
+                            </Field>
+                            <Field>
+                                <FieldLabel>
+                                    ECC Level
+                                </FieldLabel>
+                                <FieldBody>
+                                    <Select @bind-Value="@eccLevel">
+                                        <SelectItem Value="EccLevel.L">L</SelectItem>
+                                        <SelectItem Value="EccLevel.M">M</SelectItem>
+                                        <SelectItem Value="EccLevel.Q">Q</SelectItem>
+                                        <SelectItem Value="EccLevel.H">H</SelectItem>
+                                    </Select>
+                                </FieldBody>
+                            </Field>
+                            <Field>
+                                <FieldLabel>
+                                    Dark Color
+                                </FieldLabel>
+                                <FieldBody>
+                                    <ColorPicker @bind-Value="@darkColor" />
+                                </FieldBody>
+                            </Field>
+                            <Field>
+                                <FieldLabel>
+                                    Light Color
+                                </FieldLabel>
+                                <FieldBody>
+                                    <ColorPicker @bind-Value="@lightColor" />
+                                </FieldBody>
+                            </Field>
+                            <Field>
+                                <FieldLabel>
+                                    Pixels Per Module
+                                </FieldLabel>
+                                <FieldBody>
+                                    <NumericPicker @bind-Value="pixelsPerModule" ShowStepButtons="false" Decimals="0" />
+                                </FieldBody>
+                            </Field>
+                            <Field>
+                                <FieldLabel>
+                                    As Anchor
+                                </FieldLabel>
+                                <FieldBody>
+                                    <Switch @bind-Value="asAnchor"></Switch>
+                                </FieldBody>
+                            </Field>
+                            <Field>
+                                <FieldLabel>
+                                    Draw Quiet Zones
+                                </FieldLabel>
+                                <FieldBody>
+                                    <Switch @bind-Value="drawQuietZones"></Switch>
+                                </FieldBody>
+                            </Field>
+                        </Fields>
+                    </Column>
+                </Row>
+                <Row>
+                    <Column>
+                        <Fields>
+                            <Field>
+                                <FieldLabel>
+                                    Base64 PNG Image
+                                </FieldLabel>
+                                <FieldBody>
+                                    <TextInput @bind-Value="base64PngIcon" />
+                                </FieldBody>
+                            </Field>
+                            <Field>
+                                <FieldLabel>
+                                    Icon Size Percent
+                                </FieldLabel>
+                                <FieldBody>
+                                    <NumericPicker @bind-Value="iconSizePercentage" ShowStepButtons="false" Decimals="0" />
+                                </FieldBody>
+                            </Field>
+                            <Field>
+                                <FieldLabel>
+                                    Icon Border Width
+                                </FieldLabel>
+                                <FieldBody>
+                                    <NumericPicker @bind-Value="iconBorderWidth" ShowStepButtons="false" Decimals="0" />
+                                </FieldBody>
+                            </Field>
+                        </Fields>
+                    </Column>
+                </Row>
+            </CardBody>
+            <CardBody>
+                <Row>
+                    <Column>
+                        @if ( asAnchor )
+                        {
+                            <Anchor To="@text" Target="Target.Blank">
+                                <QRCode Value="@text" EccLevel="@eccLevel" DarkColor="@darkColor" LightColor="@lightColor" PixelsPerModule="@pixelsPerModule" DrawQuietZones="@drawQuietZones" Icon="@base64PngIcon" IconSizePercentage="@iconSizePercentage" IconBorderWidth="@iconBorderWidth" />
+                            </Anchor>
+                        }
+                        else
+                        {
+                            <QRCode Value="@text" EccLevel="@eccLevel" DarkColor="@darkColor" LightColor="@lightColor" PixelsPerModule="@pixelsPerModule" DrawQuietZones="@drawQuietZones" Icon="@base64PngIcon" IconSizePercentage="@iconSizePercentage" IconBorderWidth="@iconBorderWidth" />
+                        }
+                    </Column>
+                </Row>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+@code {
+    [Inject] private NavigationManager NavigationManager { get; set; }
+
+    private string text = "https://blazorise.com";
+    private EccLevel eccLevel = EccLevel.L;
+    private string darkColor = "#3F51B5CC";
+    private string lightColor = "white";
+    private int pixelsPerModule = 10;
+    private bool asAnchor = false;
+    private bool drawQuietZones = true;
+    private string base64PngIcon;
+    private int iconSizePercentage = 40;
+    private int iconBorderWidth = 0;
+
+    protected override void OnInitialized()
+    {
+        base64PngIcon = $"{NavigationManager.BaseUri}brand-logo.png";
+    }
+}

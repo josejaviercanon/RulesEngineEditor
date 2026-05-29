@@ -1,0 +1,11 @@
+﻿using Blazorise;
+using Blazorise.AntDesign;
+using Blazorise.Icons.AntDesign;
+
+builder.Services
+    .AddBlazorise( options =>
+    {
+        options.Immediate = true;
+    } )
+    .AddAntDesignProviders()
+    .AddAntDesignIcons();

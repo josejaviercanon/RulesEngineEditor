@@ -1,0 +1,287 @@
+﻿@page "/docs/components/field"
+
+<Seo Canonical="/docs/components/field" Title="Blazorise Field Component - Form Layout &amp; Input Grouping" Description="Learn how to use the Blazorise Field component to structure form layouts, align labels, add help text, and group input controls using Bootstrap-inspired patterns." />
+
+<DocsPageTitle Path="Components/Field">
+    Blazorise Field component
+</DocsPageTitle>
+
+<DocsPageLead>
+    A flexible layout container used to organize and align form input components for better usability, accessibility, and structure.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The <Code Tag>Field</Code> component acts as a lightweight form layout wrapper that groups a label, input control, help text, and validation message into a single, consistent container.
+    It works with common Blazorise form controls such as <Code>TextInput</Code>, <Code>Select</Code>, <Code>DateInput</Code>, <Code>Check</Code>, <Code>MemoInput</Code>, and optionally <Code>Button</Code>.
+    Its structure is intentionally minimal, making it easy to build clear, predictable, and accessible form layouts.
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>Field</Code> the main container.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>FieldLabel</Code> used for the label of the field.
+                </Paragraph>
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>FieldBody</Code> the container for the input control.
+                </Paragraph>
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>FieldHelp</Code> used for the help text.
+                </Paragraph>
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>Fields</Code> container used to group several <Code>Field</Code> components
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>FieldsLabel</Code> used to label the whole container and renders a <Code Tag>legend</Code> when <Code>Group</Code> is enabled.
+                </Paragraph>
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code>Group</Code> turns <Code Tag>Field</Code> or <Code Tag>Fields</Code> into semantic group containers.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    In a grouped <Code Tag>Field</Code>, <Code Tag>FieldLabel</Code> renders a <Code Tag>legend</Code>.
+                </Paragraph>
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>FieldSet</Code> and <Code Tag>Legend</Code> remain available as simple native wrappers when you want to render those elements directly.
+                </Paragraph>
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageParagraph>
+    It is recommended to always place input components inside of a <Code>Field</Code>. That way you will keep consistent spacing,
+    alignment, and arrangement between input controls across your forms.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    <Code Tag>Field</Code> is also the main semantic unit for forms in Blazorise. When a field contains one primary control together with
+    <Code Tag>FieldLabel</Code>, <Code Tag>FieldHelp</Code>, and validation feedback, Blazorise has enough context to keep visible form layout and
+    accessibility metadata aligned.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    When a question is answered by multiple related controls, such as a <Code>RadioGroup</Code> or a set of checkboxes, prefer
+    enabling <Code>Group</Code> on <Code Tag>Field</Code> or <Code Tag>Fields</Code>. In a grouped <Code Tag>Field</Code>,
+    <Code Tag>FieldLabel</Code> renders a <Code Tag>legend</Code>, and in a grouped <Code Tag>Fields</Code> container,
+    <Code Tag>FieldsLabel</Code> labels the whole set.
+</DocsPageParagraph>
+
+<Alert Color="Color.Info" Visible>
+    <AlertDescription>
+        <Strong>Important:</Strong> The best accessibility results come from using one primary interactive control per <Code Tag>Field</Code>.
+        That keeps label, help, and validation associations unambiguous.
+    </AlertDescription>
+</Alert>
+
+<DocsPageParagraph>
+    By default, Blazorise uses the <Code Tag>Field</Code> structure to automatically render <Code>for</Code> on <Code Tag>FieldLabel</Code> for
+    labelable controls, <Code>aria-labelledby</Code> for non-labelable controls such as <Code>RadioGroup</Code>, <Code>ColorPicker</Code>,
+    <Code>RichTextEdit</Code>, <Code>Markdown</Code>, and <Code>SignaturePad</Code>, <Code>aria-describedby</Code> from
+    <Code Tag>FieldHelp</Code> and validation messages, and <Code>aria-invalid</Code> from validation state.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    You can still override any association when needed with <Code>FieldLabel.For</Code>, <Code>AriaLabelledBy</Code>,
+    <Code>AriaDescribedBy</Code>, and <Code>AriaInvalid</Code>. Automatic accessibility integrations are enabled by default and can be controlled
+    globally through <Code>BlazoriseOptions.AccessibilityOptions</Code>.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+        To properly structure your form, wrap each input control inside a <Code>Field</Code> component to keep labels, help text, and validation messages aligned consistently.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicFieldExample" Outlined FullWidth>
+        <BasicFieldExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Label">
+        Every input should have a clear, descriptive label that explains its purpose in plain language. Use <Code Tag>FieldLabel</Code> to associate the label with the control, and <Code>FieldHelp</Code> when additional guidance is needed.
+        In a standard <Code Tag>Field</Code>, <Code Tag>FieldLabel</Code> can usually resolve the correct target automatically, so you only need
+        <Code>For</Code> for custom or ambiguous layouts.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="FieldWithLabelExample" Outlined FullWidth>
+        <FieldWithLabelExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Helper">
+        Helper text provides inline guidance or additional context for a field. It can contain plain text, HTML, or other components and should clarify how to fill out the input without repeating the label.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="FieldWithHelpExample" Outlined FullWidth>
+        <FieldWithHelpExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Read-Only">
+        Set a field as read-only when the value should be visible but not editable. Read-only inputs remain in the tab order, can receive focus, and their contents can still be selected and copied by the user.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="FieldWithReadOnlyExample" Outlined FullWidth>
+        <FieldWithReadOnlyExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Disabled">
+        <Paragraph>
+            Disable a field to mark it as unavailable when the user should not interact with it. Disabled inputs cannot receive focus or be edited.
+        </Paragraph>
+        <Paragraph>
+            Disabling a field is often preferable to hiding it because it preserves the layout and lets users see that the option exists, even if it is currently unavailable.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="FieldWithDisabledExample" Outlined FullWidth>
+        <FieldWithDisabledExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Horizontal field">
+        <Paragraph>
+            Use a horizontal field when you want the label and input to appear side-by-side in a single row. Combine <Code Tag>FieldLabel</Code> and <Code Tag>FieldBody</Code> with <Code>ColumnSize</Code> to control how much space each part occupies.
+        </Paragraph>
+        <Paragraph>
+            When using a <Code Tag>Check</Code> component inside a horizontal field, align it with the label by applying <Code>Margin="Margin.IsAuto"</Code> or similar spacing utilities.
+        </Paragraph>
+        <Paragraph>
+            <Strong>Note</Strong>: Horizontal fields are inspired by Bootstrap horizontal form layout, and only one horizontal field should be placed per row to keep the grid aligned.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="HorizontalFieldExample" Outlined FullWidth>
+        <HorizontalFieldExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Visibility">
+        Use the <Code>Visibility</Code> attribute to hide a field while still preserving its space in the layout, so surrounding content does not shift unexpectedly.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="FieldHiddenExample" Outlined FullWidth>
+        <FieldHiddenExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Fields">
+        The <Code Tag>Fields</Code> component is used to group multiple <Code Tag>Field</Code> components. Use it to build rows or columns of related fields that share layout settings and spacing.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="FieldsExample" Outlined FullWidth>
+        <FieldsExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Fields with Gutters">
+        You can add gutters (spacing) between individual fields within a <Code Tag>Fields</Code> container by setting the <Code>Gutter</Code> property. This helps improve readability and visual separation between related inputs.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="FieldsGutterExample" Outlined FullWidth>
+        <FieldsGutterExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Grouped Field and Fields">
+        Enable <Code>Group</Code> on <Code Tag>Field</Code> when one question is answered by a single grouped control such as <Code Tag>RadioGroup</Code>.
+        Enable <Code>Group</Code> on <Code Tag>Fields</Code> when multiple related <Code Tag>Field</Code> components belong to the same section.
+        In grouped mode, <Code Tag>FieldLabel</Code> or <Code Tag>FieldsLabel</Code> becomes the semantic group label and supports <Code>RequiredIndicator</Code> and <Code>Screenreader</Code>.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="FieldSetExample" Outlined FullWidth>
+        <FieldSetExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Validation Indicator">
+        In Blazorise, you can use the <Code>RequiredIndicator</Code> feature to automatically display an indicator (such as an asterisk) next to labels of required fields. This helps users quickly understand which inputs are mandatory and improves overall form usability.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="RequiredIndicatorExample" Outlined FullWidth>
+        <RequiredIndicatorExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Best Practices
+</DocsPageSubtitle>
+
+<Heading Size="HeadingSize.Is3">
+    Do
+</Heading>
+
+<DocsPageParagraph>
+    <UnorderedList>
+        <UnorderedListItem>
+            <Paragraph>Use <Code Tag>Field</Code> to provide a consistent label, layout, and validation message for each form control.</Paragraph>
+        </UnorderedListItem>
+        <UnorderedListItem>
+            <Paragraph>Use <Code Tag>Field</Code> to label controls that do not have built-in labels, such as <Code Tag>ProgressBar</Code> or custom components.</Paragraph>
+        </UnorderedListItem>
+        <UnorderedListItem>
+            <Paragraph>Use <Code Tag>Fields</Code> to group related <Code Tag>Field</Code> components when building multi-column or sectioned form layouts.</Paragraph>
+        </UnorderedListItem>
+        <UnorderedListItem>
+            <Paragraph>Use <Code>Group</Code> on <Code Tag>Field</Code> or <Code Tag>Fields</Code> when one label applies to a group of related controls instead of a single input.</Paragraph>
+        </UnorderedListItem>
+        <UnorderedListItem>
+            <Paragraph>Keep <Code Tag>FieldLabel</Code>, the primary input, <Code Tag>FieldHelp</Code>, and validation feedback in the same <Code Tag>Field</Code> so Blazorise can generate the correct accessibility attributes automatically.</Paragraph>
+        </UnorderedListItem>
+    </UnorderedList>
+</DocsPageParagraph>
+
+<Heading Size="HeadingSize.Is3">
+    Don't
+</Heading>
+
+<DocsPageParagraph>
+    <UnorderedList>
+        <UnorderedListItem>
+            <Paragraph>Avoid combining a long validation message and extensive helper text in the same field, as this can overwhelm users.</Paragraph>
+        </UnorderedListItem>
+        <UnorderedListItem>
+            <Paragraph>Don't add multiple interactive controls as children of a single <Code Tag>Field</Code>. The label should clearly describe one primary control for better accessibility.</Paragraph>
+        </UnorderedListItem>
+        <UnorderedListItem>
+            <Paragraph>Don't keep a grouped radio or checkbox question in the default single-input mode when the label really belongs to the whole set.</Paragraph>
+        </UnorderedListItem>
+    </UnorderedList>
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Related components include <Code Tag>FieldLabel</Code>, <Code Tag>FieldBody</Code>, <Code Tag>FieldHelp</Code>, <Code Tag>TextInput</Code>, <Code Tag>Select</Code>, and <Code Tag>Check</Code>. Together they help you build accessible and visually consistent forms.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    In summary, the <Code Tag>Field</Code> component simplifies form layout in Blazorise by aligning labels, inputs, help text, and validation messages, while the <Code Tag>Fields</Code> container lets you organize multiple fields into structured sections.
+</DocsPageParagraph>
+
+<ComponentApiDocs ComponentTypes="[typeof(Field),typeof(FieldLabel),typeof(FieldSet),typeof(Legend),typeof(Fields),typeof(FieldsLabel)]" />

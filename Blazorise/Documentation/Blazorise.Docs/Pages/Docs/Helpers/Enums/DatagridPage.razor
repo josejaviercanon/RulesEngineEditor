@@ -1,0 +1,142 @@
+@page "/docs/helpers/enums/datagrid"
+
+<Seo Canonical="/docs/helpers/enums/datagrid" Title="Blazorise DataGrid Enums - Filtering, Sorting, and Selection" Description="DataGrid enums control filtering, sorting, selection, commands, and display behavior. Learn the enum values used across Blazorise DataGrid features." />
+
+<DocsPageTitle>
+    Enums: DataGrid
+</DocsPageTitle>
+
+<DocsPageLead>
+    Configure DataGrid behavior with focused enum values.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    DataGrid enums let you control filtering, sorting, selection, and command behaviors without custom logic.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    How it works
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Assign the relevant enum to a DataGrid parameter, such as filter method, sort mode, or selection mode, to tailor the grid's behavior.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<UnorderedList>
+    <UnorderedListItem><Code>DataGridFilterMethod.Contains</Code> for broad text matching.</UnorderedListItem>
+    <UnorderedListItem><Code>DataGridSortMode.Multiple</Code> for multi-column sorting.</UnorderedListItem>
+    <UnorderedListItem><Code>DataGridSelectionMode.Multiple</Code> to enable multi-row selection.</UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSubtitle>
+    Reference
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="DataGridFilterMethod">
+        <UnorderedList>
+            <UnorderedListItem><Code>Contains</Code> search for any occurrence (default)</UnorderedListItem>
+            <UnorderedListItem><Code>StartsWith</Code> search only the beginning</UnorderedListItem>
+            <UnorderedListItem><Code>EndsWith</Code> search only the ending</UnorderedListItem>
+            <UnorderedListItem><Code>Equals</Code> search must match the entire value</UnorderedListItem>
+            <UnorderedListItem><Code>NotEquals</Code> opposite of Equals</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="DataGridSortMode">
+        <UnorderedList>
+            <UnorderedListItem><Code>Single</Code> The data grid can only be sorted by one column at a time.</UnorderedListItem>
+            <UnorderedListItem><Code>Multiple</Code> The data grid can sorted by multiple columns.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="DataGridSelectionMode">
+        <UnorderedList>
+            <UnorderedListItem><Code>Single</Code> The data grid only supports a row selected at a time.</UnorderedListItem>
+            <UnorderedListItem><Code>Multiple</Code> The data grid enables multiple rows to be selected.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="DataGridCommandMode">
+        <UnorderedList>
+            <UnorderedListItem><Code>Default</Code> Default state which means that both defined commands and button row will render.</UnorderedListItem>
+            <UnorderedListItem><Code>Commands</Code> Only defined commands will render.</UnorderedListItem>
+            <UnorderedListItem><Code>ButtonRow</Code> Only button row will render.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="DataGridPagerPosition">
+        <UnorderedList>
+            <UnorderedListItem><Code>Top</Code> Positions the pagination above the table.</UnorderedListItem>
+            <UnorderedListItem><Code>Bottom</Code> Positions the pagination below the table.</UnorderedListItem>
+            <UnorderedListItem><Code>TopAndBottom</Code> Positions the pagination on above and below the table.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="DataGridAggregateRowPosition">
+        <UnorderedList>
+            <UnorderedListItem><Code>Top</Code> Positions the aggregate row above the table data as the last table header row.</UnorderedListItem>
+            <UnorderedListItem><Code>Bottom</Code> Positions the aggregate row in the footer of the table.</UnorderedListItem>
+            <UnorderedListItem><Code>TopAndBottom</Code> Positions the aggregate row with both Top and Bottom definition.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="SortDirection">
+        <Paragraph>Specifies the direction of a sort operation.</Paragraph>
+        <UnorderedList>
+            <UnorderedListItem><Code>None</Code> No sorting will be applied.</UnorderedListItem>
+            <UnorderedListItem><Code>Ascending</Code> Sorts in ascending order.</UnorderedListItem>
+            <UnorderedListItem><Code>Descending</Code> Sorts in descending order.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="DataGridSelectReason">
+        <Paragraph>Defines the Select Reason of the DataGrid Selection.</Paragraph>
+        <UnorderedList>
+            <UnorderedListItem><Code>RowClick</Code> Row has been clicked.</UnorderedListItem>
+            <UnorderedListItem><Code>MultiSelectClick</Code> Multi select has been triggered.</UnorderedListItem>
+            <UnorderedListItem><Code>MultiSelectAll</Code> Multi select all has been triggered.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="DetailRowTriggerType">
+        <Paragraph>Defines the DetailRowTriggerType of the DataGrid's DetailRow.</Paragraph>
+        <UnorderedList>
+            <UnorderedListItem><Code>Manual</Code> Trigger is manually controlled by invoking the Datagrid's <Code>ToggleDetailRow</Code></UnorderedListItem>
+            <UnorderedListItem><Code>RowClick</Code> Triggers on row click.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="PagerElementPosition">
+        <Paragraph>Sets a Pager Element's position.</Paragraph>
+        <UnorderedList>
+            <UnorderedListItem><Code>Default</Code> Positions the element at the default position. If both ButtonRowPosition and PaginationPosition are set to default. Whether ButtonRow is shown or not will make it so the Pagination is positioned accordingly.</UnorderedListItem>
+            <UnorderedListItem><Code>Start</Code> Positions the element at the start.</UnorderedListItem>
+            <UnorderedListItem><Code>Center</Code> Positions the element at the center.</UnorderedListItem>
+            <UnorderedListItem><Code>End</Code> Positions the element at the end.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>

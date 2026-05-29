@@ -1,0 +1,127 @@
+﻿@page "/docs/components/tooltip"
+
+<Seo Canonical="/docs/components/tooltip" Title="Blazorise Tooltip Component" Description="Learn to use and work with the Blazorise Tooltip component, which is useful for conveying information when a user hovers, focuses, or taps on an element." />
+
+<DocsPageTitle Path="Components/Tooltip">
+    Blazorise Tooltip component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Display short, contextual hints on hover, focus, or tap.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    Use the <Code Tag>Tooltip</Code> component to provide extra context without taking up permanent space in the UI.
+    Tooltips are a good fit for icons, buttons, and truncated text that needs a full-value preview.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Overview
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    <UnorderedList>
+        <UnorderedListItem>
+            <Paragraph><Code>Text</Code> sets the tooltip content.</Paragraph>
+        </UnorderedListItem>
+        <UnorderedListItem>
+            <Paragraph><Code>Placement</Code> controls where the tooltip appears relative to its target.</Paragraph>
+        </UnorderedListItem>
+        <UnorderedListItem>
+            <Paragraph><Code>Trigger</Code> controls which events show the tooltip (hover/focus/click).</Paragraph>
+        </UnorderedListItem>
+        <UnorderedListItem>
+            <Paragraph><Code>Multiline</Code> allows long tooltip text to wrap.</Paragraph>
+        </UnorderedListItem>
+        <UnorderedListItem>
+            <Paragraph><Code>ShowDelay</Code> and <Code>HideDelay</Code> delay showing and hiding (in milliseconds).</Paragraph>
+        </UnorderedListItem>
+        <UnorderedListItem>
+            <Paragraph><Code>Inline</Code> forces the tooltip wrapper to behave as inline-block (useful when wrapping inline content).</Paragraph>
+        </UnorderedListItem>
+        <UnorderedListItem>
+            <Paragraph><Code>TriggerTargetId</Code> applies trigger event listeners to a different element than the tooltip target.</Paragraph>
+        </UnorderedListItem>
+    </UnorderedList>
+</DocsPageParagraph>
+
+<Alert Color="Color.Warning" Visible>
+    <AlertDescription>
+        <Strong>Text truncation:</Strong> if you use <Code>TextOverflow.Truncate</Code> on the tooltip target and it renders as an inline element (e.g. <Code Tag>Text</Code>, <Code Tag>Span</Code>, or <Code Tag>span</Code>), set it to <Code>display: inline-block</Code> (or <Code>block</Code>) and apply a width (for example via <Code>max-width</Code>).
+    </AlertDescription>
+</Alert>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+        Wrap any element with a <Code Tag>Tooltip</Code> and set its <Code>Text</Code>.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicTooltipExample" Outlined FullWidth>
+        <BasicTooltipExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Text truncation">
+        Truncate the visible target text, and show the full value on hover via the tooltip.
+        <Code>TextOverflow.Truncate</Code> requires the target element to have a width, so make it <Code>Display.InlineBlock</Code> (or apply <Code>style="display: inline-block;"</Code>).
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TooltipTextTruncateExample" Outlined FullWidth>
+        <TooltipTextTruncateExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Placement">
+        Use the <Code>Placement</Code> parameter to change where the tooltip appears:
+        <UnorderedList>
+            <UnorderedListItem>
+                Top
+            </UnorderedListItem>
+            <UnorderedListItem>
+                Bottom
+            </UnorderedListItem>
+            <UnorderedListItem>
+                Left
+            </UnorderedListItem>
+            <UnorderedListItem>
+                Right
+            </UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TooltipPositionsExample" Outlined FullWidth>
+        <TooltipPositionsExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Separate trigger target">
+        Use <Code>TriggerTargetId</Code> when the tooltip should be positioned relative to one element, but triggered by another.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TooltipTriggerTargetExample" Outlined FullWidth>
+        <TooltipTriggerTargetExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="HTML content">
+        <Code>Text</Code> can contain HTML markup. Only use this with trusted strings (or sanitize user-provided content).
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TooltipWithHtmlExample" Outlined FullWidth>
+        <TooltipWithHtmlExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Delay">
+        Control how quickly the tooltip shows and hides after the trigger event (in milliseconds).
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TooltipDelayExample" Outlined FullWidth>
+        <TooltipDelayExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(Tooltip)]" />

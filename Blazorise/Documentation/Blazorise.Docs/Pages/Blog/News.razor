@@ -1,0 +1,9 @@
+﻿@page "/news"
+@inject NavigationManager NavigationManager
+
+@code {
+    protected override void OnInitialized()
+    {
+        NavigationManager.NavigateTo( "/blog", replace: true );
+    }
+}

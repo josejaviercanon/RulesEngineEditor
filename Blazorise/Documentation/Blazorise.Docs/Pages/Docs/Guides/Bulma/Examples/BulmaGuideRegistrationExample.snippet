@@ -1,0 +1,11 @@
+﻿using Blazorise;
+using Blazorise.Bulma;
+using Blazorise.Icons.Lucide;
+
+builder.Services
+    .AddBlazorise( options =>
+    {
+        options.Immediate = true;
+    } )
+    .AddBulmaProviders()
+    .AddLucideIcons();

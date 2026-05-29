@@ -1,0 +1,135 @@
+﻿.blazorise-codeblock {
+    height: 100%;
+    background-color: var(--b-codeblock-background-color);
+    border-radius: 0 0 4px 4px;
+    padding: 16px;
+    font-size: .9rem;
+    overflow: auto;
+
+    & pre {
+        height: 100%;
+        color: var(--b-codeblock-color);
+        padding: 0px;
+        font-size: 1em;
+        font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        -webkit-font-smoothing: subpixel-antialiased;
+        direction: ltr;
+        margin-bottom: 0;
+        overflow: visible;
+    }
+
+    & .html + .csharp {
+        margin-top: 23px;
+    }
+
+    & .html {
+
+        & .htmlTagDelimiter {
+            color: var(--b-codeblock-tag-delimiter-color);
+        }
+
+        & .htmlElementName {
+            color: var(--b-codeblock-element-color);
+        }
+
+        & .htmlAttributeName {
+            color: var(--b-codeblock-attribute-name-color);
+        }
+
+        & .htmlOperator, .quot {
+            color: var(--b-codeblock-operator-color);
+        }
+
+        & .htmlAttributeValue {
+            color: var(--b-codeblock-attribute-value-color);
+        }
+
+        & .htmlLink {
+            color: var(--b-codeblock-link-color);
+            text-decoration: underline;
+        }
+
+        & .enum {
+            color: var(--b-codeblock-enum-color);
+            background-color: var(--b-codeblock-token-background-color);
+        }
+
+        & .enumValue, .sharpVariable {
+            color: var(--b-codeblock-enum-value-color);
+            background-color: var(--b-codeblock-token-background-color);
+        }
+
+        & .keyword {
+            color: var(--b-codeblock-keyword-color);
+            background-color: var(--b-codeblock-token-background-color);
+        }
+
+        & .atSign {
+            color: var(--b-codeblock-at-sign-color);
+            background-color: var(--b-codeblock-at-sign-background-color);
+        }
+
+        & .comment {
+            color: var(--b-codeblock-comment-color);
+        }
+    }
+
+    & .csharp {
+        & .atSign {
+            color: var(--b-codeblock-at-sign-color);
+            background-color: var(--b-codeblock-at-sign-background-color);
+        }
+
+        & .keyword {
+            color: var(--b-codeblock-keyword-color);
+        }
+
+        & .string {
+            color: var(--b-codeblock-string-color);
+        }
+
+        & .function {
+            color: var(--b-codeblock-function-color);
+        }
+
+        & .class {
+            color: var(--b-codeblock-type-color);
+        }
+
+        & .localVar {
+            color: var(--b-codeblock-variable-color);
+        }
+
+        & .interface {
+            color: var(--b-codeblock-interface-color);
+        }
+
+        & .number {
+            color: var(--b-codeblock-number-color);
+        }
+
+        & .enum {
+            color: var(--b-codeblock-enum-color);
+        }
+
+        & .comment {
+            color: var(--b-codeblock-comment-color);
+        }
+    }
+
+    & .powershell {
+        & .comment {
+            color: var(--b-codeblock-comment-color);
+        }
+
+        & .powershellOperator {
+            color: var(--b-codeblock-powershell-operator-color);
+        }
+    }
+}
+
+code {
+    color: var(--b-code-color);
+    padding: 0.25em 0.375em;
+    background-color: var(--b-code-background-color);
+}

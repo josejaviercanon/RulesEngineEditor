@@ -1,0 +1,77 @@
+@using System.IO
+@using Blazorise.Docs.Models
+
+<Paragraph>
+    <Div Position="Position.Relative" Height="Height.Is100">
+        <Div Position="Position.Absolute.Top.Is0.End.Is0">
+            <Tooltip Text="@(ShowCode ? "Hide code example" : "Show code example")" Inline>
+                <Button TextColor="TextColor.Secondary" Clicked="@OnToggleCode">
+                    <Icon Name="IconName.Code" />
+                </Button>
+            </Tooltip>
+            <Tooltip Text="Copy code" Inline>
+                <Button TextColor="TextColor.Secondary" Clicked="@OnCopyCode">
+                    <Icon Name="IconName.Copy" />
+                </Button>
+            </Tooltip>
+        </Div>
+        <Div Height="Height.Is100" Display="@SourceCodeDisplay">
+            @if ( ChildContent != null )
+            {
+                @ChildContent
+            }
+            else
+            {
+                @CodeComponent( CurrentCode )
+            }
+        </Div>
+    </Div>
+</Paragraph>
+
+@code {
+    protected override void OnInitialized() => CurrentCode = Code;
+
+    private Task OnToggleCode()
+    {
+        ShowCode = !ShowCode;
+        return Task.CompletedTask;
+    }
+
+    private async Task OnCopyCode()
+    {
+        await JSRuntime.InvokeVoidAsync( "blazoriseDocs.code.copyToClipboard", CurrentCode );
+        await NotificationService.Info( $"Copied code example!" );
+    }
+
+    private RenderFragment CodeComponent( string code ) => builder =>
+    {
+        try
+        {
+            var key = typeof( DocsPageSectionSource ).Assembly
+                .GetManifestResourceNames()
+                .FirstOrDefault( x => x.Contains( $".{code}Code.html" ) );
+
+            if ( key != null )
+            {
+                using var stream = typeof( DocsPageSectionSource ).Assembly.GetManifestResourceStream( key );
+                using var reader = new StreamReader( stream );
+                builder.AddMarkupContent( 0, reader.ReadToEnd() );
+            }
+        }
+        catch { }
+    };
+
+    private IFluentDisplay SourceCodeDisplay => ShowCode ? Display.Block : Display.None;
+
+    private string CurrentCode { get; set; }
+
+    [Inject] public INotificationService NotificationService { get; set; } = default!;
+
+    [Inject] public IJSRuntime JSRuntime { get; set; } = default!;
+
+    [Parameter] public string Code { get; set; } = string.Empty;
+
+    [Parameter] public bool ShowCode { get; set; } = true;
+
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

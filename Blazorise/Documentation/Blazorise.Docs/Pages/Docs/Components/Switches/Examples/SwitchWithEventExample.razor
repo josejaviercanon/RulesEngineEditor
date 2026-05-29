@@ -1,0 +1,14 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+
+<Switch TValue="bool" Value="@rememberMe" ValueChanged="@OnRememberMeChanged">Remember Me</Switch>
+
+@code{
+    bool rememberMe;
+
+    Task OnRememberMeChanged( bool value )
+    {
+        rememberMe = value;
+
+        return Task.CompletedTask;
+    }
+}

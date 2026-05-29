@@ -1,0 +1,53 @@
+@include emit-initial-bar-breakpoints(".b-bar-initial", $breakpoint-observer-breakpoints, $bar-initial-breakpoints);
+
+.b-bar-vertical-inline,
+.b-bar-vertical {
+    &.b-bar-dark {
+        .is-active {
+            color: #fff !important;
+        }
+    }
+}
+
+.navbar-dropdown[data-visible="true"] {
+    animation-duration: 0.3s;
+    animation-fill-mode: both;
+    animation-name: fadeIn;
+}
+
+.b-bar-horizontal {
+    .nav-item.dropdown.has-dropdown {
+        .navbar-dropdown {
+            border: 0;
+
+            .dropdown {
+                > .dropdown-item {
+                    width: 100%;
+                }
+
+                > div {
+                    > .navbar-dropdown {
+                        display: none;
+                        top: 0;
+                        left: 100%;
+                        margin-left: 0rem;
+                        margin-right: .1rem;
+                    }
+                }
+            }
+        }
+
+        .navbar-link.b-bar-dropdown-toggle.navbar-link-disabled {
+            pointer-events: none;
+            opacity: .65;
+        }
+    }
+}
+
+.b-bar-vertical-inline,
+.b-bar-vertical-popout,
+.b-bar-vertical-small {
+    .navbar-burger {
+        color: inherit;
+    }
+}

@@ -1,0 +1,62 @@
+﻿@page "/docs/components/file-picker"
+
+<Seo Canonical="/docs/components/file-picker" Title="Blazorise FilePicker component" Description="Learn to use and work with the Blazorise FilePicker component, a customized, cross-browser consistent, enchanced file input control that supports single file and multiple files upload." />
+
+<DocsPageTitle Path="Components/File Picker" AddedVersion="Added in v1.1">
+    FilePicker component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Customized, cross-browser consistent, enchanced file input control that supports single file and multiple files upload.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    Blazorise FilePicker component provides extra functionality, listing and detailing files, providing clear and upload buttons and inbuilt progress.
+    <Alert Color="Color.Info" Visible>
+        <AlertDescription>
+            <Strong>Note:</Strong> The inbuilt progress can be disabled by the <Code>DisableProgressReport</Code> Parameter, this will in exchange improve file transfer significantly.
+        </AlertDescription>
+    </Alert>
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Upload Files with List view mode">
+        An example using the FilePicker's list show mode and <Code>OpenReadStreamAsync</Code> upload method.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="FilePickerListExample" Outlined FullWidth>
+        <FilePickerListExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Upload Folders with List view mode">
+        An example using the FilePicker's list show mode and <Code>OpenReadStreamAsync</Code> upload method.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="FilePickerDirectoryExample" Outlined FullWidth>
+        <FilePickerDirectoryExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Upload Files with Dropdown view mode">
+        An example using the FilePicker's dropdown show mode and <Code>WriteToStreamAsync</Code> upload method.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="FilePickerDropdownExample" Outlined FullWidth>
+        <FilePickerDropdownExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Custom">
+        An example customizing the FilePicker.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="FilePickerCustomExample" Outlined FullWidth>
+        <FilePickerCustomExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(FilePicker)]" />

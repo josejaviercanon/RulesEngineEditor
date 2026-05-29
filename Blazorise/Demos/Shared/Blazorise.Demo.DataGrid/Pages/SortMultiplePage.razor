@@ -1,0 +1,69 @@
+@page "/tests/datagrid/sort/multiple"
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Datagrid: Multiple Sorting</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Button Color="Color.Secondary" Clicked="OnResetClicked">Reset sorting</Button>
+                <Button Color="Color.Primary" Clicked="OnPredefinedClicked">Apply predefined sorting</Button>
+                <DataGrid @ref="dataGrid"
+                          TItem="Employee"
+                          Data="inMemoryData"
+                          Responsive
+                          ShowPager
+                          ShowPageSizes
+                          Sortable
+                          SortMode="DataGridSortMode.Multiple">
+                    <DataGridColumns>
+                        <DataGridColumn TextAlignment="TextAlignment.Center" TItem="Employee" Field="@nameof( Employee.Id )" Caption="#" Width="Width.Px(60)" />
+                        <DataGridColumn TItem="Employee" Field="@nameof( Employee.FirstName )" Caption="First Name" SortDirection="SortDirection.Ascending">
+                        </DataGridColumn>
+                        <DataGridColumn TItem="Employee" Field="@nameof( Employee.LastName )" Caption="Last Name" />
+                        <DataGridColumn TItem="Employee" Field="@nameof( Employee.Email )" Caption="Email" />
+                        <DataGridColumn TItem="Employee" Field="@nameof( Employee.City )" Caption="City">
+                            <CaptionTemplate>
+                                <Icon Name="IconName.City" /> @context.Caption
+                            </CaptionTemplate>
+                        </DataGridColumn>
+                        <DataGridColumn TItem="Employee" Field="@nameof( Employee.Zip )" Caption="Zip">
+                        </DataGridColumn>
+                        <DataGridDateColumn TItem="Employee" Field="@nameof( Employee.DateOfBirth )" DisplayFormat="{0:dd.MM.yyyy}" Caption="Birth Date" Editable />
+                        <DataGridNumericColumn TItem="Employee" Field="@nameof( Employee.Childrens )" Caption="Childrens" Editable Filterable="false" />
+                        <DataGridSelectColumn SortDirection="SortDirection.Descending" TItem="Employee" Field="@nameof( Employee.Gender )" Caption="Gender" Editable Data="EmployeeData.Genders" ValueField="(x) => ((Gender)x).Code" TextField="(x) => ((Gender)x).Description" />
+                        <DataGridColumn TItem="Employee" Field="@nameof( Employee.Salary )" Caption="Salary" Editable Width="Width.Px(140)" DisplayFormat="{0:C}" DisplayFormatProvider="@System.Globalization.CultureInfo.GetCultureInfo("fr-FR")" TextAlignment="TextAlignment.End">
+                        </DataGridColumn>
+                        <DataGridCheckColumn TItem="Employee" Field="@nameof(Employee.IsActive)" Caption="Active" Editable Filterable="false">
+                            <DisplayTemplate>
+                                <Check TValue="bool" Value="context.Item.IsActive" Disabled ReadOnly />
+                            </DisplayTemplate>
+                        </DataGridCheckColumn>
+                    </DataGridColumns>
+                </DataGrid>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+@code {
+
+    [Inject] EmployeeData EmployeeData { get; set; }
+
+    private IEnumerable<Employee> inMemoryData;
+    private DataGrid<Employee> dataGrid;
+
+    protected override async Task OnInitializedAsync()
+    {
+        inMemoryData = ( await EmployeeData.GetDataAsync().ConfigureAwait( false ) ).Take( 25 );
+        await base.OnInitializedAsync();
+    }
+
+    private Task OnResetClicked() => dataGrid.ApplySorting(Array.Empty<DataGridSortColumnInfo>());
+
+    private Task OnPredefinedClicked() => dataGrid.ApplySorting(
+        new DataGridSortColumnInfo(nameof(Employee.Childrens), SortDirection.Descending),
+        new DataGridSortColumnInfo(nameof(Employee.Gender), SortDirection.Ascending)
+        );
+
+}

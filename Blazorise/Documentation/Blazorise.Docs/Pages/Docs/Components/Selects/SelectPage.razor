@@ -1,0 +1,149 @@
+﻿@page "/docs/components/select"
+
+<Seo Canonical="/docs/components/select" Title="Blazorise Select component" Description="Learn to use and work with the Blazorise Select components, used for collecting user provided information from a list of options." />
+
+<DocsPageTitle Path="Components/Select">
+    Blazorise Select component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Selects allow you to choose one or more items from a dropdown menu.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    <Code Tag>Select</Code> components are used for collecting user provided information from a list of options.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Structure
+</DocsPageSubtitle>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>Select</Code> The main input.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>SelectItem</Code> The select item, used for defining the options.
+                </Paragraph>
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>SelectGroup</Code> The select group, used for grouping items.
+                </Paragraph>
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageParagraph>
+    <Code>Select</Code> and <Code>SelectItem</Code> are generic components and they support all of the basic value
+    types line int, string, enum, etc. Nullable types are also supported. Since they are generic component they also
+    come with some special rules that must be followed:
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        Value type must be known. When using member variable on <Code>bind-*</Code> or <Code>Value</Code> attributes, the value type
+        will be recognized automatically. Otherwise you must use TValue to define it eg (TValue=”int”).
+    </UnorderedListItem>
+    <UnorderedListItem>
+        Value type must be the same in both <Code>Select</Code> and <Code>SelectItem</Code>.
+    </UnorderedListItem>
+    <UnorderedListItem>
+        String values must be defined with special syntax eg. @("@(\"hello\")"), see
+        <Anchor To="https://github.com/dotnet/aspnetcore/issues/7785" Target="Target.Blank">#7785</Anchor>
+    </UnorderedListItem>
+</UnorderedList>
+
+<Alert Color="Color.Info" Visible>
+    <AlertDescription>
+        <Strong>Note:</Strong> When dealing with a TValue of an enum type, you should be mindfull of your javascript serializer settings. As that will affect the correct handling of this type by the <Code>Select</Code> as it will need to javascript interop the enum value as a string.
+        Applying the attribute <Code>[JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]</Code> to your enum should allow it to be properly bound.
+    </AlertDescription>
+</Alert>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic" />
+    <DocsPageSectionContent Code="BasicSelectExample" Outlined FullWidth>
+        <BasicSelectExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Multiple">
+        By changing the enumerable type on the <Code>TValue</Code>, and by enabling the <Code>Multiple</Code> parameter, you will be able to select more than one option.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="MultipleSelectExample" Outlined FullWidth>
+        <MultipleSelectExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Groups">
+        You can also group items into categories for better user experience.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="GroupSelectExample" Outlined FullWidth>
+        <GroupSelectExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Binding
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    The process is basically the same for the single and for multiple select.
+</DocsPageParagraph>
+
+<Alert Color="Color.Info" Visible>
+    <AlertDescription>
+        <Strong>Note:</Strong> The <Code>Value</Code> attribute is required on the <Code>SelectItem</Code>. Otherwise the <Code>Select</Code> will not behave as expected.
+    </AlertDescription>
+</Alert>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Two-way binding">
+        By using <Code>bind-*</Code> attribute the selected item value will be automatically assigned to the member variable.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="SelectWithBindExample" Outlined FullWidth>
+        <SelectWithBindExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Manual event binding">
+        When using the event <Code>ValueChanged</Code>, you also must define the <Code>Value</Code> attribute.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="SelectWithEventExample" Outlined FullWidth>
+        <SelectWithEventExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Best Practices
+</DocsPageSubtitle>
+
+<Heading Size="HeadingSize.Is3">
+    Set a Default Value
+</Heading>
+
+<DocsPageParagraph>
+    When applicable, set the most common choice as the default value.
+</DocsPageParagraph>
+
+<Heading Size="HeadingSize.Is3">
+    Do Not Use as a Menu
+</Heading>
+
+<DocsPageParagraph>
+    Select is an input field component, not a generic menu component. Use <Anchor To="docs/components/dropdown">Dropdown</Anchor> to create overlays for actions.
+</DocsPageParagraph>
+
+<ComponentApiDocs ComponentTypes="[typeof(Select<>),typeof(SelectItem<>), typeof(SelectGroup)]" />

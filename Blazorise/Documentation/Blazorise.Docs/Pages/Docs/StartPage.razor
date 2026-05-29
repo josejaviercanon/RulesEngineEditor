@@ -1,0 +1,131 @@
+﻿@page "/docs/start"
+
+<Seo Canonical="/docs/start" Title="Blazorise Quick Start Guide" Description="Blazorise is designed to work with different CSS frameworks. Each of the supported CSS framework is defined by a different NuGet package." />
+
+<DocsPageTitle Path="Start">
+    Blazorise Quick Start Guide
+</DocsPageTitle>
+
+<DocsPageLead>
+    Quickly install Blazorise, one of the world's most popular Blazor UI framework.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    Blazorise is designed to work independently of CSS frameworks. Each of the supported CSS framework is defined
+    by a different NuGet package for Blazorise. Please see the <Anchor To="docs/usage">integration guide</Anchor>
+    to find a list of supported frameworks and how to use them.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    <Alert Color="Color.Info" Visible>
+        <AlertDescription>
+            <Strong>Note:</Strong> Before continuing please make sure that you already have a Blazor project created.
+            If not please go to the <Anchor To="https://docs.microsoft.com/en-us/aspnet/core/blazor" Target="Target.Blank">official Blazor website</Anchor> and learn how to create one.
+        </AlertDescription>
+    </Alert>
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    <Alert Color="Color.Info" Visible>
+        <AlertDescription>
+            <Strong>Note:</Strong> This documentation assumes you know the basics of Blazor. if you're not comfortable
+            with it yet, it's probably not the best idea to learn from here as your first step — learn the basics, then
+            come back.
+            <Anchor To="https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor" Target="Target.Blank">Blazor website</Anchor> is the best source for you to start.
+        </AlertDescription>
+    </Alert>
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    The setup process is similar for all of the supported CSS frameworks, you will just replace the Bootstrap sources with the ones you need.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    If you use an AI assistant while building, connect it to the <Anchor To="docs/mcp" Title="Link to MCP server guide">MCP server guide</Anchor> for accurate Blazorise examples.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Install Packages
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader>
+        First step is to install a <Anchor To="https://getbootstrap.com/" Title="Link to Bootstrap 5">Bootstrap 5</Anchor> provider for Blazorise:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="Bootstrap5GuideNuget1Example" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader>
+        You also need to install the icon package:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="Bootstrap5GuideNuget2Example" />
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Add Static Files
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Modify your project's HTML template to include the necessary CSS files. The files you add depend on whether you're working with a WebAssembly or Server project:
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    <DocsPageUnorderedList>
+        <DocsPageUnorderedListItem>
+            For <Strong>WebAssembly</Strong>, update <Strong>index.html</Strong>.
+        </DocsPageUnorderedListItem>
+        <DocsPageUnorderedListItem>
+            For <Strong>Server</Strong>, update <Strong>_Layout.cshtml</Strong> or <Strong>_Host.cshtml</Strong>.
+        </DocsPageUnorderedListItem>
+        <DocsPageUnorderedListItem>
+            For <Strong>.NET 8</Strong>, update <Strong>App.razor</Strong>.
+        </DocsPageUnorderedListItem>
+    </DocsPageUnorderedList>
+</DocsPageParagraph>
+
+<DocsPageSection>
+    <DocsPageSectionHeader>
+        Add these lines inside the <Code Tag>head</Code> section:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="Bootstrap5GuideSourceFilesExample" />
+</DocsPageSection>
+
+<Alert Color="Color.Info" Visible>
+    <AlertDescription>
+        <Strong>Note:</Strong> When Blazor project is created it will also include it's own <Strong>Bootstrap</Strong>
+        and <Strong>FontAwesome</Strong> files that can sometime be of older versions. To ensure we're using the appropriate
+        bootstrap and FontAwesome files, you need remove them or replace them with the links from above. If you forget to
+        remove them it's possible that some components will not work as expected.
+    </AlertDescription>
+</Alert>
+
+<DocsPageSubtitle>
+    Add Imports
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader>
+        In your main <Badge Color="Color.Light">_Imports.razor</Badge> add:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="Bootstrap5GuideUsingExample" />
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Register Services
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader>
+        Add the following lines to the relevant sections of <Code>Program.cs</Code>.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="Bootstrap5GuideRegistrationExample" />
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    PWA &amp; Offline Support (optional)
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    For information about PWAs &amp; offline support, please take a look at our <Anchor To="docs/pwa">PWA docs.</Anchor>
+</DocsPageParagraph>

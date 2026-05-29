@@ -54,12 +54,17 @@ The system SHALL expose workflow-related behavior through Minimal API endpoints 
 - THEN orchestration is delegated to application services rather than embedded in endpoint code
 
 ### Requirement: UI Layer Interaction
-The system SHALL provide a Blazor WebAssembly UI layer that composes editor components, calls api endpoints, and uses JS interop for canvas operations.
+The system SHALL provide a Blazor WebAssembly UI layer that composes Blazorise-based editor and workflow management components, calls api endpoints, and uses JS interop for canvas operations.
 
 #### Scenario: UI to API interaction path
 - GIVEN a user action in the editor
 - WHEN the UI submits workflow operations
 - THEN requests are sent to api endpoints and responses are rendered in UI state
+
+#### Scenario: UI component library boundary
+- GIVEN a feature is implemented in the RulesEngine.UI project
+- WHEN UI components are selected for forms, dialogs, lists, or data grids
+- THEN the implementation uses Blazorise components and configured providers instead of introducing an alternate UI component library
 
 ### Requirement: Test Layer Coverage
 The system SHALL maintain dedicated test projects for unit and integration verification of architecture boundaries and workflow behavior.

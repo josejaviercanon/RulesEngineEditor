@@ -1,0 +1,41 @@
+﻿@page "/docs/components/color-picker"
+
+<Seo Canonical="/docs/components/color-picker" Title="Blazorise ColorPicker component" Description="Learn to use and work with the Blazorise ColorPicker component that allows you to select a color using a variety of input methods." />
+
+<DocsPageTitle Path="Components/Color Picker">
+    Blazorise ColorPicker component
+</DocsPageTitle>
+
+<DocsPageLead>
+    The <Code>ColorPicker</Code> allow the user to select a color using a variety of input methods.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    <Code>ColorPicker</Code> component is based on a <Anchor To="https://simonwep.github.io/pickr/">Pickr</Anchor> library
+    and as such is not a native color input element. That means that unlike <Anchor To="docs/components/color" Title="Link to ColorInput">ColorInput</Anchor> which will render <Code Tag>input type="color"</Code>,
+    <Code>ColorPicker</Code> will render <Code>span</Code> element.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+        In this Blazorise example, a <Code>ColorPicker</Code> component is bound to a colorValue variable using the <Code>@@bind-Value</Code> directive. Initially set to red (<Strong>#ff0000</Strong>), the <Code>colorValue</Code> updates automatically when a user selects a new color through the <Code>ColorPicker</Code>, demonstrating an interactive color selection tool in a Blazor application.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ColorPickerExample" Outlined FullWidth>
+        <ColorPickerExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Show Hue Slider">
+        In this Blazorise example, the <Code>ColorPicker</Code> component is enhanced with a hue slider, as indicated by the <Code>ShowHueSlider</Code> attribute.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ColorPickerShowHueExample" Outlined FullWidth>
+        <ColorPickerShowHueExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(ColorPicker)]" />

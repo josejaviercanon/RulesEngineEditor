@@ -1,0 +1,361 @@
+#region Using directives
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Blazorise.Utilities;
+using Microsoft.AspNetCore.Components;
+#endregion
+
+namespace Blazorise;
+
+/// <summary>
+/// Wrapper for form input components like label, text, button, etc.
+/// </summary>
+public partial class Field : BaseColumnComponent, IDisposable
+{
+    #region Members
+
+    private bool horizontal;
+
+    private bool group;
+
+    private JustifyContent justifyContent = JustifyContent.Default;
+
+    private List<BaseComponent> hookables;
+
+    private Validation previousParentValidation;
+
+    private ValidationStatus previousValidationStatus;
+
+    private FieldHelp helpText;
+
+    private FieldLabel label;
+
+    private List<(BaseComponent Component, string ElementId)> labelTargets;
+
+    /// <summary>
+    /// Raises when the help text reference changes.
+    /// </summary>
+    internal event Action HelpTextChanged;
+
+    /// <summary>
+    /// Raises when the label target reference changes.
+    /// </summary>
+    internal event Action LabelTargetChanged;
+
+    /// <summary>
+    /// Raises when the field label reference changes.
+    /// </summary>
+    internal event Action LabelElementChanged;
+
+    #endregion
+
+    #region Methods
+
+    /// <inheritdoc/>
+    protected override void OnParametersSet()
+    {
+        if ( ParentValidation != previousParentValidation )
+        {
+            DetachValidationStatusChangedListener();
+            ParentValidation.ValidationStatusChanged += OnValidationStatusChanged;
+            previousParentValidation = ParentValidation;
+        }
+    }
+
+    /// <inheritdoc/>
+    protected override void OnInitialized()
+    {
+        previousValidationStatus = ParentValidation?.Status ?? ValidationStatus.None;
+
+        base.OnInitialized();
+    }
+
+    /// <inheritdoc/>
+    protected override void Dispose( bool disposing )
+    {
+        if ( disposing )
+        {
+            DetachValidationStatusChangedListener();
+
+            if ( ParentValidation is not null )
+            {
+                ParentValidation.ValidationStatusChanged -= OnValidationStatusChanged;
+            }
+        }
+
+        base.Dispose( disposing );
+    }
+
+    /// <summary>
+    /// Unsubscribe from <see cref="Validation.StatusChanged"/> event.
+    /// </summary>
+    private void DetachValidationStatusChangedListener()
+    {
+        if ( previousParentValidation is not null )
+        {
+            previousParentValidation.ValidationStatusChanged -= OnValidationStatusChanged;
+        }
+    }
+
+    /// <inheritdoc/>
+    protected override void BuildClasses( ClassBuilder builder )
+    {
+        builder.Append( ClassProvider.Field() );
+        builder.Append( ClassProvider.FieldHorizontal( Horizontal ) );
+        builder.Append( ClassProvider.FieldJustifyContent( JustifyContent ) );
+        builder.Append( ClassProvider.FieldValidation( ParentValidation?.Status ?? ValidationStatus.None ) );
+
+        base.BuildClasses( builder );
+    }
+
+    /// <summary>
+    /// Handles the <see cref="Validation.StatusChanged"/> event.
+    /// </summary>
+    /// <param name="sender">Object that raised the event.</param>
+    /// <param name="eventArgs">Data about the <see cref="Validation"/> status change event.</param>
+    protected void OnValidationStatusChanged( object sender, ValidationStatusChangedEventArgs eventArgs )
+    {
+        if ( previousValidationStatus != eventArgs.Status )
+        {
+            previousValidationStatus = eventArgs.Status;
+
+            DirtyClasses();
+
+            InvokeAsync( StateHasChanged );
+        }
+    }
+
+    /// <summary>
+    /// Notifies the field that one of it's child components needs a special treatment.
+    /// </summary>
+    /// <param name="component">Reference to the child component.</param>
+    internal void Hook( BaseComponent component )
+    {
+        hookables ??= new();
+
+        hookables.Add( component );
+    }
+
+    internal void UnHook( BaseComponent component )
+    {
+        hookables?.Remove( component );
+    }
+
+    /// <summary>
+    /// Registers the help text component inside this field.
+    /// </summary>
+    /// <param name="fieldHelp">Help text component.</param>
+    internal void NotifyFieldHelpInitialized( FieldHelp fieldHelp )
+    {
+        if ( fieldHelp is null )
+            return;
+
+        if ( ReferenceEquals( helpText, fieldHelp ) )
+            return;
+
+        helpText = fieldHelp;
+        HelpTextChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Removes the help text component inside this field.
+    /// </summary>
+    /// <param name="fieldHelp">Help text component.</param>
+    internal void NotifyFieldHelpRemoved( FieldHelp fieldHelp )
+    {
+        if ( !ReferenceEquals( helpText, fieldHelp ) )
+            return;
+
+        helpText = null;
+        HelpTextChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Registers the label component inside this field.
+    /// </summary>
+    /// <param name="fieldLabel">Field label component.</param>
+    internal void NotifyFieldLabelInitialized( FieldLabel fieldLabel )
+    {
+        if ( fieldLabel is null )
+            return;
+
+        if ( ReferenceEquals( label, fieldLabel ) )
+            return;
+
+        label = fieldLabel;
+        LabelElementChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Removes the label component inside this field.
+    /// </summary>
+    /// <param name="fieldLabel">Field label component.</param>
+    internal void NotifyFieldLabelRemoved( FieldLabel fieldLabel )
+    {
+        if ( !ReferenceEquals( label, fieldLabel ) )
+            return;
+
+        label = null;
+        LabelElementChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Registers or updates the input element that should be linked by a <see cref="FieldLabel"/>.
+    /// </summary>
+    /// <param name="component">Input component instance.</param>
+    /// <param name="elementId">Resolved input element id.</param>
+    internal void NotifyLabelTargetChanged( BaseComponent component, string elementId )
+    {
+        if ( component is null )
+            return;
+
+        if ( string.IsNullOrWhiteSpace( elementId ) )
+        {
+            NotifyLabelTargetRemoved( component );
+            return;
+        }
+
+        var previousLabelTargetElementId = LabelTargetElementId;
+
+        labelTargets ??= new();
+
+        labelTargets.RemoveAll( x => ReferenceEquals( x.Component, component ) );
+        labelTargets.Add( (component, elementId) );
+
+        if ( !string.Equals( previousLabelTargetElementId, LabelTargetElementId, StringComparison.Ordinal ) )
+        {
+            LabelTargetChanged?.Invoke();
+        }
+    }
+
+    /// <summary>
+    /// Removes the input element that should be linked by a <see cref="FieldLabel"/>.
+    /// </summary>
+    /// <param name="component">Input component instance.</param>
+    internal void NotifyLabelTargetRemoved( BaseComponent component )
+    {
+        if ( component is null || labelTargets is null )
+            return;
+
+        var previousLabelTargetElementId = LabelTargetElementId;
+
+        labelTargets.RemoveAll( x => ReferenceEquals( x.Component, component ) );
+
+        if ( labelTargets.Count == 0 )
+        {
+            labelTargets = null;
+        }
+
+        if ( !string.Equals( previousLabelTargetElementId, LabelTargetElementId, StringComparison.Ordinal ) )
+        {
+            LabelTargetChanged?.Invoke();
+        }
+    }
+
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Gets a value indicating whether the field renders a semantic group container.
+    /// </summary>
+    internal bool IsGroup => ForceGroup || Group;
+
+    /// <summary>
+    /// Determines if the field is inside of <see cref="Fields"/> component.
+    /// </summary>
+    protected bool IsFields => ParentFields is not null;
+
+    /// <summary>
+    /// Gets the tag name rendered by this component.
+    /// </summary>
+    protected string ContainerTagName => IsGroup ? "fieldset" : "div";
+
+    /// <summary>
+    /// Gets a value indicating whether the component always renders as a group container.
+    /// </summary>
+    protected virtual bool ForceGroup => false;
+
+    /// <summary>
+    /// Gets the element id of the field help text.
+    /// </summary>
+    internal string HelpTextElementId => helpText?.ElementId;
+
+    /// <summary>
+    /// Gets the element id of the input that should be linked by a <see cref="FieldLabel"/>.
+    /// </summary>
+    internal string LabelTargetElementId => IsGroup
+        ? null
+        : labelTargets?.Count > 0
+        ? labelTargets[^1].ElementId
+        : null;
+
+    /// <summary>
+    /// Gets the element id of the field label.
+    /// </summary>
+    internal string LabelElementId => label?.ElementId;
+
+    /// <summary>
+    /// Determines whether the field should render as a semantic group container.
+    /// </summary>
+    [Parameter]
+    public bool Group
+    {
+        get => group;
+        set
+        {
+            group = value;
+
+            hookables?.ForEach( x => x.DirtyClasses() );
+
+            LabelTargetChanged?.Invoke();
+
+            DirtyClasses();
+        }
+    }
+
+    /// <summary>
+    /// Determines whether the form controls should be aligned horizontally, as in a horizontal form layout.
+    /// </summary>
+    [Parameter]
+    public bool Horizontal
+    {
+        get => horizontal;
+        set
+        {
+            horizontal = value;
+
+            hookables?.ForEach( x => x.DirtyClasses() );
+
+            DirtyClasses();
+        }
+    }
+
+    /// <summary>
+    /// Specifies how the container's items are aligned along the main axis when there is extra space available.
+    /// </summary>
+    [Parameter]
+    public JustifyContent JustifyContent
+    {
+        get => justifyContent;
+        set
+        {
+            justifyContent = value;
+
+            DirtyClasses();
+        }
+    }
+
+    /// <summary>
+    /// A reference to the parent <see cref="Fields"/> component in which this component is nested.
+    /// </summary>
+    [CascadingParameter] protected Fields ParentFields { get; set; }
+
+    /// <summary>
+    /// A reference to the parent <see cref="Validation"/> component in which this component is nested.
+    /// </summary>
+    [CascadingParameter] protected Validation ParentValidation { get; set; }
+
+    #endregion
+}

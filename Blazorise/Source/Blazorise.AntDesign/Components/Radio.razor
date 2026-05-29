@@ -1,0 +1,99 @@
+@typeparam TValue
+@inherits Blazorise.Radio<TValue>
+@using Blazorise.Utilities
+@if ( AsButton )
+{
+    <label @ref="@wrapperRef" class="@WrapperClassNames" style="@WrapperStyleNames">
+        <input @ref="@ElementRef" id="@ElementId" type="radio" class="@ClassNames" style="@StyleNames" disabled="@IsDisabled" readonly="@ReadOnly" checked="@IsActive" value="@Value" tabindex="@TabIndex" aria-invalid="@ResolvedAriaInvalid" aria-required="@ResolvedAriaRequired" aria-describedby="@ResolvedAriaDescribedBy" aria-labelledby="@ExplicitAriaLabelledBy" @onchange="@OnChangeHandler" @onkeydown="@OnKeyDownHandler" @onkeypress="@OnKeyPressHandler" @onkeyup="@OnKeyUpHandler" @onblur="@OnBlurHandler" @onfocus="@OnFocusHandler" @onfocusin="@OnFocusInHandler" @onfocusout="@OnFocusOutHandler" name="@Group" @attributes="@Attributes" />
+        <div class="@LabelClassNames">
+            @ChildContent
+        </div>
+    </label>
+    @Feedback
+}
+else
+{
+    <label @ref="@wrapperRef" class="@WrapperClassNames" style="@WrapperStyleNames">
+        <span class="@CheckboxClassNames">
+            <input @ref="@ElementRef" id="@ElementId" type="radio" class="@ClassNames" style="@StyleNames" disabled="@IsDisabled" readonly="@ReadOnly" checked="@IsActive" value="@Value" tabindex="@TabIndex" aria-invalid="@ResolvedAriaInvalid" aria-required="@ResolvedAriaRequired" aria-describedby="@ResolvedAriaDescribedBy" aria-labelledby="@ExplicitAriaLabelledBy" @onchange="@OnChangeHandler" @onkeydown="@OnKeyDownHandler" @onkeypress="@OnKeyPressHandler" @onkeyup="@OnKeyUpHandler" @onblur="@OnBlurHandler" @onfocus="@OnFocusHandler" @onfocusin="@OnFocusInHandler" @onfocusout="@OnFocusOutHandler" name="@Group" @attributes="@Attributes" />
+            <span class="@InnerClassNames"></span>
+        </span>
+        <span class="@LabelClassNames">
+            @ChildContent
+            @Feedback
+        </span>
+    </label>
+}
+@code {
+    private ClassBuilder wrapperClassBuilder;
+    private StyleBuilder wrapperStyleBuilder;
+
+    protected override void OnInitialized()
+    {
+        wrapperClassBuilder = new( BuildWrapperClasses );
+        wrapperStyleBuilder = new( BuildWrapperStyles );
+
+        base.OnInitialized();
+    }
+
+    protected internal override void DirtyClasses()
+    {
+        wrapperClassBuilder?.Dirty();
+
+        base.DirtyClasses();
+    }
+
+    protected internal override void DirtyStyles()
+    {
+        wrapperStyleBuilder?.Dirty();
+
+        base.DirtyStyles();
+    }
+
+    // Ant design doesn't have appearance for custom radio button colors.
+    // So for now I will skip support for it until I find a good way.
+    private void BuildWrapperClasses( ClassBuilder builder )
+    {
+        string baseClasses = AsButton == true
+            ? $"ant-segmented-item{( IsActive ? " ant-segmented-item-selected" : "" )}{( IsDisabled ? " ant-segmented-item-disabled" : "" )}"
+            : $"ant-radio-wrapper{( IsActive ? " ant-radio-wrapper-checked" : "" )}{( IsDisabled ? " ant-radio-wrapper-disabled" : "" )}";
+
+        builder.Append( baseClasses );
+        builder.Append( RadioSizeClass );
+        builder.Append( RadioColorClass );
+        builder.Append( Classes?.Wrapper );
+        AppendWrapperUtilities( builder );
+    }
+
+    private void BuildWrapperStyles( StyleBuilder builder )
+    {
+        AppendWrapperUtilities( builder );
+        builder.Append( Styles?.Wrapper );
+    }
+
+    string WrapperClassNames => wrapperClassBuilder.Class;
+
+    string WrapperStyleNames => wrapperStyleBuilder.Styles;
+
+    string CheckboxClassNames => AsButton == true
+        ? string.Empty
+        : $"ant-radio ant-wave-target{( IsActive ? " ant-radio-checked" : "" )}{( IsDisabled ? " ant-radio-disabled" : "" )}";
+
+    string InnerClassNames => AsButton == true
+        ? "ant-radio-button-inner"
+        : "ant-radio-inner";
+
+    string LabelClassNames => AsButton == true
+        ? "ant-segmented-item-label"
+        : "ant-radio-label";
+
+    string RadioSizeClass
+        => ThemeSize != Blazorise.Size.Default
+            ? $"b-ant-radio-{ClassProvider.ToSize( ThemeSize )}"
+            : null;
+
+    string RadioColorClass
+        => AsButton
+            ? $"b-ant-segmented-item-{ClassProvider.ToColor( ButtonColor )}"
+            : null;
+}

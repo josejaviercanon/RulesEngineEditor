@@ -1,0 +1,252 @@
+﻿@page "/docs/components/button"
+
+<Seo Canonical="/docs/components/button" Title="Blazorise Button component" Description="Learn to use and work with the Blazorise Button component for actions in forms, dialogs, and more. Includes support for a handful of contextual variations, sizes, states, and more." />
+
+<DocsPageTitle Path="Components/Button">
+    Blazorise Button component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Use Blazorise custom button styles for actions in forms, dialogs, and more with support for multiple sizes, states, and more.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The <Code>Button</Code> component replaces the standard html button with a multitude of options. Any color helper class can be used to alter the background or text color. Try out an interactive examples on how Blazorise buttons work.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Overview
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Blazorise <Code Tag>Button</Code> component generates either a <Code Tag>button</Code> element, or <Code Tag>a</Code> element with the styling of a button.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic button">
+        To create a basic button you need to use a Button component.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ButtonExample" Outlined>
+        <ButtonExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Clicked event">
+        To use button you just handle a button <Code>Clicked</Code> event.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ButtonUsageExample" Outlined>
+        <ButtonUsageExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Colors variants">
+        The following variants can be used to distinguish between actions of different importance in the UI:
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ColorButtonsExample" Outlined>
+        <ColorButtonsExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Outline variants">
+        To define button color with a borders use an <Code>Outline</Code> attribute.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="OutlineButtonExample" Outlined>
+        <OutlineButtonExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Sizes">
+        The following size variants are available for Button instances whose size needs to be different from the default:
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="SizeButtonsExample" Outlined>
+        <SizeButtonsExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Block">
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BlockButtonExample" Outlined FullWidth>
+        <BlockButtonExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Active">
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ActiveButtonExample" Outlined>
+        <ActiveButtonExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Disabled">
+        Buttons representing actions that are not currently available to the user should be either hidden or disabled. A disabled button is rendered as "dimmed", and is excluded from the focus order (such as when interactive UI elements are focused using the tab key).
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DisabledButtonExample" Outlined>
+        <DisabledButtonExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<Heading Size="HeadingSize.Is3">
+    Hidden vs Disabled
+</Heading>
+
+<DocsPageParagraph>
+    Hiding an unavailable action entirely is often preferable to a disabled button, as this reduces UI clutter. However, in certain situations this can be problematic:
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        If the user expects a button to be present, such as at the end of a form, hiding the button can cause confusion, even if the form clearly indicates the presence of one or more invalid fields.
+    </UnorderedListItem>
+    <UnorderedListItem>
+        As a hidden button does not occupy any space in the UI, toggling its visibility can cause unwanted changes in the layout of other elements.
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Loading">
+        Use <Code>Loading</Code> attribute to add spinners within buttons to indicate an action is currently processing or taking place. Use <Code Tag>LoadingTemplate</Code> to add a custom loading template
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LoadingButtonExample" Outlined>
+        <LoadingButtonExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Button group">
+        If you want to group buttons together on a single line, use the <Code Tag>Buttons</Code> component.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ButtonGroupExample" Outlined>
+        <ButtonGroupExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Link Button">
+        By default, <Code Tag>Button</Code> works with <Code Tag>button</Code> element, but you can also create an <Code Tag>a</Code> element that will still appear as regular button.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LinkButtonExample" Outlined>
+        <LinkButtonExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Stretched link">
+        <Paragraph>
+            Add <Code>StretchedLink</Code> attribute to a link to make its containing block clickable via a <Code>::after</Code> pseudo element. In most cases, this means that an element with <Code>position: relative</Code> that contains a link with the stretched link class is clickable. Please note given how CSS position works, stretched-link cannot be mixed with most table elements.
+        </Paragraph>
+        <Paragraph>
+            Cards have <Code>position: relative</Code> by default, so in this case you can safely add the <Code>StretchedLink</Code> attribute to a link in the card without any other HTML changes.
+        </Paragraph>
+        <Paragraph>
+            Please note that on some CSS providers the <Code Tag>Button</Code> component can have <Code>position: relative</Code> by default, so the link would assume the button to be its relative parent element.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="StretchedLinkButtonExample" Outlined>
+        <StretchedLinkButtonExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Toolbar">
+        To attach buttons together use a <Code>ButtonsRole.Toolbar</Code> role.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ToolbarButtonsExample" Outlined>
+        <ToolbarButtonsExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Submit button">
+        When using a submit button inside of <Code Tag>Form</Code> element the browser will automatically try to post the page. This is the default browser behavior. Because of this a new attribute is introduced to the <Code Tag>Button</Code> element, called <Code>PreventDefaultOnSubmit</Code>. Basically it prevents a default browser behavior when clicking the submit button. So instead of posting the page it will stop it and just call the <Code>Clicked</Code> event handler. Pressing the <Code>Enter</Code> key will still work just as it's supposed to do.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="SubmitButtonExample" Outlined>
+        <SubmitButtonExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Best Practices
+</DocsPageSubtitle>
+
+<Heading Size="HeadingSize.Is3">
+    Button Labels
+</Heading>
+
+<DocsPageUnorderedList>
+    <DocsPageUnorderedListItem>
+        The label should describe the action, preferably using active verbs, such as "View details" rather than just "Details".
+    </DocsPageUnorderedListItem>
+    <DocsPageUnorderedListItem>
+        In cases of possible ambiguity, also specify the object of the verb, such as "Save changes" instead of "Save".
+    </DocsPageUnorderedListItem>
+    <DocsPageUnorderedListItem>
+        Button groups representing options, such as the buttons of a Confirm Dialog, should state what each option represents, such as "Save changes", instead of "Yes", as the latter forces the user to read the question being asked, and increases the risk of selecting the wrong option.
+    </DocsPageUnorderedListItem>
+    <DocsPageUnorderedListItem>
+        Keep labels short, ideally less than three words or 25 characters.
+    </DocsPageUnorderedListItem>
+    <DocsPageUnorderedListItem>
+        Use ellipsis (…) when an action is not immediate but requires more steps to complete. This is useful, for example, for destructive actions like "Delete…​" when a Confirm Dialog is used to confirm the action before it is executed.
+    </DocsPageUnorderedListItem>
+</DocsPageUnorderedList>
+
+<Heading Size="HeadingSize.Is3">
+    ARIA Labels
+</Heading>
+
+<DocsPageParagraph>
+    The <Code>aria-label</Code> attribute can be used to provide a separate label for accessibility technologies (AT) such as screen readers. This is important, for example, for icon-only buttons that lack a visible label.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Buttons with regular, visible labels can also benefit from separate <Code>aria-label</Code> to provide more context that may otherwise be difficult for the AT user to perceive.
+</DocsPageParagraph>
+
+<Heading Size="HeadingSize.Is3">
+    Buttons in Forms
+</Heading>
+
+<DocsPageSection>
+    <DocsPageSectionContent Code="ButtonInFormBestPracticeExample" Outlined FullWidth>
+        <ButtonInFormBestPracticeExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<Heading Size="HeadingSize.Is3">
+    Buttons in Dialogs
+</Heading>
+
+<DocsPageSection>
+    <DocsPageSectionHeader>
+        <DocsPageUnorderedList>
+            <DocsPageUnorderedListItem>
+                Buttons should be placed at the <Strong>bottom of the dialog</Strong>.
+            </DocsPageUnorderedListItem>
+            <DocsPageUnorderedListItem>
+                Buttons should be <Strong>aligned right</Strong>.
+            </DocsPageUnorderedListItem>
+            <DocsPageUnorderedListItem>
+                <Strong>Primary action last</Strong>, preceded by other actions.
+            </DocsPageUnorderedListItem>
+            <DocsPageUnorderedListItem>
+                <Strong>Dangerous actions</Strong> should be aligned left, to avoid accidental clicks, especially if no confirmation step is included.
+            </DocsPageUnorderedListItem>
+        </DocsPageUnorderedList>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ButtonInDialogsBestPracticeExample" Outlined FullWidth>
+        <ButtonInDialogsBestPracticeExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(Button), typeof(Buttons)]" />

@@ -1,0 +1,16 @@
+﻿@namespace Blazorise
+@inherits BaseComponent<ModalClasses, ModalStyles>
+<CascadingValue Value="@this" IsFixed>
+    <CascadingValue Value="@State">
+        <div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" role="dialog" aria-modal="@AriaModal" aria-labelledby="@AriaLabelledBy" aria-describedby="@AriaDescribedBy" @attributes="@Attributes">
+            @if ( ShouldRenderContent )
+            {
+                @if ( ShowBackdrop && BackdropVisible )
+                {
+                    <_ModalBackdrop Animated="@Animated" AnimationDuration="@AnimationDuration" />
+                }
+                @ChildContent
+            }
+        </div>
+    </CascadingValue>
+</CascadingValue>

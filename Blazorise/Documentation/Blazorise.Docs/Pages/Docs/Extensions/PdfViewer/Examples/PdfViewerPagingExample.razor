@@ -1,0 +1,13 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+
+<Button Color="Color.Primary" Clicked="@OnPreviousPageClicked">Prev</Button>
+<Button Color="Color.Primary" Clicked="@OnNextPageClicked">Next</Button>
+
+<PdfViewer @ref="@pdfViewerRef" Source="_content/Blazorise.Docs/assets/files/dev-example.pdf" />
+
+@code {
+    PdfViewer pdfViewerRef;
+
+    Task OnPreviousPageClicked() => pdfViewerRef.PreviousPage();
+    Task OnNextPageClicked() => pdfViewerRef.NextPage();
+}

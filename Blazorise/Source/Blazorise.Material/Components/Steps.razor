@@ -1,0 +1,20 @@
+﻿@inherits Blazorise.Steps
+<CascadingValue Value="@this" IsFixed>
+    <CascadingValue Value="@State">
+        @if ( Items != null && Content != null )
+        {
+            <div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+                @Items
+            </div>
+            <div class="@ContentClassNames" style="@Styles?.Content" @attributes="@Attributes">
+                @Content
+            </div>
+        }
+        else
+        {
+            <div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+                @ChildContent
+            </div>
+        }
+    </CascadingValue>
+</CascadingValue>

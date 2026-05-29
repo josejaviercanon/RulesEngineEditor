@@ -1,0 +1,72 @@
+@page "/docs/extensions/dropdownlist"
+
+<Seo Canonical="/docs/extensions/dropdownlist" Title="Blazorise DropdownList component" Description="Learn how to use the Blazorise DropdownList component to select values from a list of predefined items." />
+
+<DocsPageTitle Path="Extensions/DropdownList">
+    Blazorise DropdownList component
+</DocsPageTitle>
+
+<DocsPageLead>
+    The <Code>DropdownList</Code> component allows you to select a value from a list of predefined items.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    To use the <Code>DropdownList</Code> component, install the <Code>Blazorise.Components</Code> package first.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<Alert Color="Color.Info" Visible>
+    <AlertDescription>
+        The DropdownList extension is part of the <Code>Blazorise.Components</Code> NuGet package.
+    </AlertDescription>
+</Alert>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="ComponentsNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        In your main <Code>_Imports.razor</Code> add:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="ComponentsImportExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Example">
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DropdownListExample" AdditionalCodes="@DocsCodeSources.CountrySharedData" Outlined FullWidth>
+        <DropdownListExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Checkbox Selection">
+        The multiple selection feature in Blazorise's DropdownList component enables users to select multiple options from a dropdown menu via checkboxes. Each option in the menu comes with a checkbox for selection. Upon clicking the DropdownList, users can tick multiple checkboxes to select various options. This feature provides an efficient way of making multiple selections, enhancing user flexibility and interaction.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DropdownListCheckboxExample" AdditionalCodes="@DocsCodeSources.CountrySharedData" Outlined FullWidth>
+        <DropdownListCheckboxExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="With Search">
+        <Paragraph>
+            The DropdownList component in Blazorise allows users to search for items in the dropdown list.
+        </Paragraph>
+        <Paragraph>
+            By enabling <Code>Filterable</Code> property, a search box is displayed at the top of the dropdown list. Users can type in the search box to filter the list and quickly locate the desired item. This feature enhances user experience by providing a more efficient way of selecting items from a dropdown list.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DropdownListSearchExample" AdditionalCodes="@DocsCodeSources.CountrySharedData" Outlined FullWidth>
+        <DropdownListSearchExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(DropdownList<,>)]" />

@@ -1,0 +1,105 @@
+﻿@page "/tests/treeview"
+<Row>
+    <Column ColumnSize="ColumnSize.Is12" Margin="Margin.Is4.OnY">
+        <Card>
+            <CardHeader>
+                <CardTitle>TreeView</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Treeview allows the display of hierarchical information in a tree-like structure.</CardText>
+            </CardBody>
+            <CardBody>
+                <Row>
+                    <Column ColumnSize="ColumnSize.IsAuto">
+                        <Button Color="Color.Primary" Clicked="@(() => treeViewRef.ExpandAll())">Expand all</Button>
+                        <Button Color="Color.Secondary" Clicked="@(() => treeViewRef.CollapseAll())">Collapse all</Button>
+                    </Column>
+                    <Column ColumnSize="ColumnSize.IsAuto">
+                        <Field Horizontal>
+                            <FieldLabel Margin="Margin.Is3.FromEnd">Selection mode</FieldLabel>
+                            <FieldBody>
+                                <Select @bind-Value="@selectionMode">
+                                    <SelectItem Value="TreeViewSelectionMode.Single">Single</SelectItem>
+                                    <SelectItem Value="TreeViewSelectionMode.Multiple">Multiple</SelectItem>
+                                </Select>
+                            </FieldBody>
+                        </Field>
+                    </Column>
+                    <Column ColumnSize="ColumnSize.IsAuto">
+                        <Button Color="Color.Primary" Clicked="AddNode">Add</Button>
+                        <Button Color="Color.Primary" Clicked="ForceReload">Force Reload</Button>
+                        <Button Color="Color.Primary" Clicked="DisableRandomNode">Disable Random</Button>
+                        <Button Color="Color.Primary" Clicked="DisableAll">Disable All</Button>
+                        <Button Color="Color.Secondary" Clicked="EnableAllNodes">Enable All</Button>
+                    </Column>
+                    <Column ColumnSize="ColumnSize.IsAuto">
+                        @if ( selectionMode == TreeViewSelectionMode.Single )
+                        {
+                            <Button Color="Color.Secondary" Clicked="@(() => selectedNode = Nodes.ElementAt( 2 ))">Select single node</Button>
+                        }
+                        else
+                        {
+                            <Button Color="Color.Secondary" Clicked="@(() => selectedNodes = Nodes.Take( 3 ).ToList())">Select multiple nodes</Button>
+                        }
+                    </Column>
+                    <Column ColumnSize="ColumnSize.IsAuto">
+                        <Switch @bind-Value=virtualize>Virtualize</Switch>
+                        <Switch @bind-Value=dragnDrop>Drag&Drop</Switch>
+                        <Switch @bind-Value=reorder>Reorder</Switch>
+                    </Column>
+                </Row>
+            </CardBody>
+            <CardBody>
+                <TreeView @ref="@treeViewRef"
+                          TNode="NodeInfo"
+                          Nodes="Nodes"
+                          Virtualize="@virtualize"
+                          SelectionMode="@selectionMode"
+                          @bind-SelectedNode="selectedNode"
+                          @bind-ExpandedNodes="expandedNodes"
+                          @bind-SelectedNodes="selectedNodes"
+                          GetChildNodes="@(item => item.Children)"
+                          HasChildNodes="@(item => item.Children?.Any() == true)"
+                          IsDisabled="@(item => item.Disabled)"
+                          NodeStyling="@((item, style) => { style.TextColor = (item.Children?.Any() == true) ? TextColor.Primary : TextColor.Dark; style.Style = "font-weight:bold"; })"
+                          SelectedNodeStyling="@((item, style) => {style.Background = Background.Success; style.TextColor = TextColor.White; })"
+                          NodeContextMenu="@OnNodeContextMenu"
+                          NodeContextMenuPreventDefault
+                          Draggable="@dragnDrop"
+                          Reorderable="@reorder"
+                          CanDragNode="CanDragNode"
+                          CanDropNode="CanDropNode">
+                    <NodeContent>
+                        <Icon Name="IconName.Folder" />
+                        @context.Text
+                    </NodeContent>
+                </TreeView>
+            </CardBody>
+            <CardBody>
+                <CardText>Selected nodes.</CardText>
+                <Paragraph>
+                    @if ( selectionMode == TreeViewSelectionMode.Single )
+                    {
+                        <Badge Color="Color.Primary" Margin="Margin.Is2.FromEnd">@selectedNode?.Text</Badge>
+                    }
+                    else
+                    {
+                        @foreach ( var node in selectedNodes ?? Enumerable.Empty<NodeInfo>() )
+                        {
+                            <Badge Color="Color.Primary" Margin="Margin.Is2.FromEnd">@node.Text</Badge>
+                        }
+                    }
+                </Paragraph>
+            </CardBody>
+            <CardBody>
+                <CardText>Expanded nodes.</CardText>
+                <Paragraph>
+                    @foreach ( var node in expandedNodes ?? Enumerable.Empty<NodeInfo>() )
+                    {
+                        <Badge Color="Color.Info" Margin="Margin.Is2.FromEnd">@node.Text</Badge>
+                    }
+                </Paragraph>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>

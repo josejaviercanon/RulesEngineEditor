@@ -1,0 +1,12 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+
+<Button Color="Color.Primary" Clicked="@ShowInfoMessage">Say hi!</Button>
+
+@code {
+    [Inject] IMessageService MessageService { get; set; }
+
+    Task ShowInfoMessage()
+    {
+        return MessageService.Info( "This is a simple info message!", "Hello" );
+    }
+}

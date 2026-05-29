@@ -1,0 +1,15 @@
+﻿@inherits Blazorise.BarDropdown
+<CascadingValue Value="@this" IsFixed>
+    <CascadingValue Value="@State">
+        @if ( State.Mode == BarMode.Horizontal && !IsBarDropdownSubmenu )
+        {
+            @ChildContent
+        }
+        else
+        {
+            <div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+                @ChildContent
+            </div>
+        }
+    </CascadingValue>
+</CascadingValue>

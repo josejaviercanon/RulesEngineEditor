@@ -1,0 +1,9 @@
+{
+  "culture": "de",
+  "translations": {
+    "Choose file": "Datei wählen",
+    "Choose files": "Wähle Dateien",
+    "Choose folder": "Wähle einen Ordner",
+    "Choose folders": "Ordner auswählen"
+  }
+}

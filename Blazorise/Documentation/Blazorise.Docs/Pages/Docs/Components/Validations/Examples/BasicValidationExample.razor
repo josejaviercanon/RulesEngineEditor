@@ -1,0 +1,30 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+
+<Validation Validator="ValidationRule.IsNotEmpty">
+    <TextInput Placeholder="Enter name">
+        <Feedback>
+            <ValidationNone>Please enter the name.</ValidationNone>
+            <ValidationSuccess>Name is good.</ValidationSuccess>
+            <ValidationError>Enter valid name!</ValidationError>
+        </Feedback>
+    </TextInput>
+</Validation>
+
+<Validation Validator="ValidateEmail">
+    <TextInput Placeholder="Enter email">
+        <Feedback>
+            <ValidationNone>Please enter the email.</ValidationNone>
+            <ValidationSuccess>Email is good.</ValidationSuccess>
+            <ValidationError>Enter valid email!</ValidationError>
+        </Feedback>
+    </TextInput>
+</Validation>
+@code{
+    void ValidateEmail( ValidatorEventArgs e )
+    {
+        var email = Convert.ToString( e.Value );
+
+        e.Status = string.IsNullOrEmpty( email ) ? ValidationStatus.None :
+            email.Contains( "@" ) ? ValidationStatus.Success : ValidationStatus.Error;
+    }
+}

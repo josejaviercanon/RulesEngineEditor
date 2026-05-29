@@ -1,0 +1,447 @@
+﻿@page "/docs/components/date-picker"
+
+<Seo Canonical="/docs/components/date-picker" Title="Blazorise DatePicker component" Description="Learn to use and work with the Blazorise DatePicker component, which is a fully featured date selection component that lets users select a date." />
+
+<DocsPageTitle Path="Components/Date Picker">
+    Blazorise DatePicker component
+</DocsPageTitle>
+
+<DocsPageLead>
+    DatePicker is an input field that allows the user to enter a date by typing or by selecting from a calendar overlay.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    <Code Tag>DatePicker</Code> is a fully featured date selection component that lets users select a date.
+    <Code>DatePicker</Code> is based on a <Anchor To="https://flatpickr.js.org/">flatpickr</Anchor> datetime picker
+    and as such is not a native date input element. That means that unlike <code>DateInput</code> which will render <Code>type="date"</Code>,
+    <Code>DatePicker</Code> will render <Code>type="text"</Code> in the DOM.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic example">
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicDatePickerExample" Outlined FullWidth>
+        <BasicDatePickerExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Add icon">
+        To add icon you can combine <Code>DatePicker</Code> with an <Code>Addon</Code>.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DatePickerWithIconExample" Outlined FullWidth>
+        <DatePickerWithIconExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Disable dates">
+        If you'd like to make certain dates unavailable for selection you can assign the <Code>DisabledDates</Code> parameter.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DatePickerDisabledDatesExample" Outlined FullWidth>
+        <DatePickerDisabledDatesExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Enable dates">
+        If you'd like to make only certain dates available for selection, you can assign the <Code>EnabledDates</Code> parameter.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DatePickerEnabledDatesExample" Outlined FullWidth>
+        <DatePickerEnabledDatesExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Disable days">
+        If you'd like to make only certain days in a week unavailable for selection you can assign the <Code>DisabledDays</Code> parameter.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DatePickerDisabledDaysExample" Outlined FullWidth>
+        <DatePickerDisabledDaysExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Range example">
+        Select a range of dates using the range calendar.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="RangeDatePickerExample" Outlined FullWidth>
+        <RangeDatePickerExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Multiple example">
+        It is possible to select multiple dates.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="MultipleDatePickerExample" Outlined FullWidth>
+        <MultipleDatePickerExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Inline Calendar">
+        To always show the calendar you just need to set <Code>Inline</Code> parameter.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="InlineDatePickerExample" Outlined FullWidth>
+        <InlineDatePickerExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Non Static example">
+        <Paragraph>
+            By default, the calendar menu will position statically. This means that it will also keep its position relative to the page when you scroll.
+        </Paragraph>
+        <Paragraph>
+            If you want to disable this behavior, you should assign the value false to the <Code>StaticPicker</Code> parameter.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DatePickerNonStaticExample" Outlined FullWidth>
+        <DatePickerNonStaticExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Input format mask">
+        <Paragraph>
+            In this example, the user is prompted to enter a value in the format <Code>dd.MM.yyyy</Code>.
+        </Paragraph>
+        <Paragraph>
+            Notice that we have also defined a <Code>DisplayFormat</Code> parameter. This is needed so that after the user finish with the input mask we need to properly parse it using the same format.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DatePickerInputFormatExample" Outlined FullWidth>
+        <DatePickerInputFormatExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Show week numbers">
+        <Paragraph>
+            Use the <Code>ShowWeekNumbers</Code> parameter to toggle the visibility of week numbers in the calendar view.
+        </Paragraph>
+        <Paragraph>
+            When enabled, a column will appear on the left side of each row in the calendar showing the corresponding week number.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DatePickerShowWeekNumbersExample" Outlined FullWidth>
+        <DatePickerShowWeekNumbersExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Show buttons">
+        <Paragraph>
+            Use the <Code>ShowTodayButton</Code>, or <Code>ShowClearButton</Code> parameters to toggle the visibility of the buttons in the calendar view.
+        </Paragraph>
+        <Paragraph>
+            When enabled, a row of buttons will appear at the bottom of the calendar allowing users to quickly navigate to today or clear the selected date.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DatePickerShowButtonsExample" Outlined FullWidth>
+        <DatePickerShowButtonsExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Default time">
+        <Paragraph>
+            By default the time elements are set to <Strong>12:00</Strong>. To change it use the <Code>DefaultHour</Code> and <Code>DefaultMinute</Code> parameters.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DatePickerDefaultTimesExample" Outlined FullWidth>
+        <DatePickerDefaultTimesExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Formats
+</DocsPageSubtitle>
+
+<Heading Size="HeadingSize.Is3">
+    Display Format
+</Heading>
+
+<DocsPageParagraph>
+    Native Flatpickr component has some special rules regarding the date format string. To make it easier to use we
+    tried to map the flatpickr custom formatter to behave as close to <Strong>.NET</Strong> date format string.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Bellow you can find the list of available and supported mappings between Blazorise and flatpickr.
+</DocsPageParagraph>
+
+<Table>
+    <TableHeader ThemeContrast="ThemeContrast.Light">
+        <TableRow>
+            <TableHeaderCell TextAlignment="TextAlignment.Center">.NET value</TableHeaderCell>
+            <TableHeaderCell TextAlignment="TextAlignment.Center">Flatpickr value</TableHeaderCell>
+            <TableHeaderCell>Description</TableHeaderCell>
+        </TableRow>
+    </TableHeader>
+    <TableBody>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">d</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">j</TableRowCell>
+            <TableRowCell>Day of the month without leading zeros, 1 to 31.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">dd</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">d</TableRowCell>
+            <TableRowCell>Day of the month, 2 digits with leading zeros, 01 to 31.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">ddd</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">D</TableRowCell>
+            <TableRowCell>A textual representation of a day, Mon through Sun.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">dddd</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">l</TableRowCell>
+            <TableRowCell>A full textual representation of the day of the week, Sunday through Saturday.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">M</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">n</TableRowCell>
+            <TableRowCell>Numeric representation of a month, without leading zeros, 1 through 12.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">MM</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">m</TableRowCell>
+            <TableRowCell>Numeric representation of a month, with leading zero, 01 through 12.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">MMM</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">M</TableRowCell>
+            <TableRowCell>A short textual representation of a month, Jan through Dec.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">MMMM</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">F</TableRowCell>
+            <TableRowCell>A full textual representation of a month, January through December.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">y</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">y</TableRowCell>
+            <TableRowCell>A two digit representation of a year. 99 or 03.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">yy</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">y</TableRowCell>
+            <TableRowCell>-||-</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">yyy</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">Y</TableRowCell>
+            <TableRowCell>A full numeric representation of a year, 4 digits, 1999 or 2003.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">yyyy</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">Y</TableRowCell>
+            <TableRowCell>-||-</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">yyyy</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">Y</TableRowCell>
+            <TableRowCell>-||-</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">H</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">H</TableRowCell>
+            <TableRowCell>Hours (24 hours), 00 to 23.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">HH</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">H</TableRowCell>
+            <TableRowCell>-||-</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">h</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">h</TableRowCell>
+            <TableRowCell>Hours, 1 to 12.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">hh</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">G</TableRowCell>
+            <TableRowCell>Hours, 2 digits with leading zeros, 01 to 12.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">m</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">i</TableRowCell>
+            <TableRowCell>Minutes, 00 to 59.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">mm</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">i</TableRowCell>
+            <TableRowCell>-||-</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">s</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">s</TableRowCell>
+            <TableRowCell>Seconds, 0, 1 to 59.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">ss</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">S</TableRowCell>
+            <TableRowCell>Seconds, 2 digits, 00 to 59.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">t</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">K</TableRowCell>
+            <TableRowCell>AM/PM designator.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">tt</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">K</TableRowCell>
+            <TableRowCell>-||-</TableRowCell>
+        </TableRow>
+    </TableBody>
+</Table>
+
+<Heading Size="HeadingSize.Is3">
+    Input Format
+</Heading>
+
+<DocsPageParagraph>
+    We use the <Anchor To="https://github.com/RobinHerbots/Inputmask" Title="Link to Inputmask library">Inputmask library</Anchor> for handling of the datetime edit masks.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Bellow you can find the list of available and supported mappings between Blazorise and Inputmask.
+</DocsPageParagraph>
+
+<Table>
+    <TableHeader ThemeContrast="ThemeContrast.Light">
+        <TableRow>
+            <TableHeaderCell TextAlignment="TextAlignment.Center">.NET value</TableHeaderCell>
+            <TableHeaderCell TextAlignment="TextAlignment.Center">Inputmask value</TableHeaderCell>
+            <TableHeaderCell>Description</TableHeaderCell>
+        </TableRow>
+    </TableHeader>
+    <TableBody>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">d</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">d</TableRowCell>
+            <TableRowCell>Day of the month as digits; no leading zero for single-digit days.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">dd</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">dd</TableRowCell>
+            <TableRowCell>Day of the month as digits; leading zero for single-digit days.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">ddd</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">ddd</TableRowCell>
+            <TableRowCell>Day of the week as a three-letter abbreviation.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">dddd</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">dddd</TableRowCell>
+            <TableRowCell>Day of the week as its full name.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">M</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">m</TableRowCell>
+            <TableRowCell>Month as digits; no leading zero for single-digit months.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">MM</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">mm</TableRowCell>
+            <TableRowCell>Month as digits; leading zero for single-digit months.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">MMM</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">mmm</TableRowCell>
+            <TableRowCell>Month as a three-letter abbreviation.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">MMMM</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">mmmm</TableRowCell>
+            <TableRowCell>Month as its full name.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">yy</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">yy</TableRowCell>
+            <TableRowCell>Year as last two digits; leading zero for years less than 10.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">yyyy</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">yyyy</TableRowCell>
+            <TableRowCell>Year as 4 digits.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">h</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">h</TableRowCell>
+            <TableRowCell>Hours; no leading zero for single-digit hours (12-hour clock).</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">hh</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">hh</TableRowCell>
+            <TableRowCell>Hours; leading zero for single-digit hours (12-hour clock).</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">HH</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">HH</TableRowCell>
+            <TableRowCell>Hours; leading zero for single-digit hours (24-hour clock).</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">m</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">M</TableRowCell>
+            <TableRowCell>Minutes; no leading zero for single-digit minutes. Uppercase M unlike CF timeFormat's m to avoid conflict with months.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">mm</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">MM</TableRowCell>
+            <TableRowCell>Minutes; leading zero for single-digit minutes. Uppercase MM unlike CF timeFormat's mm to avoid conflict with months.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">s</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">s</TableRowCell>
+            <TableRowCell>Seconds; no leading zero for single-digit seconds.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">ss</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">ss</TableRowCell>
+            <TableRowCell>Seconds; leading zero for single-digit seconds.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">t</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">T</TableRowCell>
+            <TableRowCell>Single-character time marker string: A or P.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell TextAlignment="TextAlignment.Center">tt</TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.Center">TT</TableRowCell>
+            <TableRowCell>Two-character time marker string: AM or PM.</TableRowCell>
+        </TableRow>
+    </TableBody>
+</Table>
+
+<DocsPageSubtitle>
+    Best Practices
+</DocsPageSubtitle>
+
+<Heading Size="HeadingSize.Is3">
+    Show the Date Format
+</Heading>
+
+<DocsPageSection>
+    <DocsPageSectionHeader>
+        <Paragraph>
+            Use a placeholder or helper to show how the input should be formatted. For example, "12/6/2020" represents different dates for Americans and Europeans.
+        </Paragraph>
+        <Paragraph>
+            Helpers are preferable to placeholders, as they are always visible. Fields with placeholders are also less noticeable than empty fields, so they are susceptible to being skipped. Use placeholders when space is limited, for example when Date Picker is used as a filter in a data grid header.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DatePickerFormatBestPracticeExample" Outlined FullWidth>
+        <DatePickerFormatBestPracticeExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(DatePicker<>)]" />

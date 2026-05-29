@@ -1,0 +1,16 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+
+<Button Color="Color.Primary" Clicked="@OnButtonClicked">Click me</Button>
+<Span>
+    Clicked @counter times
+</Span>
+@code {
+    int counter;
+
+    Task OnButtonClicked()
+    {
+        counter++;
+
+        return Task.CompletedTask;
+    }
+}

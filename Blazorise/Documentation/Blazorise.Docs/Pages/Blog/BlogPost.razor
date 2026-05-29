@@ -1,0 +1,53 @@
+﻿@page "/blog/{*Permalink}"
+@page "/news/{*Permalink}"
+@using Blazorise.Docs.BlogRuntime
+@inject IBlogProvider BlogProvider
+@inject NavigationManager NavigationManager
+
+@if ( pageModel is null )
+{
+    <Div Margin="Margin.Is4.OnY">
+        <Alert Color="Color.Danger" Visible>
+            <AlertMessage>
+                Post not found.
+            </AlertMessage>
+        </Alert>
+    </Div>
+}
+else
+{
+    @pageModel.Content
+}
+
+@code {
+    [Parameter] public string Permalink { get; set; } = string.Empty;
+
+    BlogPageModel pageModel;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        pageModel = null;
+
+        try
+        {
+            if ( IsNewsRoute( NavigationManager.Uri ) )
+            {
+                NavigationManager.NavigateTo( BlogPermalinks.ToCanonicalBlogPath( Permalink ), replace: true );
+                return;
+            }
+
+            pageModel = await BlogProvider.GetByPermalinkAsync( BlogPermalinks.ToCanonicalBlogPath( Permalink ) )
+                ?? await BlogProvider.GetByPermalinkAsync( BlogPermalinks.ToLegacyNewsPath( Permalink ) );
+        }
+        catch
+        {
+            // swallow; pageModel stays null -> "Post not found."
+        }
+    }
+
+    private static bool IsNewsRoute( string uri )
+    {
+        string path = new Uri( uri ).AbsolutePath ?? "/";
+        return path.StartsWith( "/news", StringComparison.OrdinalIgnoreCase );
+    }
+}

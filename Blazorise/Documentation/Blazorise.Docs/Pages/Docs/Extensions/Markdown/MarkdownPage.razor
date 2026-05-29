@@ -1,0 +1,98 @@
+﻿@page "/docs/extensions/markdown"
+
+<Seo Canonical="/docs/extensions/markdown" Title="Blazorise Markdown component" Description="Learn how to use the Blazorise Markdown component to edit Markdown strings with toolbar actions, previews, editor options, validation, and form integration." />
+
+<DocsPageTitle Path="Extensions/Markdown">
+    Blazorise Markdown component
+</DocsPageTitle>
+
+<DocsPageLead>
+    The <Code>Markdown</Code> component allows you to edit Markdown strings.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The Blazorise <Code>Markdown</Code> component is based on the <Anchor To="https://github.com/Ionaru/easy-markdown-editor" Target="Target.Blank">EasyMDE</Anchor> JavaScript library.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    To use the <Code>Markdown</Code> component, install the <Code>Blazorise.Markdown</Code> package first.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="MarkdownNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        In your main <Badge Color="Color.Light">_Imports.razor</Badge> add:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="ImportMarkdownExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Example" />
+    <DocsPageSectionContent Code="MarkdownExample" Outlined FullWidth>
+        <MarkdownExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Validation">
+        Use <Code>Markdown</Code> inside a <Code>Validation</Code> or <Code>Validations</Code> container just like any other form input.
+        Validation messages and styling update automatically when you validate or submit the form.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="MarkdownValidationExample" Outlined FullWidth>
+        <MarkdownValidationExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<Alert Color="Color.Info" Visible>
+    <AlertDescription>
+        For transforming markdown value into HTML we used an excellent <Anchor To="https://github.com/xoofx/markdig" Target="Target.Blank">Markdig</Anchor> library.
+    </AlertDescription>
+</Alert>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Toolbar customization">
+        The editor's toolbar can be edited to show more icons and even add custom icons!
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="MarkdownCustomButtonsExample" Outlined FullWidth>
+        <MarkdownCustomButtonsExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Upload image">
+        Uploading an image has a similar API to our <Code>FileInput</Code> component and is fairly simple to use.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="MarkdownUploadImageExample" Outlined FullWidth>
+        <MarkdownUploadImageExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Change Shortcuts">
+        EasyMDE comes with an array of predefined keyboard shortcuts, but they can be altered with a configuration option.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="MarkdownShortcutsExample" Outlined FullWidth>
+        <MarkdownShortcutsExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Custom Preview Render">
+        Sometimes you don't want to render preview with the built-in parser. In those situations you can make use of <Code>PreviewRender</Code> callback to override the preview HTML.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="MarkdownPreviewRenderExample" Outlined FullWidth>
+        <MarkdownPreviewRenderExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(Markdown)]" />

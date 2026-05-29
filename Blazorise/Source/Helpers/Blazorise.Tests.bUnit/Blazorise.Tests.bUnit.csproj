@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\..\Build\Blazorise.props" />
+
+  <PropertyGroup>
+    <PackageTags>blazorise tests components bunit</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="bunit" />
+    <PackageReference Include="Moq" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Blazorise\Blazorise.csproj" />
+    <ProjectReference Include="..\..\Extensions\Blazorise.DataGrid\Blazorise.DataGrid.csproj" />
+    <ProjectReference Include="..\..\Extensions\Blazorise.Charts\Blazorise.Charts.csproj" />
+    <ProjectReference Include="..\..\Extensions\Blazorise.Markdown\Blazorise.Markdown.csproj" />
+    <ProjectReference Include="..\..\Extensions\Blazorise.RichTextEdit\Blazorise.RichTextEdit.csproj" />
+    <ProjectReference Include="..\..\Extensions\Blazorise.SignaturePad\Blazorise.SignaturePad.csproj" />
+    <ProjectReference Include="..\..\Extensions\Blazorise.Gantt\Blazorise.Gantt.csproj" />
+    <ProjectReference Include="..\..\Extensions\Blazorise.Scheduler\Blazorise.Scheduler.csproj" />
+  </ItemGroup>
+
+</Project>

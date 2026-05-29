@@ -1,0 +1,64 @@
+@typeparam TItem
+@inherits _BaseDataGridCell<TItem>
+@if ( Column.EditTemplate != null )
+{
+    @Column.EditTemplate( CellEditContext )
+}
+else
+{
+    var valueType = Column.GetValueType(Item);
+    @if ( valueType is not null )
+    {
+        @if ( UseValidation )
+        {
+            <Validation HandlerType="@ValidationHandlerType" Validator="@Validator" AsyncValidator="@AsyncValidator" UsePattern="@HasValidationPattern">
+                @if ( Column is DataGridNumericColumn<TItem> numericColumn )
+                {
+                    <_DataGridCellEditValidation Column="@Column" Item="@Item" ValidationItem="@ValidationItem" Field="@Column.Field" ValueType="@valueType" CellEditContext="CellEditContext" Readonly="@Column.Readonly" CellValueChanged="@CellValueChanged" ShowValidationFeedback="@ShowValidationFeedback" ValidationPattern="@ValidationPattern" Step="@numericColumn.Step" Decimals="@numericColumn.Decimals" DecimalSeparator="@numericColumn.DecimalSeparator" GroupSeparator="@numericColumn.GroupSeparator" Culture="@numericColumn.Culture" ShowStepButtons="@numericColumn.ShowStepButtons" EnableStep="@numericColumn.EnableStep" />
+                }
+                else if ( Column is DataGridDateColumn<TItem> dateColumn )
+                {
+                    <_DataGridCellEditValidation Column="@Column" Item="@Item" ValidationItem="@ValidationItem" Field="@Column.Field" ValueType="@valueType" CellEditContext="CellEditContext" Readonly="@Column.Readonly" CellValueChanged="@CellValueChanged" ShowValidationFeedback="@ShowValidationFeedback" ValidationPattern="@ValidationPattern" DateInputMode="@dateColumn.InputMode" />
+                }
+                else if ( Column is DataGridSelectColumn<TItem> selectColumn )
+                {
+                    <_DataGridCellSelectEdit Column="@selectColumn" CellValue="CellEditContext.CellValue" CellValueChanged="@OnEditValueChanged" ShowValidationFeedback="@ShowValidationFeedback" />
+                }
+                else
+                {
+                    <_DataGridCellEditValidation Column="@Column" Item="@Item" ValidationItem="@ValidationItem" Field="@Column.Field" ValueType="@valueType" CellEditContext="CellEditContext" Readonly="@Column.Readonly" CellValueChanged="@CellValueChanged" ShowValidationFeedback="@ShowValidationFeedback" ValidationPattern="@ValidationPattern" />
+                }
+            </Validation>
+        }
+        else
+        {
+            @if ( Column is DataGridNumericColumn<TItem> numericColumn )
+            {
+                <_DataGridCellNumericEdit Column="@numericColumn" CellValue="@CellEditContext.CellValue" CellValueChanged="@OnEditValueChanged" />
+            }
+            else if ( Column is DataGridDateColumn<TItem> dateColumn )
+            {
+                <_DataGridCellDatePicker Column="@dateColumn" CellValue="@CellEditContext.CellValue" CellValueChanged="@OnEditValueChanged" />
+            }
+            else if ( Column is DataGridSelectColumn<TItem> selectColumn )
+            {
+                <_DataGridCellSelectEdit Column="@selectColumn" CellValue="CellEditContext.CellValue" CellValueChanged="@OnEditValueChanged" />
+            }
+            else if ( Column is DataGridCheckColumn<TItem> checkColumn )
+            {
+                <_DataGridCellCheckEdit Column="@checkColumn" CellValue="@CellEditContext.CellValue" CellValueChanged="@OnEditValueChanged" />
+            }
+            else
+            {
+                <_DataGridCellEdit Column="@Column" Item="@Item" ValidationItem="@ValidationItem" Field="@Column.Field" ValueType="@valueType" CellEditContext="CellEditContext" Readonly="@Column.Readonly" CellValueChanged="@CellValueChanged" />
+            }
+        }
+    }
+}
+
+@if ( !string.IsNullOrWhiteSpace( Column.HelpText ) )
+{
+    <Help>
+        @Column.HelpText
+    </Help>
+}

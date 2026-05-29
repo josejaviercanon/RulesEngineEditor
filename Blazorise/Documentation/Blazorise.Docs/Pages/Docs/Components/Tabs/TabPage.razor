@@ -1,0 +1,112 @@
+﻿@page "/docs/components/tab"
+
+<Seo Canonical="/docs/components/tab" Title="Blazorise Tab component" Description="Learn to use and work with the Blazorise Tab component, which is used for hiding content behind a selectable item. This can also be used as a pseudo-navigation for a page, where the tabs are links and the tab-items are the content." />
+
+<DocsPageTitle Path="Components/Tab">
+    Blazorise Tab component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Tabs are used to organize and group content into sections that the user can navigate between.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The <Code Tag>Tab</Code> component is used for hiding content behind a selectable item. This can also be used as a pseudo-navigation for a page, where the tabs are links and the tab-items are the content.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    There are two pieces to a tabbed interface: the tabs themselves, and the content for each tab.
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>Tabs</Code> container for Tab items.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>Items</Code> collection of tab items.
+                </Paragraph>
+                <UnorderedList>
+                    <UnorderedListItem>
+                        <Paragraph>
+                            <Code Tag>Tab</Code> individual tab item, which can be clicked to navigate to the tab content.
+                        </Paragraph>
+                    </UnorderedListItem>
+                </UnorderedList>
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>Content</Code> container for tab panels.
+                </Paragraph>
+                <UnorderedList>
+                    <UnorderedListItem>
+                        <Paragraph>
+                            <Code Tag>TabPanel</Code> individual tab content, which is displayed when the tab item is clicked.
+                        </Paragraph>
+                    </UnorderedListItem>
+                </UnorderedList>
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageParagraph>
+    The tabs are container for tab items. Each tab item contains a link to a tab panel. The <Code>Name</Code> of each
+    tab item should match the <Code>Name</Code> of a tab panel.
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Code Tag>TabsContent</Code> container for tab panels
+        <UnorderedList>
+            <UnorderedListItem>
+                <Code Tag>TabPanel</Code> container for tab content
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageParagraph>
+    The tab content container is used to hold tab panels. Each content pane also has a unique <Code>Name</Code>, which
+    is targeted by a link in the tab-strip.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Most of the time you will only need to use <Code>Tabs</Code> component as it is crafted to hold both clickable
+    tab items and tab content. Only in the advanced scenario where the content will be separated from the tab items you
+    will need to use <Code Tag>TabsContent</Code> component.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicTabExample" Outlined FullWidth>
+        <BasicTabExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Lazy Load">
+        You are able to set the <Code>Tabs</Code> component to lazy load your tabs.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LazyLoadTabExample" Outlined FullWidth>
+        <LazyLoadTabExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Lazy Reload">
+        You are able to set the <Code>Tabs</Code> component to lazy load your tabs everytime.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LazyReloadTabExample" Outlined FullWidth>
+        <LazyReloadTabExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(Tabs),typeof(Tab), typeof(TabsContent), typeof(TabPanel)]" />

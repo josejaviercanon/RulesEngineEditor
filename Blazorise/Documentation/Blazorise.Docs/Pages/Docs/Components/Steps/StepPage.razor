@@ -1,0 +1,122 @@
+﻿@page "/docs/components/step"
+
+<Seo Canonical="/docs/components/step" Title="Blazorise Step component" Description="Learn to use and work with the Blazorise Step component that displays progress through numbered steps." />
+
+<DocsPageTitle Path="Components/Step">
+    Blazorise Step component
+</DocsPageTitle>
+
+<DocsPageLead>
+    The <Code>Step</Code> component displays progress through numbered steps.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    Similar to <Anchor To="docs/components/tab" Title="Link to tabs component">Tabs</Anchor> component, the step component have the same structure and usage.
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>Steps</Code> container for Step items.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>Items</Code> collection of step items.
+                </Paragraph>
+                <UnorderedList>
+                    <UnorderedListItem>
+                        <Paragraph>
+                            <Code Tag>Step</Code> individual step item, which can be clicked to navigate to the step content.
+                        </Paragraph>
+                    </UnorderedListItem>
+                </UnorderedList>
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>Content</Code> container for step content.
+                </Paragraph>
+                <UnorderedList>
+                    <UnorderedListItem>
+                        <Paragraph>
+                            <Code Tag>StepPanel</Code> individual step content, which is displayed when the step item is clicked.
+                        </Paragraph>
+                    </UnorderedListItem>
+                </UnorderedList>
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageParagraph>
+    The <Code>Steps</Code> component is container for <Code>Step</Code> items. The <Code>Name</Code> of each step
+    item should match the <Code>Name</Code> of a step panel(if panels are used).
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Code Tag>StepsContent</Code> container for step panels
+        <UnorderedList>
+            <UnorderedListItem>
+                <Code Tag>StepPanel</Code> container for step content
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageParagraph>
+    The step content container is used to hold step panels. Each content pane also has a unique <Code>Name</Code>,
+    which is targeted by a link in the step-strip.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Most of the time you will only need to use <Code>Steps</Code> component as it is crafted to hold both clickable
+    step items and step content. Only in the advanced scenario where the content will be separated from the step items
+    you will need to use <Code>StepsContent</Code> component.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicStepExample" Outlined FullWidth>
+        <BasicStepExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Navigation Control">
+        <Paragraph>
+            Basic steps navigation has no constraints, so it is possible to jump to any steps by clicking on them. However, this is usually impossible in real-world scenarios as sometimes a user is required to enter valid data before proceeding to the next step.
+        </Paragraph>
+        <Paragraph>
+            To control the navigation between the steps, you need to use the <Code>NavigationAllowed</Code> parameter, which acts as a function that has all the information you need to validate the page switch.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="StepNavigationAllowedExample" Outlined FullWidth>
+        <StepNavigationAllowedExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Lazy Load">
+        You are able to set the <Code>Steps</Code> component to lazy load your steps.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="StepLazyLoadStepExample" Outlined FullWidth>
+        <StepLazyLoadStepExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Lazy Reload">
+        You are able to set the <Code>Steps</Code> component to lazy load your steps everytime.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="StepLazyReloadStepExample" Outlined FullWidth>
+        <StepLazyReloadStepExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(Steps), typeof(Step), typeof(StepsContent), typeof(StepPanel)]" />

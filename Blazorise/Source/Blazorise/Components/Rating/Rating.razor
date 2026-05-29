@@ -1,0 +1,16 @@
+﻿@namespace Blazorise
+@inherits BaseComponent
+<CascadingValue Value="@this" IsFixed>
+    <span @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @onmouseover="@OnMouseOverHandler" @onmouseout="@OnMouseOutHandler" @attributes="@Attributes">
+        @for ( int i = 1; i <= MaxValue; i++ )
+        {
+            <RatingItem @key="@i"
+                        Class="@RatingItemsClass"
+                        Style="@RatingItemsStyle"
+                        Value="@i"
+                        Color="Color"
+                        ItemClicked="HandleItemClicked"
+                        ItemHovered="HandleItemHovered" />
+        }
+    </span>
+</CascadingValue>

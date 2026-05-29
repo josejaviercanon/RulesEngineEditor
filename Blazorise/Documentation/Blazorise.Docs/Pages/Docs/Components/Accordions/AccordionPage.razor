@@ -1,0 +1,96 @@
+﻿@page "/docs/components/accordion"
+
+<Seo Canonical="/docs/components/accordion" Title="Blazorise Accordion component" Description="Learn to work with the Blazorise accordion component to build a content area that can be collapsed and expanded." />
+
+<DocsPageTitle Path="Components/Accordion">
+    Blazorise Accordion component
+</DocsPageTitle>
+
+<DocsPageLead>
+    An accordion allows users to toggle the display of sections of content.
+</DocsPageLead>
+
+<DocsPageSubtitle>
+    Overview
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Accordion is a vertically stacked set of expandable panels. It reduces clutter and helps maintain the user's focus by showing only the relevant content at any time.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Structure
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    The <Code>Accordion</Code> structure is very simple:
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>Accordion</Code> the main container.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>AccordionItem</Code> defines a collapsible element - controled by the <Code>Visible</Code> state.
+                </Paragraph>
+                <UnorderedList>
+                    <UnorderedListItem>
+                        <Paragraph>
+                            <Code Tag>AccordionHeader</Code> the header that will always be shown - this is where you would put a toggle element (such as a <Code>Button</Code>).
+                        </Paragraph>
+                        <UnorderedList>
+                            <UnorderedListItem>
+                                <Paragraph>
+                                    <Code Tag>AccordionToggle</Code> the specialized button used to toggle the state of accordion and the accordion item components.
+                                </Paragraph>
+                            </UnorderedListItem>
+                        </UnorderedList>
+                    </UnorderedListItem>
+                    <UnorderedListItem>
+                        <Paragraph>
+                            <Code Tag>AccordionBody</Code> the main content of the accordion item.
+                        </Paragraph>
+                    </UnorderedListItem>
+                </UnorderedList>
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Default accordion">
+        <Paragraph>
+            Use the <Code>@@bind-Visible</Code> parameter to properly keep previously opened accordion elements unchanged.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicAccordionExample" Outlined FullWidth>
+        <BasicAccordionExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<Paragraph>
+    <Alert Color="Color.Warning" Visible>
+        <AlertMessage>
+            Please note the changes starting from version 2.0:
+        </AlertMessage>
+        <AlertDescription>
+            <UnorderedList>
+                <UnorderedListItem>
+                    <Strong>Support removed in version 2.0:</Strong> Placing a regular <Anchor To="docs/components/button">Button</Anchor> component inside of Accordion is no longer supported as of version 2.0. It should be replaced with the new <Code Tag>AccordionToggle</Code> component.
+                </UnorderedListItem>
+                <UnorderedListItem>
+                    <Strong>Support removed in version 2.0:</Strong> Placing a regular <Code Tag>Collapse</Code> component inside of Accordion is no longer supported as of version 2.0. It should be replaced with the new <Code Tag>AccordionHeader</Code>, <Code Tag>AccordionBody</Code>, and <Code Tag>AccordionItem</Code> components.
+                </UnorderedListItem>
+            </UnorderedList>
+        </AlertDescription>
+    </Alert>
+</Paragraph>
+
+<ComponentApiDocs ComponentTypes="[typeof(Accordion), typeof(AccordionToggle), typeof(AccordionItem), typeof(AccordionHeader), typeof(AccordionBody)]" />

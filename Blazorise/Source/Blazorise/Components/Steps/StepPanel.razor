@@ -1,0 +1,8 @@
+﻿@namespace Blazorise
+@inherits BaseComponent
+<div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+    @if ( RenderMode == StepsRenderMode.Default || ( RenderMode == StepsRenderMode.LazyReload && Active ) || ( RenderMode == StepsRenderMode.LazyLoad && lazyLoaded ) )
+    {
+        @ChildContent
+    }
+</div>

@@ -1,0 +1,114 @@
+﻿@page "/docs"
+@using Blazorise.Docs.Services
+
+<Seo Canonical="/docs" Title="Blazorise Documentation" Description="On this pages you can find everything you need to create a rich UI Blazor single page application with the help of Blazorise components." />
+
+<DocsPageTitle Path="">
+    Blazorise Documentation
+</DocsPageTitle>
+
+<DocsPageLead>
+    Get started with Blazorise, one of the world's most popular Blazor framework for building feature rich, blazing fast applications.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    Blazorise consists of modern UI components with customizable styling, comprehensive documentation, UI design assets, and the tooling you need to build a solid foundation for your applications.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    On these pages you will find everything you need to create a single-page application.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Getting started
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Quickly get a project started with any of our examples. This <Anchor To="docs/start">quick start</Anchor> guide will take you through the downloading and
+    getting started with the Blazorise.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    The best way to round up the whole story is to see the Blazorise in action.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Use an AI assistant? Connect it to the <Anchor To="docs/mcp" Title="Link to MCP server guide">MCP server guide</Anchor> to pull Blazorise docs and examples on demand.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Templates
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Another way to quickly get started is to use our provided Templates. Please visit our <Anchor To="docs/templates">templates guide</Anchor> for more information about downloading and quickly getting started with a Blazorise Template.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Migration
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Moving an existing app to Blazorise 2.0? Use the <Anchor To="docs/migration">migration CLI guide</Anchor> to analyze your solution and apply the required changes.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Analyzer
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Want migration diagnostics directly in your IDE and build output? Follow the <Anchor To="docs/analyzer">analyzer guide</Anchor> to install and configure <Code>Blazorise.Analyzers</Code>.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Go through the Components section to learn how to work with some essential Blazorise elements.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Live Demo Applications
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    You can browse our demos-oriented samples showcasing all our control's significant features.
+</DocsPageParagraph>
+
+<Row Margin="Margin.Is5.OnY">
+    @foreach ( var (_, providerData) in CssProvidersService.ProvidersData )
+    {
+        <Column @key="@providerData" ColumnSize="ColumnSize.Is4.OnTablet.Is3.OnWidescreen.Is12.OnMobile" Margin="Margin.Is3.FromBottom">
+            <Anchor To="@providerData.DemoUrl" Target="Target.Blank" TextDecoration="TextDecoration.None" TextColor="TextColor.Dark">
+                <Card Shadow="Shadow.Small" Border="Border.Is0">
+                    <CardImage Source="@($"_content/Blazorise.Docs/assets/img/logos/{providerData.ImageFileName}")" Alt="@providerData.ImageAltText" Height="Height.Px( 200 )" />
+                    <CardBody>
+                        <CardTitle Size="HeadingSize.Is5">@providerData.TitleDemo</CardTitle>
+                    </CardBody>
+                </Card>
+            </Anchor>
+        </Column>
+    }
+</Row>
+
+<DocsPageSubtitle>
+    Community
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Stay up to date on the development of Blazorise and reach out to the community with these helpful resources.
+</DocsPageParagraph>
+
+<DocsPageUnorderedList>
+    <DocsPageUnorderedListItem>
+        Read and subscribe to <Anchor To="blog" Title="Link to Official Blazorise Blog">Official Blazorise Blog</Anchor>..
+    </DocsPageUnorderedListItem>
+    <DocsPageUnorderedListItem>
+        Join the <Anchor To="https://discord.gg/cVmq8xBSnG" Title="Link to Official Blazorise Discord">Official Discord server</Anchor>.
+    </DocsPageUnorderedListItem>
+</DocsPageUnorderedList>
+
+<DocsPageParagraph>
+    You can also follow <Anchor To="https://twitter.com/Blazorise" Title="Link to Blazorise Twitter">@@Blazorise</Anchor> on Twitter for the latest news and other interesting stuff.
+</DocsPageParagraph>

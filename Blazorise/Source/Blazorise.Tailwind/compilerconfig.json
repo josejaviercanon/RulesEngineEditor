@@ -1,0 +1,6 @@
+﻿[
+  {
+    "outputFile": "tailwind-build/blazorise.tailwind.css",
+    "inputFile": "Styles/blazorise.tailwind.scss"
+  }
+]

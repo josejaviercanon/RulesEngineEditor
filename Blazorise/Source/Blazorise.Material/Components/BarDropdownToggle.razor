@@ -1,0 +1,27 @@
+@namespace Blazorise.Material.Components
+@inherits Blazorise.BarDropdownToggle
+
+<a @ref="@ElementRef" id="@ElementId" href="@GetTo()" rel="@GetRel()" class="@ClassNames" style="@StyleNames" role="button" tabindex="0" aria-haspopup="@AriaHasPopup" aria-expanded="@AriaExpanded" @onclick="@ClickHandler" @onclick:preventDefault="@ShouldPreventDefaultOnToggleClick" @onkeydown="@KeyDownHandler" @attributes="@Attributes" @onmouseenter="@ParentBarDropdown.OnMouseEnterHandler" @onmouseleave="@ParentBarDropdown.OnMouseLeaveHandler">
+    @if ( ParentBarDropdownState?.Mode == BarMode.Horizontal )
+    {
+        <Span Class="@ToggleContentClassNames" @onclick:stopPropagation="@ShouldStopToggleAreaPropagation">
+            <Span Class="@ToggleContentTextClassNames">
+                @ChildContent
+            </Span>
+
+            @if ( IsToggleIconVisible )
+            {
+                <span class="@ToggleContentIconClassNames"
+                      @onclick="@OnToggleIconClicked"
+                      @onclick:stopPropagation="@ShouldStopIconClickPropagation"
+                      @onclick:preventDefault="@ShouldPreventDefaultOnIconClick">
+                    <Icon Name="@HorizontalToggleIconName" IconSize="@ToggleIconSize" />
+                </span>
+            }
+        </Span>
+    }
+    else
+    {
+        @VerticalIconTemplate
+    }
+</a>

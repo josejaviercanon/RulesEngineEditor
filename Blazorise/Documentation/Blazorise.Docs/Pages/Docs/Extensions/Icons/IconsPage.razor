@@ -1,0 +1,221 @@
+﻿@page "/docs/extensions/icons"
+
+<Seo Canonical="/docs/extensions/icons" Title="Blazorise Icons component" Description="Learn how to use Blazorise icon components and icon providers to represent actions, states, navigation, and commands with Font Awesome and other supported icon sets." />
+
+<DocsPageTitle Path="Extensions/Icons">
+    Blazorise Icons component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Icons are visual symbols that represent actions, states, or navigation options.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    Blazorise ships with multiple icon providers and supports registering custom icon libraries.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    To use the <Code>Icon</Code> component, install one of the <Code>Blazorise.Icons.*</Code> packages first.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Install an icon provider package from NuGet.
+</DocsPageParagraph>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="IconsNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageParagraph>
+    Now based on the icon library you want to use, you will need to setup the CSS files.
+</DocsPageParagraph>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="AntDesign Icons CSS">
+        Note: If you use AntDesign icons, define <Code>blazorise.icons.antdesign.css</Code> in your <Code>index.html</Code> or <Code>_Layout.cshtml</Code> / <Code>_Host.cshtml</Code> file.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="AntDesignIconsCSSExample"></DocsPageSectionSource>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Bootstrap Icons CSS">
+        Note: If you use Bootstrap icons, define <Code>bootstrap-icons.min.css</Code> in your <Code>index.html</Code> or <Code>_Layout.cshtml</Code> / <Code>_Host.cshtml</Code> file. This file is required for some custom icon styles to work.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="BootstrapIconsCSSExample"></DocsPageSectionSource>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Fluent Icons CSS">
+        Note: If you use Fluent icons, define <Code>FluentSystemIcons-Resizable.css</Code> in your <Code>index.html</Code> or <Code>_Layout.cshtml</Code> / <Code>_Host.cshtml</Code> file. This file is required for some custom icon styles to work.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="FluentIconsCSSExample"></DocsPageSectionSource>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Font Awesome Icons CSS">
+        Include CSS link into your <Code>index.html</Code> or <Code>_Layout.cshtml</Code> / <Code>_Host.cshtml</Code> file, depending if you're using a Blazor WebAssembly or Blazor Server side project.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="FontAwesomeCSSExample"></DocsPageSectionSource>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Material Icons CSS">
+        Note: If you use Material icons, define <Code>blazorise.icons.material.css</Code> in your <Code>index.html</Code> or <Code>_Layout.cshtml</Code> / <Code>_Host.cshtml</Code> file. This file is required for some custom icon styles to work.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="MaterialCSSExample"></DocsPageSectionSource>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Lucide Icons CSS">
+        Note: If you use Lucide icons, define <Code>blazorise.icons.lucide.css</Code> in your <Code>index.html</Code> or <Code>_Layout.cshtml</Code> / <Code>_Host.cshtml</Code> file.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="LucideIconsCSSExample"></DocsPageSectionSource>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Registrations">
+        Register the icon provider that matches the package you installed, such as <Code>AddFontAwesomeIcons</Code> or <Code>AddLucideIcons</Code>.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="RegistrationsExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic Example">
+        The most basic example of using an icon is to use the <Code>Icon</Code> component. You can set the icon name using the <Code>IconName</Code> property.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="IconBasicExample" Outlined FullWidth>
+        <IconBasicExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Custom">
+        You can also use a real icon name instead of predefined enum. Note that this is not the preferred way of using icons, but it can be useful in some cases.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="IconCustomExample" Outlined FullWidth>
+        <IconCustomExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Icon Names">
+        Preferred way to define icon is to use an enum <Code>IconName</Code>. That way every icon will be applied automatically based on the icon package that you're using.
+
+        In case you cannot find an icon in the provided enum, you can also use prebuilt list of icon names that comes with every icon package. For example for Ant Design you would use <Code>AntDesignIcons</Code>, for font-awesome you would use <Code>FontAwesomeIcons</Code>, for material that would be <Code>MaterialIcons</Code>, while for Lucide that would be <Code>LucideIcons</Code>.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="IconNamesExample" Outlined FullWidth>
+        <IconNamesExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Style">
+        Blazorise exposes common icon styles through <Code>IconStyle</Code>. To change it you can use one of the supported styles:
+        <UnorderedList>
+            <UnorderedListItem>Solid</UnorderedListItem>
+            <UnorderedListItem>Regular</UnorderedListItem>
+            <UnorderedListItem>Light</UnorderedListItem>
+            <UnorderedListItem>DuoTone</UnorderedListItem>
+        </UnorderedList>
+
+        Not all icon providers support all styles. If a style is not supported by the selected provider, it can fall back to the provider default or render the same base icon.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="IconStyleExample" Outlined FullWidth>
+        <IconStyleExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Style support">
+        The table below compares how the built-in icon providers handle <Code>IconStyle</Code> values.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="IconSizeExample" Outlined FullWidth>
+        <Table>
+            <TableHeader ThemeContrast="ThemeContrast.Light">
+                <TableRow>
+                    <TableHeaderCell>Provider</TableHeaderCell>
+                    <TableHeaderCell>Solid</TableHeaderCell>
+                    <TableHeaderCell>Regular</TableHeaderCell>
+                    <TableHeaderCell>Light</TableHeaderCell>
+                    <TableHeaderCell>DuoTone</TableHeaderCell>
+                    <TableHeaderCell>Notes</TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                <TableRow>
+                    <TableRowCell>AntDesign</TableRowCell>
+                    <TableRowCell>Supported</TableRowCell>
+                    <TableRowCell>Supported</TableRowCell>
+                    <TableRowCell>Not supported</TableRowCell>
+                    <TableRowCell>Supported</TableRowCell>
+                    <TableRowCell>Uses AntDesign icon themes.</TableRowCell>
+                </TableRow>
+                <TableRow>
+                    <TableRowCell>Bootstrap Icons</TableRowCell>
+                    <TableRowCell>Single style only</TableRowCell>
+                    <TableRowCell>Not supported</TableRowCell>
+                    <TableRowCell>Not supported</TableRowCell>
+                    <TableRowCell>Not supported</TableRowCell>
+                    <TableRowCell><Code>IconStyle</Code> does not change the rendered icon.</TableRowCell>
+                </TableRow>
+                <TableRow>
+                    <TableRowCell>Fluent UI</TableRowCell>
+                    <TableRowCell>Supported</TableRowCell>
+                    <TableRowCell>Supported</TableRowCell>
+                    <TableRowCell>Not supported</TableRowCell>
+                    <TableRowCell>Not supported</TableRowCell>
+                    <TableRowCell>Predefined icons switch between regular and filled variants.</TableRowCell>
+                </TableRow>
+                <TableRow>
+                    <TableRowCell>Font Awesome</TableRowCell>
+                    <TableRowCell>Supported</TableRowCell>
+                    <TableRowCell>Supported</TableRowCell>
+                    <TableRowCell>Requires matching Font Awesome assets</TableRowCell>
+                    <TableRowCell>Requires matching Font Awesome assets</TableRowCell>
+                    <TableRowCell>Support depends on the Font Awesome CSS and font files loaded by the app.</TableRowCell>
+                </TableRow>
+                <TableRow>
+                    <TableRowCell>Material Icons</TableRowCell>
+                    <TableRowCell>Supported</TableRowCell>
+                    <TableRowCell>Supported</TableRowCell>
+                    <TableRowCell>Supported</TableRowCell>
+                    <TableRowCell>Supported</TableRowCell>
+                    <TableRowCell>Maps Blazorise styles to Material icon font families.</TableRowCell>
+                </TableRow>
+                <TableRow>
+                    <TableRowCell>Lucide</TableRowCell>
+                    <TableRowCell>Single style only</TableRowCell>
+                    <TableRowCell>Single style only</TableRowCell>
+                    <TableRowCell>Not supported</TableRowCell>
+                    <TableRowCell>Not supported</TableRowCell>
+                    <TableRowCell>Lucide is a single outline SVG icon set.</TableRowCell>
+                </TableRow>
+            </TableBody>
+        </Table>
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Size">
+        You can set the size to one of the supported below.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Outlined FullWidth>
+        <IconSizeExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Global options">
+        Defining styles on each icon can become very tedious with time. That's why we give you an option to specify them globally. This way, you will have consistent styling across the application, and you can still override them on the icon if you need to.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="IconGlobalSettingsExample" />
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(Icon)]" />

@@ -1,0 +1,67 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+
+<DataGrid TItem="Employee"
+          Data="@employeeList"
+          Filterable
+          Responsive>
+    <DataGridColumn Field="@nameof( Employee.FirstName )" Caption="Name" Editable="false"></DataGridColumn>
+    <DataGridColumn Field="@nameof( Employee.FirstName )" Caption="Name Length" Editable="false" CustomFilter="@OnNameLengthFilter">
+        <DisplayTemplate>
+            @context.Item.FirstName.Length chars
+        </DisplayTemplate>
+        <FilterTemplate>
+            <Select TValue="NameLengthFilter" ValueChanged="@(e => { context.TriggerFilterChange( e ); })">
+                @foreach ( var filter in Enum.GetValues<NameLengthFilter>() )
+                {
+                    <SelectItem Value="@(filter)">
+                        @( filter switch
+                        {
+                            NameLengthFilter.All => "All",
+                            NameLengthFilter.LessThanFour => "Less than 4",
+                            NameLengthFilter.FourToSix => "5 to 7",
+                            NameLengthFilter.SixAndMore => "7 and more",
+                            _ => filter.ToString()
+                        } )
+                    </SelectItem>
+                }
+            </Select>
+        </FilterTemplate>
+    </DataGridColumn>
+    <DataGridSelectColumn CustomFilter="@OnGenderCustomFilter" TItem="Employee" Field="@nameof( Employee.Gender )" Caption="Gender" Editable Data="EmployeeData.Genders" ValueField="x => ( (Gender)x ).Code" TextField="x => ( (Gender)x ).Description" />
+</DataGrid>
+
+@code {
+    private List<Employee> employeeList = [new() { FirstName = "David", Gender = "M" }, new() { FirstName = "Mladen", Gender = "M" }, new() { FirstName = "John", Gender = "M" }, new() { FirstName = "Ana", Gender = "F" }, new() { FirstName = "Jessica", Gender = "F" }];
+
+    private bool OnGenderCustomFilter( object itemValue, object searchValue )
+    {
+        if ( searchValue is string genderFilter )
+        {
+            return genderFilter == "*" || genderFilter == itemValue?.ToString();
+        }
+
+        return true;
+    }
+
+    private bool OnNameLengthFilter( object itemValue, object searchValue ) => (itemValue, searchValue) switch
+    {
+        (_, null ) => true,
+        (string name, NameLengthFilter filter ) => filter switch
+        {
+            NameLengthFilter.All => true,
+            NameLengthFilter.LessThanFour => name.Length < 4,
+            NameLengthFilter.FourToSix => name.Length is >= 4 and <= 6,
+            NameLengthFilter.SixAndMore => name.Length > 6,
+            _ => false
+        },
+        _ => false
+    };
+
+    enum NameLengthFilter
+    {
+        All,
+        LessThanFour,
+        FourToSix,
+        SixAndMore
+    }
+}

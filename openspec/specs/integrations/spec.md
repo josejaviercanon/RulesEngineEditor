@@ -1,7 +1,7 @@
 # integrations Specification
 
 ## Purpose
-Define integration contracts with RulesEngine, LogicFlow interop, Radzen UI, EF Core persistence, PostgreSQL rules storage, and Minimal API integration endpoints.
+Define integration contracts with RulesEngine, LogicFlow interop, Blazorise UI, EF Core persistence, PostgreSQL rules storage, and Minimal API integration endpoints.
 
 ## Requirements
 
@@ -45,13 +45,19 @@ The system SHALL expose a stable JS interop contract for LogicFlow.js canvas ope
 - THEN guidance preserves marker format using <!-- BEGIN:logicflow-agent-rules --> and <!-- END:logicflow-agent-rules -->
 - AND content between markers includes local docs path, package roles, extension/layout docs path, local-doc-first policy, and ask-before-install policy
 
-### Requirement: Radzen UI Component Contract
-The system SHALL use Radzen components for editor forms, validation display, and workflow operation controls in a consistent UI contract.
+### Requirement: Blazorise UI Component Contract
+The system SHALL use Blazorise components for editor forms, validation display, workflow operation controls, and workflow management screens in a consistent UI contract.
 
-#### Scenario: Validate action from Radzen UI
+#### Scenario: Validate action from Blazorise UI
 - GIVEN a user edits workflow content in form controls
-- WHEN the user activates Validate from a Radzen action control
-- THEN the UI dispatches a validation request and renders structured feedback in Radzen presentation components
+- WHEN the user activates Validate from a Blazorise action control
+- THEN the UI dispatches a validation request and renders structured feedback in Blazorise presentation components
+
+#### Scenario: Do not introduce alternate UI component library
+- GIVEN new UI surface area is added in RulesEngine.UI
+- WHEN the implementation defines forms, dialogs, or data grids
+- THEN the solution uses Blazorise components and configured providers
+- AND the implementation does not add another UI component library for those concerns
 
 ### Requirement: EF Core Persistence Contract
 The system SHALL use EF Core repositories and mappings to persist workflow definitions and metadata using a JSON definition strategy.

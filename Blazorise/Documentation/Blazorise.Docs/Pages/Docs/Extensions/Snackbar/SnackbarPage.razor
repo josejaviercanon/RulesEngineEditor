@@ -1,0 +1,94 @@
+﻿@page "/docs/extensions/snackbar"
+
+<Seo Canonical="/docs/extensions/snackbar" Title="Blazorise Snackbar component" Description="Learn how to use the Blazorise Snackbar component to show brief messages about app processes, confirmations, errors, positions, durations, and actions." />
+
+<DocsPageTitle Path="Extensions/Snackbar">
+    Blazorise Snackbar component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Snackbars provide brief messages about app processes. The component is also known as a toast.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The snackbar extension is composed of several components:
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Code Tag>Snackbar</Code> main snackbar component
+        <UnorderedList>
+            <UnorderedListItem>
+                <Code Tag>SnackbarBody</Code> container for the snackbar content
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Code Tag>SnackbarAction</Code> snackbar action button
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageParagraph>
+    To use the <Code>Snackbar</Code> component, install the <Code>Blazorise.Snackbar</Code> package first.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Snackbar has its own default styling and is not provider-native. If the application does not define theme color variables,
+    Snackbar falls back to its bundled colors. Defining <Code>Theme.ColorOptions</Code>, including <Code>new()</Code> without
+    explicit color assignments, enables the default Blazorise theme colors and generates Snackbar color variables.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="SnackbarNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        In your main <Badge Color="Color.Light">_Imports.razor</Badge> add:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="SnackbarImportsExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Static files">
+        Include CSS link into your <Code>index.html</Code> or <Code>_Layout.cshtml</Code> / <Code>_Host.cshtml</Code> file, depending if you're using a Blazor WebAssembly or Blazor Server side project.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="SnackbarResourcesExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic example">
+        A basic snackbar that aims to reproduce standard snackbar behavior.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="SnackbarExample" Outlined FullWidth>
+        <SnackbarExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Variant snackbars">
+        You can also define variant <Anchor To="docs/helpers/colors">colors</Anchor> to override default snackbar style.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="SnackbarVariantExample" Outlined FullWidth>
+        <SnackbarVariantExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Stacked snackbars">
+        When you want to show multiple snackbars stacked on top of each other you can use a wrapper component <Code>SnackbarStack</Code>.
+        You can specify <Code>Action&lt;SnackbarOptions&gt; options</Code> when calling <Code>PushAsync()</Code> in order to specify the <Code>Snackbar</Code> parameters available below.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="SnackbarStackedExample" Outlined FullWidth>
+        <SnackbarStackedExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(Snackbar)]" />

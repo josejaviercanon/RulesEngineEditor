@@ -1,0 +1,13 @@
+﻿@inherits Blazorise.CardTitle
+@if ( Size != null )
+{
+    <Dynamic TagName="@($"h{SizeNumber}")" @bind-ElementRef="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @onclick="@OnClickHandler" @attributes="@Attributes">
+        @ChildContent
+    </Dynamic>
+}
+else
+{
+    <Dynamic TagName="@(InsideHeader ? "span" : "div")" @bind-ElementRef="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @onclick="@OnClickHandler" @attributes="@Attributes">
+        @ChildContent
+    </Dynamic>
+}

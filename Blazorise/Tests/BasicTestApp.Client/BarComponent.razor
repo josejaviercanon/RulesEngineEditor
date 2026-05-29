@@ -1,0 +1,41 @@
+﻿<h2>Bar</h2>
+<Bar Background="Background.Primary"
+     Breakpoint="Breakpoint.Desktop"
+     ThemeContrast="ThemeContrast.Light">
+    <BarToggler />
+    <BarMenu>
+        <BarStart>
+            <BarItem>
+                <BarDropdown>
+                    <BarDropdownToggle Clicked="OnClicked">
+                    </BarDropdownToggle>
+                    <BarDropdownMenu>
+                        <BarItem>
+                            @_counter
+                        </BarItem>
+                        <BarDropdownItem ElementId="bar-dropdown-item" Clicked="OnDropdownItemClicked">
+                            Item @_dropdownItemCounter
+                        </BarDropdownItem>
+                    </BarDropdownMenu>
+                </BarDropdown>
+            </BarItem>
+        </BarStart>
+    </BarMenu>
+</Bar>
+
+@code {
+    private int _counter = 0;
+    private int _dropdownItemCounter = 0;
+
+    private Task OnClicked()
+    {
+        _counter++;
+        return Task.CompletedTask;
+    }
+
+    private Task OnDropdownItemClicked( Microsoft.AspNetCore.Components.Web.MouseEventArgs _ )
+    {
+        _dropdownItemCounter++;
+        return Task.CompletedTask;
+    }
+}

@@ -1,0 +1,83 @@
+﻿@page "/docs/extensions/chart-datalabels"
+
+<Seo Canonical="/docs/extensions/chart-datalabels" Title="Blazorise Chart DataLabels component" Description="Learn how to use the Blazorise Chart DataLabels component to display data labels on Chart.js charts." />
+
+<DocsPageTitle Path="Extensions/Chart DataLabels" AddedVersion="Added in v1.2">
+    Blazorise Chart DataLabels component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Display data labels on any chart type.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    <LicenseLimitationAlert LimitText="@($"{Licensing.BlazoriseLicenseProvider.DEFAULT_UNLICENSED_LIMIT_CHARTS_MAX_ROWS} points per chart")" />
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Chart DataLabels is made possible with the help of <Anchor To="https://chartjs-plugin-datalabels.netlify.app/" Title="Link to chart DataLabels plugin" Target="Target.Blank">chartjs-plugin-datalabels</Anchor>.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    To use the Chart DataLabels plugin, install the <Code>Blazorise.Charts.DataLabels</Code> package. It depends on <Code>Blazorise.Charts</Code>.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install DataLabels extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="ChartDataLabelsNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        <Paragraph>
+            In your main <Code>_Imports.razor</Code> add:
+        </Paragraph>
+        <Paragraph>
+            <Code>@@using Blazorise.Charts</Code>
+        </Paragraph>
+        <Paragraph>
+            <Code>@@using Blazorise.Charts.DataLabels</Code>
+        </Paragraph>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Line Chart">
+        <Paragraph>
+            The plugin options can be changed at 2 different levels and are evaluated with the following priority:
+        </Paragraph>
+        <Paragraph>
+            <UnorderedList>
+                <UnorderedListItem>Per dataset: with <Code>Datasets</Code> parameter</UnorderedListItem>
+                <UnorderedListItem>Per chart: with <Code>Options</Code> parameter</UnorderedListItem>
+            </UnorderedList>
+        </Paragraph>
+        <Paragraph>
+            In the following example, we are using both. With <Code>Options</Code>, we're defining the shared styles, and with <Code>Datasets</Code> we're defining the styles for specific datasets.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ChartDataLabelsExample" Outlined FullWidth>
+        <ChartDataLabelsExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Scriptable Options">
+        <Paragraph>
+            The <Code>ChartDataLabelsOptions</Code> object values also support functions as a callback. This feature allows you to change values dynamically based on the current state of data or dataset. Please note that whatever function expression you have will be transpiled to JavaScript, and it will be executed in JavaScript.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="ChartDataLabelsScriptableExample" />
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(ChartDataLabels<>)]" />

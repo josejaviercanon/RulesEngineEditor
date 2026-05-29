@@ -1,0 +1,97 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+
+<Button Color="Color.Primary" Clicked="@(async () => await HandleRedraw())">Redraw</Button>
+
+<BarChart @ref="barChart" TItem="double" Options="@options" />
+
+@code {
+    BarChart<double> barChart;
+
+    BarChartOptions options = new()
+    {
+        IndexAxis = "y",
+        Elements = new()
+        {
+            Bar = new()
+            {
+                BorderWidth = 2,
+            }
+        },
+        Responsive = true,
+        Plugins = new()
+        {
+            Legend = new()
+            {
+                Position = "right"
+            },
+            Title = new()
+            {
+                Display = true,
+                    Text = "Chart.js Horizontal Bar Chart"
+            }
+        }
+    };
+
+    protected override async Task OnAfterRenderAsync( bool firstRender )
+    {
+        if ( firstRender )
+        {
+            await HandleRedraw();
+        }
+    }
+
+    async Task HandleRedraw()
+    {
+        await barChart.Clear();
+
+        await barChart.AddLabelsDatasetsAndUpdate( Labels,
+            GetBarChartDataset( "Dataset 1" ),
+            GetBarChartDataset( "Dataset 2" ) );
+    }
+
+    BarChartDataset<double> GetBarChartDataset( string label )
+    {
+        return new BarChartDataset<double>
+        {
+            Label = label,
+            Data = RandomizeData(),
+            BackgroundColor = BackgroundColors,
+            BorderColor = BorderColors,
+        };
+    }
+
+    private static string[] Labels = { "A", "B", "C", "D", "E", "F" };
+
+    private static List<string> BackgroundColors = new()
+    {
+        ChartColor.FromRgba( 76, 110, 245, 0.25f ),   // Indigo
+        ChartColor.FromRgba( 18, 184, 134, 0.25f ),   // Teal
+        ChartColor.FromRgba( 245, 159, 0, 0.25f ),    // Amber
+        ChartColor.FromRgba( 240, 62, 62, 0.25f ),    // Red
+        ChartColor.FromRgba( 132, 94, 247, 0.25f ),   // Purple
+        ChartColor.FromRgba( 34, 139, 230, 0.25f )    // Blue
+    };
+
+    private static List<string> BorderColors = new()
+    {
+        ChartColor.FromRgba( 76, 110, 245, 1f ),      // Indigo
+        ChartColor.FromRgba( 18, 184, 134, 1f ),      // Teal
+        ChartColor.FromRgba( 245, 159, 0, 1f ),       // Amber
+        ChartColor.FromRgba( 240, 62, 62, 1f ),       // Red
+        ChartColor.FromRgba( 132, 94, 247, 1f ),      // Purple
+        ChartColor.FromRgba( 34, 139, 230, 1f )       // Blue
+    };
+
+    Random random = new Random( DateTime.Now.Millisecond );
+
+    List<double> RandomizeData()
+    {
+        return new List<double> {
+            random.Next( -50, 50 ) * random.NextDouble(),
+            random.Next( -50, 50 ) * random.NextDouble(),
+            random.Next( -50, 50 ) * random.NextDouble(),
+            random.Next( -50, 50 ) * random.NextDouble(),
+            random.Next( -50, 50 ) * random.NextDouble(),
+            random.Next( -50, 50 ) * random.NextDouble() };
+    }
+}

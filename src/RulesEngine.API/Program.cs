@@ -10,6 +10,7 @@ using RulesEngine.Application.DependencyInjection;
 using RulesEngine.Infrastructure.DependencyInjection;
 using RulesEngine.Infrastructure.Persistence;
 using RulesEngine.Core.Models;
+using RulesEngine.Application.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 var backendUrl = builder.Configuration["BackendUrl"] ?? "https://localhost:7086";
@@ -255,6 +256,10 @@ workflows.MapPost("/", async (
                 request.Workflow,
                 request.SchemaVersion), cancellationToken);
         }
+        catch (WorkflowValidationException exception)
+        {
+            return Results.BadRequest(new ValidationErrorResponse(request.SchemaVersion ?? 1, exception.Errors));
+        }
         catch (InvalidOperationException exception)
         {
             return Results.BadRequest(new ValidationErrorResponse(request.SchemaVersion ?? 1, [exception.Message]));
@@ -279,6 +284,10 @@ workflows.MapPut("/{id:guid}", async (
                 id,
                 request.Workflow,
                 request.SchemaVersion), cancellationToken);
+        }
+        catch (WorkflowValidationException exception)
+        {
+            return Results.BadRequest(new ValidationErrorResponse(request.SchemaVersion ?? 1, exception.Errors));
         }
         catch (InvalidOperationException exception)
         {

@@ -1,0 +1,14 @@
+﻿@namespace Blazorise
+@inherits BaseTypographyComponent
+@if ( Size is not null )
+{
+    <Dynamic TagName="@($"h{SizeNumber}")" @bind-ElementRef="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @onclick="@OnClickHandler" @attributes="@Attributes">
+        @ChildContent
+    </Dynamic>
+}
+else
+{
+    <div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @onclick="@OnClickHandler" @attributes="@Attributes">
+        @ChildContent
+    </div>
+}

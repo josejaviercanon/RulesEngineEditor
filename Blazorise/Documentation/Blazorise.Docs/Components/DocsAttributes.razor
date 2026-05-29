@@ -1,0 +1,58 @@
+﻿<CascadingValue Value="this" IsFixed>
+    @ChildContent
+</CascadingValue>
+
+@if ( Title != null )
+{
+    <Heading Size="HeadingSize.Is4" Margin="Margin.Is3.FromBottom">
+        @Title
+    </Heading>
+}
+
+<Table Responsive Margin="Margin.Is4.FromBottom">
+    <TableHeader ThemeContrast="@ThemeContrast">
+        <TableRow>
+            <TableHeaderCell>@Name</TableHeaderCell>
+            <TableHeaderCell>Description</TableHeaderCell>
+            <TableHeaderCell>Type</TableHeaderCell>
+            @if ( ShowDefaults )
+            {
+                <TableHeaderCell>Default</TableHeaderCell>
+            }
+        </TableRow>
+    </TableHeader>
+    <TableBody>
+        @foreach ( var docsAttributesItem in DocsAttributesItems )
+        {
+            <TableRow @key="@docsAttributesItem">
+                <TableRowCell TextOverflow="TextOverflow.NoWrap">
+                    @if ( !string.IsNullOrEmpty( docsAttributesItem.ObsoleteMessage ) )
+                    {
+                        <Tooltip Text="@docsAttributesItem.ObsoleteMessage" Inline>
+                            <Icon Name="IconName.ExclamationTriangle" TextColor="TextColor.Warning" />
+                        </Tooltip>
+                    }
+                    <Code>@docsAttributesItem.Name</Code>
+                </TableRowCell>
+                <TableRowCell>
+                    @docsAttributesItem.ChildContent
+                </TableRowCell>
+                <TableRowCell>
+                    @if ( !string.IsNullOrWhiteSpace( docsAttributesItem.Type ) )
+                    {
+                        <Code Tag="@docsAttributesItem.TypeTag">@docsAttributesItem.Type</Code>
+                    }
+                </TableRowCell>
+                @if ( ShowDefaults )
+                {
+                    <TableRowCell>
+                        @if ( docsAttributesItem.Default != null )
+                        {
+                            <Code TextColor="@docsAttributesItem.DefaultTextColor">@docsAttributesItem.Default</Code>
+                        }
+                    </TableRowCell>
+                }
+            </TableRow>
+        }
+    </TableBody>
+</Table>

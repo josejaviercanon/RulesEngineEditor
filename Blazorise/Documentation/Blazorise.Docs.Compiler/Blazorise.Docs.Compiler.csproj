@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ColorCode.HTML" />
+    <PackageReference Include="Markdig" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.AspNetCore.Components" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+  </ItemGroup>
+
+  <Target Name="CopyNuGetXmlDocs" AfterTargets="Build">
+    <ItemGroup>
+      <!-- Include XML documentation files for Microsoft.AspNetCore.Components and System.Runtime -->
+      <XmlDocFiles Include="$(NuGetPackageRoot)\**\Microsoft.AspNetCore.Components.xml" />
+      <XmlDocFiles Include="$(NuGetPackageRoot)\system.runtime\**\ref\netcore50\System.Runtime.xml" />
+
+    </ItemGroup>
+    <Copy SourceFiles="@(XmlDocFiles)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

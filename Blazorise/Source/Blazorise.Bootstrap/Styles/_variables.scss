@@ -1,0 +1,253 @@
+﻿:root {
+    --b-bar-horizontal-height: 60px;
+}
+
+// Theme colors
+
+$link: #3273dc !default;
+
+$theme-colors: map-merge($theme-colors, ("link": $link));
+
+// Text colors
+
+$primary-text-emphasis: shade-color($primary, 60%) !default;
+$secondary-text-emphasis: shade-color($secondary, 60%) !default;
+$success-text-emphasis: shade-color($success, 60%) !default;
+$info-text-emphasis: shade-color($info, 60%) !default;
+$warning-text-emphasis: shade-color($warning, 60%) !default;
+$danger-text-emphasis: shade-color($danger, 60%) !default;
+$light-text-emphasis: $gray-700 !default;
+$dark-text-emphasis: $gray-700 !default;
+
+$theme-colors-text: ( "primary": $primary-text-emphasis, "secondary": $secondary-text-emphasis, "success": $success-text-emphasis, "info": $info-text-emphasis, "warning": $warning-text-emphasis, "danger": $danger-text-emphasis, "light": $light-text-emphasis, "dark": $dark-text-emphasis, ) !default;
+
+// Background color variants
+
+$primary-bg-subtle: tint-color($primary, 80%) !default;
+$secondary-bg-subtle: tint-color($secondary, 80%) !default;
+$success-bg-subtle: tint-color($success, 80%) !default;
+$info-bg-subtle: tint-color($info, 80%) !default;
+$warning-bg-subtle: tint-color($warning, 80%) !default;
+$danger-bg-subtle: tint-color($danger, 80%) !default;
+$light-bg-subtle: mix($gray-100, $white) !default;
+$dark-bg-subtle: $gray-400 !default;
+
+$theme-colors-bg-subtle: ( "primary": $primary-bg-subtle, "secondary": $secondary-bg-subtle, "success": $success-bg-subtle, "info": $info-bg-subtle, "warning": $warning-bg-subtle, "danger": $danger-bg-subtle, "light": $light-bg-subtle, "dark": $dark-bg-subtle, ) !default;
+
+// Border color variants
+
+$primary-border-subtle: tint-color($primary, 60%) !default;
+$secondary-border-subtle: tint-color($secondary, 60%) !default;
+$success-border-subtle: tint-color($success, 60%) !default;
+$info-border-subtle: tint-color($info, 60%) !default;
+$warning-border-subtle: tint-color($warning, 60%) !default;
+$danger-border-subtle: tint-color($danger, 60%) !default;
+$light-border-subtle: $gray-200 !default;
+$dark-border-subtle: $gray-500 !default;
+
+$theme-colors-border-subtle: ( "primary": $primary-border-subtle, "secondary": $secondary-border-subtle, "success": $success-border-subtle, "info": $info-border-subtle, "warning": $warning-border-subtle, "danger": $danger-border-subtle, "light": $light-border-subtle, "dark": $dark-border-subtle, ) !default;
+
+// Spacing
+
+$sizes: map-merge( ( 25: 25%, 33: 33.333333%, 50: 50%, 66: 66.666667%, 75: 75%, 100: 100%, auto: auto ), $sizes );
+
+// Grid breakpoints
+//
+// Define the minimum dimensions at which your layout will change,
+// adapting to different screen sizes, for use in
+
+$grid-breakpoints: ( xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px, xxl: 1400px );
+
+
+// Grid containers
+//
+// Define the maximum width of `.container` for different screen sizes.
+
+$container-max-widths: ( sm: 540px, md: 720px, lg: 960px, xl: 1140px, xxl: 1320px );
+
+
+// Grid columns
+//
+// Set the number of columns and specify the width of the gutters.
+$grid-rows: 6 !default;
+$grid-gutter-width: 1.5rem;
+$grid-row-columns: 6;
+
+
+// Components
+//
+// Define common padding and border radius sizes and more.
+
+$line-height-xs: 1.5 !default;
+$line-height-md: 1.5 !default;
+$line-height-xl: 1.5 !default;
+
+$border-radius-xs: .15rem !default;
+$border-radius-md: .25rem !default;
+$border-radius-xl: .4rem !default;
+
+
+// Typography
+//
+// Font, line-height, and color for body text, headings, and more.
+
+$font-size-xs: $font-size-base * .75 !default;
+$font-size-md: $font-size-base * 1.125 !default;
+$font-size-xl: $font-size-base * 1.5 !default;
+
+$font-sizes: ( xs: $font-size-xs, sm: $font-size-sm, md: $font-size-md, lg: $font-size-lg, xl: $font-size-xl, 1: $h1-font-size, 2: $h2-font-size, 3: $h3-font-size, 4: $h4-font-size, 5: $h5-font-size, 6: $h6-font-size ) !default;
+
+
+// Buttons + Forms
+//
+// Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
+
+$input-btn-padding-y-xs: .15rem !default;
+$input-btn-padding-x-xs: .5rem !default;
+$input-btn-font-size-xs: $font-size-xs !default;
+$input-btn-line-height-xs: $line-height-xs !default;
+
+$input-btn-padding-y-md: .47rem !default;
+$input-btn-padding-x-md: 1rem !default;
+$input-btn-font-size-md: $font-size-md !default;
+$input-btn-line-height-md: $line-height-md !default;
+
+$input-btn-padding-y-xl: .5rem !default;
+$input-btn-padding-x-xl: 1rem !default;
+$input-btn-font-size-xl: $font-size-xl !default;
+$input-btn-line-height-xl: $line-height-xl !default;
+
+
+// Buttons
+//
+// For each of Bootstrap's buttons, define text, background, and border color.
+
+$btn-padding-y-xs: $input-btn-padding-y-xs !default;
+$btn-padding-x-xs: $input-btn-padding-x-xs !default;
+$btn-font-size-xs: $input-btn-font-size-xs !default;
+$btn-line-height-xs: $input-btn-line-height-xs !default;
+
+$btn-padding-y-md: $input-btn-padding-y-md !default;
+$btn-padding-x-md: $input-btn-padding-x-md !default;
+$btn-font-size-md: $input-btn-font-size-md !default;
+$btn-line-height-md: $input-btn-line-height-md !default;
+
+$btn-padding-y-xl: $input-btn-padding-y-xl !default;
+$btn-padding-x-xl: $input-btn-padding-x-xl !default;
+$btn-font-size-xl: $input-btn-font-size-xl !default;
+$btn-line-height-xl: $input-btn-line-height-xl !default;
+
+// Allows for customizing button radius independently from global border radius
+$btn-border-radius-xs: $border-radius-xs !default;
+$btn-border-radius-md: $border-radius-md !default;
+$btn-border-radius-xl: $border-radius-xl !default;
+
+
+// Forms
+
+$input-padding-y-xs: $input-btn-padding-y-xs !default;
+$input-padding-x-xs: $input-btn-padding-x-xs !default;
+$input-font-size-xs: $input-btn-font-size-xs !default;
+$input-line-height-xs: $input-btn-line-height-xs !default;
+
+
+$input-padding-y-md: $input-btn-padding-y-md !default;
+$input-padding-x-md: $input-btn-padding-x-md !default;
+$input-font-size-md: $input-btn-font-size-md !default;
+$input-line-height-md: $input-btn-line-height-md !default;
+
+$input-padding-y-xl: $input-btn-padding-y-xl !default;
+$input-padding-x-xl: $input-btn-padding-x-xl !default;
+$input-font-size-xl: $input-btn-font-size-xl !default;
+$input-line-height-xl: $input-btn-line-height-xl !default;
+
+$input-border-radius-xs: $border-radius-xs !default;
+$input-border-radius-md: $border-radius-md !default;
+$input-border-radius-xl: $border-radius-xl !default;
+
+$input-height-xs: add($input-line-height-xs * 1em, add($input-padding-y-xs * 2, $input-height-border, false)) !default;
+$input-height-md: add($input-line-height-md * 1em, add($input-padding-y-md * 2, $input-height-border, false)) !default;
+$input-height-xl: add($input-line-height-xl * 1em, add($input-padding-y-xl * 2, $input-height-border, false)) !default;
+
+
+$custom-select-padding-y-xs: $input-padding-y-xs !default;
+$custom-select-padding-x-xs: $input-padding-x-xs !default;
+$custom-select-font-size-xs: $input-font-size-xs !default;
+$custom-select-height-xs: $input-height-xs !default;
+
+$custom-select-padding-y-md: $input-padding-y-md !default;
+$custom-select-padding-x-md: $input-padding-x-md !default;
+$custom-select-font-size-md: $input-font-size-md !default;
+$custom-select-height-md: $input-height-md !default;
+
+$custom-select-padding-y-xl: $input-padding-y-xl !default;
+$custom-select-padding-x-xl: $input-padding-x-xl !default;
+$custom-select-font-size-xl: $input-font-size-xl !default;
+$custom-select-height-xl: $input-height-xl !default;
+
+
+// Pagination
+
+$pagination-padding-y-xs: .125rem !default;
+$pagination-padding-x-xs: .25rem !default;
+$pagination-padding-y-md: .625rem !default;
+$pagination-padding-x-md: 1.25rem !default;
+$pagination-padding-y-xl: 1rem !default;
+$pagination-padding-x-xl: 2rem !default;
+
+
+// Offcanvas
+
+$zindex-offcanvas-backdrop: 1040 !default;
+$zindex-offcanvas: 1045 !default;
+$offcanvas-padding-y: $modal-inner-padding !default;
+$offcanvas-padding-x: $modal-inner-padding !default;
+$offcanvas-horizontal-width: 400px !default;
+$offcanvas-vertical-height: 30vh !default;
+$offcanvas-transition-duration: .3s !default;
+$offcanvas-border-color: $modal-content-border-color !default;
+$offcanvas-border-width: $modal-content-border-width !default;
+$offcanvas-title-line-height: $modal-title-line-height !default;
+$offcanvas-bg-color: var(--body-bg) !default;
+$offcanvas-color: var(--body-color) !default;
+$offcanvas-box-shadow: $modal-content-box-shadow-xs !default;
+$offcanvas-backdrop-bg: $modal-backdrop-bg !default;
+$offcanvas-backdrop-opacity: $modal-backdrop-opacity !default;
+
+
+// Figures
+
+$figure-dimensions: 16 24 32 48 64 96 128 256 512 !default;
+
+
+// Steps
+
+$step-gutter: 1rem !default;
+$step-container-width: 5rem !default;
+$step-container-padding-top: .5rem !default;
+$step-circle-size: 1.5rem !default;
+$step-circle-border-width: 2px !default;
+
+$step-icon-color: $gray-500 !default;
+$step-icon-background: #fff !default;
+$step-icon-completed-color: $success !default;
+$step-icon-active-color: $primary !default;
+
+$step-text-color: $gray-500 !default;
+$step-text-completed-color: $primary !default;
+$step-text-active-color: $primary !default;
+
+
+// Placeholders
+
+$placeholder-opacity-max: .5 !default;
+$placeholder-opacity-min: .2 !default;
+
+
+// Utilities
+
+$overflows: join($overflows, (visible, scroll));
+
+$position-values: ( 0: 0, 50: 50%, 100: 100% ) !default;
+
+$gutters: $spacers !default;

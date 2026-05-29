@@ -1,0 +1,80 @@
+﻿@page "/docs/extensions/chart-annotation"
+
+<Seo Canonical="/docs/extensions/chart-annotation" Title="Blazorise Chart Annotation component" Description="Learn how to use the Blazorise Chart Annotation component to add lines, labels, boxes, and contextual markers to Chart.js charts in Blazor applications." />
+
+<DocsPageTitle Path="Extensions/Chart Annotation" AddedVersion="Added in v1.3">
+    Blazorise Chart Annotation component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Draw lines, boxes, points, labels, polygons, and ellipses on the chart area.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    <LicenseLimitationAlert LimitText="@($"{Licensing.BlazoriseLicenseProvider.DEFAULT_UNLICENSED_LIMIT_CHARTS_MAX_ROWS} points per chart")" />
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Annotations work with line, bar, scatter and bubble charts that use linear, logarithmic, time, or category scales. Annotations will not work on any chart that does not have two or more axes, including pie, radar, and polar area charts.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Annotations are made possible with the help of <Anchor To="https://www.chartjs.org/chartjs-plugin-annotation/latest/" Title="Link to chart Chart Annotation plugin" Target="Target.Blank">chartjs-plugin-annotation</Anchor>.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    To use Chart Annotation, install the <Code>Blazorise.Charts.Annotation</Code> package. It depends on <Code>Blazorise.Charts</Code>.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install chart annotations extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="ChartAnnotationNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        <Paragraph>
+            In your main <Code>_Imports.razor</Code> add:
+        </Paragraph>
+        <Paragraph>
+            <Code>@@using Blazorise.Charts</Code>
+        </Paragraph>
+        <Paragraph>
+            <Code>@@using Blazorise.Charts.Annotation</Code>
+        </Paragraph>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Line Annotations">
+        <Paragraph>
+            Line annotations are used to draw lines on the chart area. This can be useful for highlighting information such as a threshold.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ChartAnnotationLineExample" Outlined FullWidth>
+        <ChartAnnotationLineExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Box Annotations">
+        <Paragraph>
+            Box annotations are used to draw rectangles on the chart area. This can be useful for highlighting different areas of a chart.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ChartAnnotationBoxExample" Outlined FullWidth>
+        <ChartAnnotationBoxExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(ChartAnnotation<>)]" />

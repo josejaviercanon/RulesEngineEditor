@@ -1,0 +1,132 @@
+.b-ant-range-slider {
+    > .ant-slider-handle {
+        pointer-events: none;
+    }
+
+    > .b-ant-range-slider-tooltip {
+        top: 0;
+        visibility: hidden;
+        opacity: 0;
+        transform: translate(-50%, calc(-100% - var(--ant-margin-xs)));
+        transition: opacity var(--ant-motion-duration-fast) var(--ant-motion-ease-out), visibility var(--ant-motion-duration-fast) var(--ant-motion-ease-out);
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 10;
+
+        > span {
+            display: block;
+            min-width: var(--ant-size-lg);
+            padding: 1px var(--ant-padding-xs);
+            color: var(--ant-color-text-light-solid);
+            font-size: var(--ant-font-size);
+            line-height: var(--ant-line-height);
+            text-align: center;
+            background: var(--ant-color-bg-spotlight);
+            border-radius: var(--ant-border-radius);
+            box-shadow: var(--ant-box-shadow-secondary);
+        }
+
+        &::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            width: var(--ant-size-xs);
+            height: var(--ant-size-xs);
+            background: var(--ant-color-bg-spotlight);
+            transform: translate(-50%, -50%) rotate(45deg);
+            border-radius: 0 0 var(--ant-border-radius-xs) 0;
+        }
+    }
+
+    > .b-ant-range-slider-input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        background: transparent;
+        pointer-events: none;
+        -webkit-appearance: none;
+        appearance: none;
+
+        &::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+        }
+
+        &::-webkit-slider-thumb {
+            width: var(--ant-slider-handle-size-hover);
+            height: var(--ant-slider-handle-size-hover);
+            border: 0;
+            background: transparent;
+            pointer-events: auto;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        &::-moz-range-track {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+        }
+
+        &::-moz-range-progress {
+            background: transparent;
+        }
+
+        &::-moz-range-thumb {
+            width: var(--ant-slider-handle-size-hover);
+            height: var(--ant-slider-handle-size-hover);
+            border: 0;
+            background: transparent;
+            pointer-events: auto;
+            cursor: pointer;
+        }
+    }
+
+    &:hover > .b-ant-range-slider-tooltip,
+    &:focus-within > .b-ant-range-slider-tooltip {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    &[aria-disabled='true'] {
+        > .b-ant-range-slider-input {
+            &::-webkit-slider-thumb {
+                cursor: not-allowed;
+            }
+
+            &::-moz-range-thumb {
+                cursor: not-allowed;
+            }
+        }
+    }
+}
+
+.b-ant-range-slider.ant-input-status-success {
+    --ant-slider-track-bg: var(--ant-color-success);
+    --ant-slider-track-hover-bg: var(--ant-color-success);
+    --ant-slider-handle-color: var(--ant-color-success);
+    --ant-slider-handle-active-color: var(--ant-color-success);
+    --ant-slider-dot-active-border-color: var(--ant-color-success);
+}
+
+.b-ant-range-slider.ant-input-status-warning {
+    --ant-slider-track-bg: var(--ant-color-warning);
+    --ant-slider-track-hover-bg: var(--ant-color-warning);
+    --ant-slider-handle-color: var(--ant-color-warning);
+    --ant-slider-handle-active-color: var(--ant-color-warning);
+    --ant-slider-dot-active-border-color: var(--ant-color-warning);
+}
+
+.b-ant-range-slider.ant-input-status-error {
+    --ant-slider-track-bg: var(--ant-color-error);
+    --ant-slider-track-hover-bg: var(--ant-color-error);
+    --ant-slider-handle-color: var(--ant-color-error);
+    --ant-slider-handle-active-color: var(--ant-color-error);
+    --ant-slider-dot-active-border-color: var(--ant-color-error);
+}

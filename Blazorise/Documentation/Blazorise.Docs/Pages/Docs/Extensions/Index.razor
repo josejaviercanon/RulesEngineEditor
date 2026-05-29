@@ -1,0 +1,21 @@
+﻿@page "/docs/extensions"
+@using Blazorise.Docs.Services.Search
+
+<Seo Canonical="/docs/extensions" Title="Blazorise extensions" Description="Learn about Blazorise UI extensions and how to properly install and use them to build your Blazor single page application." />
+
+<DocsPageTitle Path="Extensions">
+    Blazorise extensions
+</DocsPageTitle>
+
+<DocsPageLead>
+    Learn about Blazorise extensions and how to properly install them to build your application.
+</DocsPageLead>
+
+<Row RowColumns="RowColumns.Are4.OnTablet.Are2.OnMobile">
+    @foreach ( var info in ManualPageEntries.WithDescriptionAndUrl( "docs/extensions" ) )
+    {
+        <Column Margin="Margin.Is3.FromBottom">
+            <DocsPageComponentInfo @key="@info" Name="@info.Name" Description="@info.Description" To="@info.Url" />
+        </Column>
+    }
+</Row>

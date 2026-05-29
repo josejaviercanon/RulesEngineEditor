@@ -1,0 +1,71 @@
+﻿@using Blazorise.Docs.Services
+@implements IDisposable
+<BarItem>
+    <BarLink To="pricing">Pricing</BarLink>
+</BarItem>
+<BarItem>
+    <BarLink To="support">Support</BarLink>
+</BarItem>
+<BarItem>
+    <BarLink To="account">Account</BarLink>
+</BarItem>
+<BarItem>
+    <BarLink To="https://github.com/Megabit/Blazorise" Title="GitHub" Target="Target.Blank" aria-label="Star Blazorise on GitHub">
+        <Icon Name="@("fab fa-github")" IconSize="IconSize.Large" />
+    </BarLink>
+</BarItem>
+<BarItem>
+    <BarDropdown RightAligned>
+        <BarDropdownToggle>
+            @if ( ThemeService.IsDark )
+            {
+                <Icon Name="IconName.Moon" />
+            }
+            else if ( ThemeService.IsSystem )
+            {
+                <Icon Name="IconName.Adjust" />
+            }
+            else
+            {
+                <Icon Name="IconName.Sun" />
+            }
+        </BarDropdownToggle>
+        <BarDropdownMenu>
+            <BarDropdownItem Clicked="@(() => ThemeService.SetLightTheme())">
+                <Span Display="Display.Flex" Flex="Flex.AlignItems.Center" Width="Width.Is100">
+                    <Icon Name="IconName.Sun" Margin="Margin.Is2.FromEnd" /> Light <Icon Name="IconName.Check" Margin="Margin.IsAuto.FromStart" Visibility="@(ThemeService.IsLight ? Visibility.Visible : Visibility.Invisible)" />
+                </Span>
+            </BarDropdownItem>
+            <BarDropdownItem Clicked="@(() => ThemeService.SetDarkTheme())">
+                <Span Display="Display.Flex" Flex="Flex.AlignItems.Center" Width="Width.Is100">
+                    <Icon Name="IconName.Moon" Margin="Margin.Is2.FromEnd" /> Dark <Icon Name="IconName.Check" Margin="Margin.IsAuto.FromStart" Visibility="@(ThemeService.IsDark ? Visibility.Visible : Visibility.Invisible)" />
+                </Span>
+            </BarDropdownItem>
+            <BarDropdownItem Clicked="@(() => ThemeService.SetSystemTheme())">
+                <Span Display="Display.Flex" Flex="Flex.AlignItems.Center" Width="Width.Is100">
+                    <Icon Name="IconName.Adjust" Margin="Margin.Is2.FromEnd" /> System <Icon Name="IconName.Check" Margin="Margin.IsAuto.FromStart" Visibility="@(ThemeService.IsSystem ? Visibility.Visible : Visibility.Invisible)" />
+                </Span>
+            </BarDropdownItem>
+        </BarDropdownMenu>
+    </BarDropdown>
+</BarItem>
+@code {
+    [Inject] private ThemeService ThemeService { get; set; }
+
+    protected override void OnInitialized()
+    {
+        ThemeService.ThemeChanged += OnThemeChanged;
+
+        base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        ThemeService.ThemeChanged -= OnThemeChanged;
+    }
+
+    void OnThemeChanged( object sender, string theme )
+    {
+        InvokeAsync( StateHasChanged );
+    }
+}

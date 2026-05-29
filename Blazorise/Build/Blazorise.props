@@ -1,0 +1,132 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="Blazorise.Version.props" />
+  <Import Project="Blazorise.Pack.props" />
+  <PropertyGroup>
+    <Version>$(BlazoriseVersion)</Version>
+    <PackageVersion>$(BlazoriseVersion)</PackageVersion>
+
+	<TargetFrameworks>net10.0</TargetFrameworks>
+    <OutputType>Library</OutputType>
+    <IsPackable>true</IsPackable>
+    <LangVersion>14.0</LangVersion>
+
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <!-- Don't remove this. It is needed for the WASM workloads to publish demo projects. -->
+  <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+    <None Include="compilerconfig.json" />
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <DefineConstants>$(DefineConstants);NET8_0</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
+    <DefineConstants>$(DefineConstants);NET9_0</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net10.0' ">
+    <DefineConstants>$(DefineConstants);NET10_0</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+
+  <UsingTask
+	  TaskName="ReplaceVersionInJsFiles"
+	  TaskFactory="RoslynCodeTaskFactory"
+	  AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <SourceFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <Version ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System"/>
+      <Using Namespace="System.IO"/>
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[  
+				Log.LogMessage(MessageImportance.High, $"------ Custom Build Step : ReplaceVersionInJsFiles : [{SourceFiles.Count()}] files ------");
+				
+				var matchExpression = @"\?v=[A-Za-z0-9_.-]+";
+				var expectedVersion = string.Empty;
+				try {
+					var versionMatch = Regex.Match(Version ?? string.Empty, @"^\d+(\.\d+){0,3}");
+					if (!versionMatch.Success)
+					{
+						Log.LogMessage(MessageImportance.High, $"------ Custom Build Step : ReplaceVersionInJsFiles : Unable to resolve version : [{Version}] ------");
+						return false;
+					}
+
+					string[] versionGroups = versionMatch.Value.Split('.');
+					expectedVersion = string.Empty;
+					for (int i = 0; i < 4; i++)
+					{
+						if (i > 0)
+						{
+							expectedVersion += ".";
+						}
+					
+						if (versionGroups.Length > i)
+						{
+							expectedVersion += versionGroups[i];
+						}
+						else
+						{
+							expectedVersion += "0";
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					Log.LogMessage(MessageImportance.High, $"------ Custom Build Step : ReplaceVersionInJsFiles : Unable to resolve version : Exception : [{ex.Message}] ------");
+					return false;
+				}
+				
+				var replacementText = $"?v={expectedVersion}";
+				
+				Log.LogMessage(MessageImportance.High, $"------ Custom Build Step : ReplaceVersionInJsFiles : Match : [{matchExpression}] | Replace : [{replacementText}] ------");
+				try {
+					foreach (ITaskItem item in SourceFiles)
+					{
+						string fileName = item.ItemSpec;
+						Log.LogMessage(MessageImportance.High, "------ Custom Build Step : ReplaceVersionInJsFiles : Evaluating File '{0}'.", fileName);
+		
+						var fileContent = File.ReadAllText(fileName);
+						var regexMatch = Regex.Match(fileContent, matchExpression);
+					    if (regexMatch.Success && regexMatch.Value != replacementText)
+						{
+							Log.LogMessage(MessageImportance.High, "------ Custom Build Step : ReplaceVersionInJsFiles : Updating File '{0}'.", fileName);
+							File.WriteAllText(fileName, Regex.Replace(File.ReadAllText(fileName), matchExpression, replacementText).Trim());
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					Log.LogMessage(MessageImportance.High, $"------ Custom Build Step : ReplaceVersionInJsFiles : Exception : [{ex.Message}] ------");
+				}
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="BeforeBuildStep" BeforeTargets="Build">
+    <ItemGroup>
+      <JsFiles Include='wwwroot\*.js' />
+    </ItemGroup>
+
+    <ReplaceVersionInJsFiles
+		   SourceFiles="@(JsFiles)"
+		   Version="$(Version)" />
+  </Target>
+</Project>

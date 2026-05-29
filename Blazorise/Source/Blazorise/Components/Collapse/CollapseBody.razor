@@ -1,0 +1,9 @@
+﻿@namespace Blazorise
+@inherits BaseComponent<CollapseBodyClasses, CollapseBodyStyles>
+<CascadingValue Value="@this" IsFixed>
+    <div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+        <div class="@ContentClassNames" style="@Styles?.Content">
+            @ChildContent
+        </div>
+    </div>
+</CascadingValue>

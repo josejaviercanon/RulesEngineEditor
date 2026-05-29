@@ -1,0 +1,39 @@
+﻿@each $breakpoint in map-keys($grid-breakpoints) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+    @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
+        @each $name, $value in $font-sizes {
+            .fs#{$infix}-#{$name} {
+                font-size: $value !important;
+            }
+        }
+    }
+}
+
+.font-weight-semibold {
+    font-weight: 600 !important;
+}
+
+.text-decoration {
+    &-underline {
+        text-decoration: underline !important;
+    }
+
+    &-overline {
+        text-decoration: overline !important;
+    }
+
+    &-line-through {
+        text-decoration: line-through !important;
+    }
+
+    &-inherit {
+        text-decoration: inherit !important;
+    }
+}
+
+@each $color-name, $color-value in $theme-colors-text {
+    .text-#{$color-name}-emphasis {
+        color: #{$color-value} !important;
+    }
+}

@@ -1,0 +1,26 @@
+<Blazorise.ThemeProvider Theme="@theme">
+    <Router AppAssembly="@typeof( App ).Assembly">
+        <Found Context="routeData">
+            <CascadingValue Value="routeData">
+                <RouteView RouteData="@routeData" DefaultLayout="@typeof( MainLayout )" />
+            </CascadingValue>
+            @* <FocusOnNavigate RouteData="@routeData" Selector="h1" /> *@
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof( Error404Layout )">
+                <Heading Size="HeadingSize.Is3" TextWeight="TextWeight.Normal" Margin="Margin.Is3.FromTop.Is4.FromBottom">
+                    Sorry, there's nothing at this address.
+                    <br /><br />
+                    The page you are looking for might have been removed.
+                </Heading>
+            </LayoutView>
+        </NotFound>
+    </Router>
+    <MessageProvider />
+    <NotificationProvider />
+    <PageProgressProvider />
+    <OffcanvasProvider />
+    <ModalProvider />
+    <ToastProvider />
+    <OnScreenKeyboardProvider />
+</Blazorise.ThemeProvider>

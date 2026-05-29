@@ -1,0 +1,123 @@
+﻿@page "/docs/helpers/utilities"
+
+<Seo Canonical="/docs/helpers/utilities" Title="Blazorise Utilities - Layout and Styling Helpers" Description="Master Blazorise utility helpers to quickly configure layout, spacing, borders, display, flex, and overflow properties. Learn how to efficiently style and align elements using fluent builder patterns in Blazorise." />
+
+<DocsPageTitle Path="Helpers/Utilities">
+    Blazorise Utilities
+</DocsPageTitle>
+
+<DocsPageLead>
+    Simplify your component styling and layout management with Blazorise utility helpers.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    Blazorise Utilities offer a set of helper methods and classes designed to streamline your front-end development.
+    With a focus on flexibility and responsiveness, these utilities let you easily define spacing, flex behavior, overflow handling, and more, all through C# fluent builders that adapt to various breakpoints.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Whether you're fine-tuning the layout of a single component or building complex responsive interfaces, Blazorise Utilities help you maintain a clean and consistent design system.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    How it works
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Utilities are exposed through fluent builders like <Code>Margin</Code>, <Code>Display</Code>, <Code>Flex</Code>, and <Code>Border</Code>.
+    You can chain sizes, sides, and breakpoints to keep responsive layout rules close to the components that use them.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Utility pages
+</DocsPageSubtitle>
+
+<UnorderedList>
+    <UnorderedListItem><Anchor To="docs/helpers/utilities/spacing">Spacing</Anchor> - Margin and padding builders with breakpoints.</UnorderedListItem>
+    <UnorderedListItem><Anchor To="docs/helpers/utilities/display">Display</Anchor> - Responsive visibility and display modes.</UnorderedListItem>
+    <UnorderedListItem><Anchor To="docs/helpers/utilities/column-size">Column Size</Anchor> - Responsive column widths for grid columns.</UnorderedListItem>
+    <UnorderedListItem><Anchor To="docs/helpers/utilities/flex">Flex</Anchor> - Direction, alignment, wrapping, and ordering helpers.</UnorderedListItem>
+    <UnorderedListItem><Anchor To="docs/helpers/utilities/border">Border</Anchor> - Border sizes, colors, and radius.</UnorderedListItem>
+    <UnorderedListItem><Anchor To="docs/helpers/utilities/overflow">Overflow</Anchor> - Scroll and clip behavior.</UnorderedListItem>
+    <UnorderedListItem><Anchor To="docs/helpers/utilities/position">Position</Anchor> - Relative and absolute placement helpers.</UnorderedListItem>
+    <UnorderedListItem><Anchor To="docs/helpers/utilities/grid">Grid</Anchor> - Flexbox grid system and containers.</UnorderedListItem>
+    <UnorderedListItem><Anchor To="docs/helpers/utilities/css-grid">CSS Grid</Anchor> - Two-dimensional layouts with grid utilities.</UnorderedListItem>
+    <UnorderedListItem><Anchor To="docs/helpers/utilities/gutters">Gutters</Anchor> - Horizontal and vertical spacing between columns.</UnorderedListItem>
+    <UnorderedListItem><Anchor To="docs/helpers/utilities/object-fit">Object Fit</Anchor> - Image and media fitting.</UnorderedListItem>
+    <UnorderedListItem><Anchor To="docs/helpers/utilities/sizing">Sizing</Anchor> - Width and height builders with classes or styles.</UnorderedListItem>
+</UnorderedList>
+
+<DocsPageParagraph>
+    Each utility page includes usage details and examples tailored to that helper.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Breakpoints by framework
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Different CSS frameworks use their own naming conventions for responsive breakpoints. While the behavior (e.g., mobile, tablet, desktop) is conceptually similar across all frameworks, the specific identifiers can vary.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    The table below shows how Blazorise maps these breakpoints across <Strong>Bootstrap</Strong>, <Strong>Material</Strong>, <Strong>Bulma</Strong>, <Strong>Fluent</Strong>, and <Strong>AntDesign</Strong>.
+</DocsPageParagraph>
+
+<Table>
+    <TableHeader ThemeContrast="ThemeContrast.Light">
+        <TableRow>
+            <TableHeaderCell>Blazorise</TableHeaderCell>
+            <TableHeaderCell>Bootstrap</TableHeaderCell>
+            <TableHeaderCell>Material</TableHeaderCell>
+            <TableHeaderCell>Bulma</TableHeaderCell>
+            <TableHeaderCell>Fluent</TableHeaderCell>
+            <TableHeaderCell>AntDesign</TableHeaderCell>
+        </TableRow>
+    </TableHeader>
+    <TableBody>
+        <TableRow>
+            <TableRowCell>Mobile</TableRowCell>
+            <TableRowCell>xs</TableRowCell>
+            <TableRowCell>xs</TableRowCell>
+            <TableRowCell>mobile</TableRowCell>
+            <TableRowCell>sm</TableRowCell>
+            <TableRowCell>xs</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell>Tablet</TableRowCell>
+            <TableRowCell>sm</TableRowCell>
+            <TableRowCell>sm</TableRowCell>
+            <TableRowCell>tablet</TableRowCell>
+            <TableRowCell>md</TableRowCell>
+            <TableRowCell>sm</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell>Desktop</TableRowCell>
+            <TableRowCell>md</TableRowCell>
+            <TableRowCell>md</TableRowCell>
+            <TableRowCell>desktop</TableRowCell>
+            <TableRowCell>lg</TableRowCell>
+            <TableRowCell>md</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell>Widescreen</TableRowCell>
+            <TableRowCell>lg</TableRowCell>
+            <TableRowCell>lg</TableRowCell>
+            <TableRowCell>widescreen</TableRowCell>
+            <TableRowCell>xl</TableRowCell>
+            <TableRowCell>lg</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell>Full HD</TableRowCell>
+            <TableRowCell>xl</TableRowCell>
+            <TableRowCell>xl</TableRowCell>
+            <TableRowCell>fullhd</TableRowCell>
+            <TableRowCell>xxl</TableRowCell>
+            <TableRowCell>xl</TableRowCell>
+        </TableRow>
+    </TableBody>
+</Table>
+
+<DocsPageParagraph>
+    In summary, while each framework uses slightly different names, their purpose is the same: to define responsive behavior across various screen sizes. Blazorise provides a unified <Code>Breakpoint</Code> abstraction layer, letting you use a consistent API regardless of the underlying CSS provider.
+</DocsPageParagraph>

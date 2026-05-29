@@ -1,0 +1,21 @@
+﻿@page "/docs/components"
+@using Blazorise.Docs.Services.Search
+
+<Seo Canonical="/docs/components" Title="Blazorise components" Description="Learn about Blazorise UI components and how to properly use them to build your Blazor single page application." />
+
+<DocsPageTitle Path="Components">
+    Blazorise components
+</DocsPageTitle>
+
+<DocsPageLead>
+    Learn about Blazorise components and how to properly use them to build your application.
+</DocsPageLead>
+
+<Row RowColumns="RowColumns.Are4.OnTablet.Are2.OnMobile">
+    @foreach ( var info in ManualPageEntries.WithDescriptionAndUrl( "docs/components" ) )
+    {
+        <Column Margin="Margin.Is3.FromBottom">
+            <DocsPageComponentInfo @key="@info" Name="@info.Name" Description="@info.Description" To="@info.Url" />
+        </Column>
+    }
+</Row>

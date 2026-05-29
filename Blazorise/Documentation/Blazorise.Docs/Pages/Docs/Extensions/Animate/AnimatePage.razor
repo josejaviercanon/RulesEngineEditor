@@ -1,0 +1,104 @@
+@page "/docs/extensions/animate"
+
+<Seo Canonical="/docs/extensions/animate" Title="Blazorise Animate component" Description="Learn how to use the Blazorise Animate component to add scroll-based and component animations." />
+
+<DocsPageTitle Path="Extensions/Animate">
+    Blazorise Animate component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Animate your content by wrapping it with the <Code>Animate</Code> component.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The Animate component uses the Motion runtime to animate content as it enters the viewport or when component visibility changes.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Viewport animations observe the rendered <Code>Animate</Code> element by default. Use <Code>Anchor</Code> only when the viewport trigger should be based on another element, such as a shared container that starts several animations together.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    To use the <Code>Animate</Code> component, install the <Code>Blazorise.Animate</Code> package first.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="AnimateNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        In your main <Badge Color="Color.Light">_Imports.razor</Badge> add:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="AnimateImportsExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Static Files">
+        No script tag is required. The <Code>Animate</Code> component imports its JavaScript module automatically.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="AnimateResourcesExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Animation Picker">
+        Select an animation and restart it to compare the built-in effects.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="AnimateExample" Outlined FullWidth>
+        <AnimateExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Viewport Reveal">
+        The default trigger runs when content enters the viewport. Use <Code>Once</Code> when the animation should only happen the first time the element is seen.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="AnimateViewportExample" Outlined FullWidth>
+        <AnimateViewportExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Visibility Toggle">
+        Bind <Code>Visible</Code> to component state and use <Code>AnimationTrigger.Render</Code> for enter and leave animations that are not tied to scrolling.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="AnimateVisibilityExample" Outlined FullWidth>
+        <AnimateVisibilityExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Animated Size">
+        Use <Code>AnimatedSize</Code> when the animated element should also change the space it occupies, such as a drawer, sidebar, or disclosure panel.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="AnimateLayoutExample" Outlined FullWidth>
+        <AnimateLayoutExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Custom Keyframes">
+        Use <Code>AnimationDefinition</Code> when an animation should be defined in C# instead of by a built-in animation name.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="AnimateCustomExample" Outlined FullWidth>
+        <AnimateCustomExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Manual Run">
+        Set <Code>Auto</Code> to false and call <Code>Run()</Code> when the animation should be started from code.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="AnimateManualExample" Outlined FullWidth>
+        <AnimateManualExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(Animate)]" />

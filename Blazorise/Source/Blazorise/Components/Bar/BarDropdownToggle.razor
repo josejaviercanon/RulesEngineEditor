@@ -1,0 +1,40 @@
+﻿@namespace Blazorise
+@inherits BaseLinkComponent
+@using static Blazorise.BarFluentConstants
+
+<a @ref="@ElementRef" id="@ElementId" href="@GetTo()" rel="@GetRel()" class="@ClassNames" style="@StyleNames" role="button" tabindex="0" aria-haspopup="@AriaHasPopup" aria-expanded="@AriaExpanded" @onclick="@ClickHandler" @onclick:preventDefault="@ShouldPreventDefaultOnToggleClick" @onkeydown="@KeyDownHandler" @onfocusin="@ParentBarDropdown.OnFocusInHandler" @onfocusout="@ParentBarDropdown.OnFocusOutHandler" @attributes="@Attributes" @onmouseenter="@ParentBarDropdown.OnMouseEnterHandler" @onmouseleave="@ParentBarDropdown.OnMouseLeaveHandler">
+    @if ( ParentBarDropdownState?.Mode != BarMode.Horizontal )
+    {
+        @VerticalIconTemplate
+    }
+    else
+    {
+        @ChildContent
+    }
+</a>
+@code {
+    protected virtual RenderFragment VerticalIconTemplate => __builder =>
+    {
+        <Span Class="@ToggleContentClassNames" @onclick:stopPropagation="@ShouldStopToggleAreaPropagation">
+            <Span Class="@ToggleContentTextClassNames">
+                @ChildContent
+            </Span>
+
+            @if ( IsToggleIconVisible )
+            {
+                <Span Class="@ToggleContentIconClassNames" Padding="PaddingIs2OnX">
+                    <span @onclick="@OnToggleIconClicked" @onclick:stopPropagation="@ShouldStopIconClickPropagation" @onclick:preventDefault="@ShouldPreventDefaultOnIconClick">
+                        <Span Class="@ToggleIconContainerClassNames" Position="PositionRelative" Display="DisplayInlineFlex" Width="WidthRem1" Height="HeightRem1" Flex="FlexInlineFlexAlignItemsCenterJustifyContentCenter">
+                            <Span Class="@ExpandedToggleIconLayerClassNames" Position="PositionAbsoluteTopIs0StartIs0" Width="WidthIs100" Height="HeightIs100" Flex="FlexInlineFlexAlignItemsCenterJustifyContentCenter">
+                                <Icon Name="@ExpandedToggleIconName" IconSize="@ToggleIconSize" />
+                            </Span>
+                            <Span Class="@CollapsedToggleIconLayerClassNames" Position="PositionAbsoluteTopIs0StartIs0" Width="WidthIs100" Height="HeightIs100" Flex="FlexInlineFlexAlignItemsCenterJustifyContentCenter">
+                                <Icon Name="@CollapsedToggleIconName" IconSize="@ToggleIconSize" />
+                            </Span>
+                        </Span>
+                    </span>
+                </Span>
+            }
+        </Span>
+    };
+}

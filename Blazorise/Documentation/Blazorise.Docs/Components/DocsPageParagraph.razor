@@ -1,0 +1,15 @@
+﻿@if ( Title != null )
+{
+    <Heading Size="HeadingSize.Is3">
+        @Title
+    </Heading>
+}
+
+<Paragraph Margin="Margin.Is4.FromBottom">
+    @ChildContent
+</Paragraph>
+@code {
+    [Parameter] public string Title { get; set; }
+
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

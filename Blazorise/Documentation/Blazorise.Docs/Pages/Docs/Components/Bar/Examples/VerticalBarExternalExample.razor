@@ -1,0 +1,76 @@
+@namespace Blazorise.Docs.Docs.Examples
+
+<Layout Sider Style="min-height: 360px;">
+    <LayoutSider>
+        <LayoutSiderContent>
+            <Bar @ref="@sidebar"
+                 Mode="BarMode.VerticalInline"
+                 CollapseMode="BarCollapseMode.Small"
+                 Breakpoint="Breakpoint.Desktop"
+                 Background="Background.Light"
+                 ThemeContrast="ThemeContrast.Light">
+                <BarBrand>
+                    <BarItem>
+                        <BarLink To="#projects">
+                            <BarIcon IconName="IconName.Briefcase" />
+                            Projects
+                        </BarLink>
+                    </BarItem>
+                </BarBrand>
+                <BarMenu>
+                    <BarStart>
+                        <BarItem>
+                            <BarLink To="#roadmap">
+                                <BarIcon IconName="IconName.Map" />
+                                Roadmap
+                            </BarLink>
+                        </BarItem>
+                        <BarItem>
+                            <BarLink To="#calendar">
+                                <BarIcon IconName="IconName.Calendar" />
+                                Calendar
+                            </BarLink>
+                        </BarItem>
+                    </BarStart>
+                </BarMenu>
+            </Bar>
+        </LayoutSiderContent>
+    </LayoutSider>
+    <Layout>
+        <LayoutHeader Fixed>
+            <Bar Mode="BarMode.Horizontal"
+                 Breakpoint="Breakpoint.Desktop"
+                 Background="Background.Light"
+                 ThemeContrast="ThemeContrast.Light"
+                 Shadow="Shadow.Default">
+                <BarToggler Bar="@sidebar" />
+                <BarBrand>
+                    <BarItem>
+                        <BarLink To="#planning">
+                            Planning
+                        </BarLink>
+                    </BarItem>
+                </BarBrand>
+                <BarMenu>
+                    <BarEnd>
+                        <BarItem>
+                            <Button Color="Color.Primary">
+                                New project
+                            </Button>
+                        </BarItem>
+                    </BarEnd>
+                </BarMenu>
+                <BarToggler />
+            </Bar>
+        </LayoutHeader>
+        <LayoutContent Padding="Padding.Is3">
+            <Paragraph>
+                The first toggler controls the sidebar. The second toggler controls the horizontal bar menu.
+            </Paragraph>
+        </LayoutContent>
+    </Layout>
+</Layout>
+
+@code {
+    private Bar sidebar;
+}

@@ -1,0 +1,92 @@
+﻿@page "/tests/spinkit"
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>SpinKit examples</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Default spinner colors that can be changed with theme settings.</CardText>
+            </CardBody>
+            <CardBody>
+                @foreach ( var type in Enum.GetValues<SpinKitType>() )
+                {
+                    <Tooltip Text="@($"Type: {type}")" Inline>
+                        <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                            <SpinKit Type="@type" />
+                        </Div>
+                    </Tooltip>
+                }
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Custom colors</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Plane" HexColor="#ffcc00" />
+                </Div>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Chase" HexColor="#a1309b" />
+                </Div>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Bounce" HexColor="#8a6de8" />
+                </Div>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Wave" HexColor="#90d980" />
+                </Div>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Pulse" HexColor="#e6e167" />
+                </Div>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Flow" HexColor="#c9754f" />
+                </Div>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Swing" HexColor="#f21d41" />
+                </Div>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Circle" HexColor="#47b1d1" />
+                </Div>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.CircleFade" HexColor="#77c0ed" />
+                </Div>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Grid" HexColor="#3e7054" />
+                </Div>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Fold" HexColor="#36403a" />
+                </Div>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Wander" HexColor="#ff4a3d" />
+                </Div>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Size variants</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Plane" HexColor="#ff4a3d" Size="Size.Small" />
+                </Div>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Plane" HexColor="#ff4a3d" Size="Size.Large" />
+                </Div>
+                <Div Display="Display.InlineBlock" Padding="Padding.Is4">
+                    <SpinKit Type="SpinKitType.Plane" HexColor="#ff4a3d" Size="Size.ExtraLarge" />
+                </Div>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>

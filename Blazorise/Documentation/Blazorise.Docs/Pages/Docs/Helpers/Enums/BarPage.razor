@@ -1,0 +1,69 @@
+@page "/docs/helpers/enums/bar"
+
+<Seo Canonical="/docs/helpers/enums/bar" Title="Blazorise Bar Enums - Navigation Layout and Collapse" Description="Bar enums control navigation layout, collapse behavior, and toggler styles. Learn BarMode, BarCollapseMode, and BarTogglerMode values." />
+
+<DocsPageTitle>
+    Bar enums
+</DocsPageTitle>
+
+<DocsPageLead>
+    Quickly manage the layout and behavior of the <Code>Bar</Code> component.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    Use bar enums to choose between horizontal or vertical navigation, and to control how the bar collapses on smaller screens.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    How it works
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Set <Code>BarMode</Code> to choose the overall layout, then pair it with <Code>BarCollapseMode</Code> and <Code>BarTogglerMode</Code> to define collapse behavior and toggler styling.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<UnorderedList>
+    <UnorderedListItem><Code>BarMode.Horizontal</Code> for a classic top navigation bar.</UnorderedListItem>
+    <UnorderedListItem><Code>BarCollapseMode.Small</Code> to keep icons visible when collapsed.</UnorderedListItem>
+    <UnorderedListItem><Code>BarTogglerMode.Popout</Code> for vertical bars with a popout toggle.</UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSubtitle>
+    Reference
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="BarCollapseMode">
+        <Paragraph>Defines how the bar will be collapsed.</Paragraph>
+        <UnorderedList>
+            <UnorderedListItem><Code>BarCollapseMode.Hide</Code> Bar will be hidden completely when collapsed.</UnorderedListItem>
+            <UnorderedListItem><Code>BarCollapseMode.Small</Code> Bar will be collapsed into smaller version with icons.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="BarMode">
+        <Paragraph>Bar orientation and menu display.</Paragraph>
+        <UnorderedList>
+            <UnorderedListItem><Code>BarMode.Horizontal</Code> Horizontal navbar with dropdown menus.</UnorderedListItem>
+            <UnorderedListItem><Code>BarMode.VerticalPopout</Code> Vertical navbar with pop-out menus.</UnorderedListItem>
+            <UnorderedListItem><Code>BarMode.VerticalInline</Code> Vertical navbar with inline dropdown menus.</UnorderedListItem>
+            <UnorderedListItem><Code>BarMode.VerticalSmall</Code> Small vertical navbar with pop-out menus.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="BarTogglerMode">
+        <Paragraph>Defines the look and position of the bar toggler.</Paragraph>
+        <UnorderedList>
+            <UnorderedListItem><Code>BarTogglerMode.Normal</Code> The standard inline bar toggler. Supported by Horizontal and Vertical BarModes.</UnorderedListItem>
+            <UnorderedListItem><Code>BarTogglerMode.Popout</Code> A popout style bar toggler. Supported only on Vertical BarModes.</UnorderedListItem>
+        </UnorderedList>
+    </DocsPageSectionHeader>
+</DocsPageSection>

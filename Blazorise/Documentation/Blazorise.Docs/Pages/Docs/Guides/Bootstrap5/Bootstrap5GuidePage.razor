@@ -1,0 +1,110 @@
+﻿@page "/docs/usage/bootstrap5"
+
+<Seo Canonical="/docs/usage/bootstrap5" Title="Blazorise Bootstrap 5 Usage" Description="Learn all the steps on how to quickly install and setup Blazorise for Bootstrap 5 CSS framework and FontAwesome icons." />
+
+<DocsPageTitle Path="Usage/Bootstrap 5">
+    Blazorise Bootstrap 5 Usage
+</DocsPageTitle>
+
+<DocsPageLead>
+    Quickly install Blazorise with Bootstrap 5, one of the world's most popular Blazor UI framework.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    <Alert Color="Color.Info" Visible>
+        <AlertDescription>
+            <Strong>Note:</Strong> Before proceeding, ensure you have already created a Blazor project. If not, the simplest way to start with Blazorise is by using our <Anchor To="docs/templates" Title="Link to templates">Templates</Anchor>.
+        </AlertDescription>
+    </Alert>
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    <GuideSeeTheDemo Provider="CssProvider.Bootstrap5" />
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Install Packages
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader>
+        First step is to install a Bootstrap provider for Blazorise:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="Bootstrap5GuideNuget1Example" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader>
+        You also need to install the icon package:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="Bootstrap5GuideNuget2Example" />
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Add Static Files
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Modify your project's HTML template to include the necessary CSS files. The files you add depend on whether you're working with a WebAssembly or Server project:
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    <DocsPageUnorderedList>
+        <DocsPageUnorderedListItem>
+            For <Strong>WebAssembly</Strong>, update <Strong>index.html</Strong>.
+        </DocsPageUnorderedListItem>
+        <DocsPageUnorderedListItem>
+            For <Strong>Server</Strong>, update <Strong>_Layout.cshtml</Strong> or <Strong>_Host.cshtml</Strong>.
+        </DocsPageUnorderedListItem>
+        <DocsPageUnorderedListItem>
+            For <Strong>.NET 8</Strong>, update <Strong>App.razor</Strong>.
+        </DocsPageUnorderedListItem>
+    </DocsPageUnorderedList>
+</DocsPageParagraph>
+
+<DocsPageSection>
+    <DocsPageSectionHeader>
+        Add these lines inside the <Code Tag>head</Code> section:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="Bootstrap5GuideSourceFilesExample" />
+</DocsPageSection>
+
+<Alert Color="Color.Info" Visible>
+    <AlertDescription>
+        <Strong>Note:</Strong> When Blazor project is created it will also include it's own <Strong>Bootstrap</Strong>
+        and <Strong>FontAwesome</Strong> files that can sometime be of older versions. To ensure we're using the appropriate
+        Bootstrap and FontAwesome files, you need to remove them or replace them with the links from above. If you forget to
+        remove them, it's possible that some components will not work as expected. Also, the links provided here might not always be the most up to date.
+        You may update your sources, but do take note, that <Strong>Blazorise</Strong> has been tested with the versions listed here.
+    </AlertDescription>
+</Alert>
+
+<DocsPageSubtitle>
+    Add Imports
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader>
+        In your main <Badge Color="Color.Light">_Imports.razor</Badge> add:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="Bootstrap5GuideUsingExample" />
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Register Services
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader>
+        Add the following lines to the relevant sections of <Code>Program.cs</Code>.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="Bootstrap5GuideRegistrationExample" />
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    PWA &amp; Offline Support (optional)
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    For information about PWAs &amp; offline support, please take a look at our <Anchor To="docs/pwa">PWA docs.</Anchor>
+</DocsPageParagraph>

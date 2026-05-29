@@ -1,0 +1,70 @@
+﻿@page "/docs/extensions/chart-live"
+
+<Seo Canonical="/docs/extensions/chart-live" Title="Blazorise Chart Streaming component" Description="Learn how to use the Blazorise Chart Streaming component to stream live data with chartjs-plugin-streaming." />
+
+<DocsPageTitle Path="Extensions/Chart Streaming">
+    Blazorise Chart Streaming component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Stream live data into Chart.js charts.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    <LicenseLimitationAlert LimitText="@($"{Licensing.BlazoriseLicenseProvider.DEFAULT_UNLICENSED_LIMIT_CHARTS_MAX_ROWS} points per chart")" />
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Live streaming is made possible with the help of <Anchor To="https://nagix.github.io/chartjs-plugin-streaming/latest/" Title="Link to chart streaming plugin" Target="Target.Blank">chartjs-plugin-streaming</Anchor>.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    To use Chart Streaming, install the <Code>Blazorise.Charts.Streaming</Code> package. It depends on <Code>Blazorise.Charts</Code>.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install chart streaming extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="ChartStreamingNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        <Paragraph>
+            In your main <Code>_Imports.razor</Code> add:
+        </Paragraph>
+        <Paragraph>
+            <Code>@@using Blazorise.Charts</Code>
+        </Paragraph>
+        <Paragraph>
+            <Code>@@using Blazorise.Charts.Streaming</Code>
+        </Paragraph>
+    </DocsPageSectionHeader>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic Example" />
+    <DocsPageSectionContent Code="ChartStreamingExample" Outlined FullWidth>
+        <ChartStreamingExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Pause/Play">
+        Making the stream pause and play is very simple. You only need to add a <Code>@@ref</Code> to the <Code>ChartStreaming</Code> and the call <Code>.Pause()</Code> or <Code>.Play()</Code> methods.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ChartStreamingPauseExample" Outlined FullWidth>
+        <ChartStreamingPauseExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(ChartStreaming<>)]" />

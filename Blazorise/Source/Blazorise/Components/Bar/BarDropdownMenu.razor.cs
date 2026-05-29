@@ -1,0 +1,143 @@
+#region Using directives
+using Blazorise.States;
+using Blazorise.Utilities;
+using Microsoft.AspNetCore.Components;
+#endregion
+
+namespace Blazorise;
+
+/// <summary>
+/// Main container for a <see cref="BarDropdown"/> menu that can contain or or more <see cref="BarDropdownItem"/>'s.
+/// </summary>
+public partial class BarDropdownMenu : BaseComponent<BarDropdownMenuClasses, BarDropdownMenuStyles>
+{
+    #region Members
+
+    private BarDropdownState parentDropdownState;
+
+    #endregion
+
+    #region Constructors
+
+    /// <summary>
+    /// A default <see cref="BarDropdownMenu"/> constructor.
+    /// </summary>
+    public BarDropdownMenu()
+    {
+        ContainerClassBuilder = new( BuildContainerClasses, builder => builder.Append( Classes?.Container ) );
+        ContainerStyleBuilder = new( BuildContainerStyles, builder => builder.Append( Styles?.Container ) );
+    }
+
+    #endregion
+
+    #region Methods
+
+    /// <inheritdoc/>
+    protected override void BuildClasses( ClassBuilder builder )
+    {
+        builder.Append( ClassProvider.BarDropdownMenu( ParentDropdownState.Mode ) );
+        builder.Append( ClassProvider.BarDropdownMenuVisible( ParentDropdownState.Mode, ParentDropdownState.Visible ) );
+        builder.Append( ClassProvider.BarDropdownMenuRight( ParentDropdownState.Mode, ParentDropdownState.RightAligned ) );
+
+        base.BuildClasses( builder );
+    }
+
+    /// <summary>
+    /// Builds the classnames for a menu.
+    /// </summary>
+    /// <param name="builder">Class builder used to append the classnames.</param>
+    protected virtual void BuildContainerClasses( ClassBuilder builder )
+    {
+        builder.Append( ClassProvider.BarDropdownMenuContainer( ParentDropdownState.Mode ) );
+        builder.Append( ClassProvider.BarDropdownMenuRight( ParentDropdownState.Mode, ParentDropdownState.RightAligned ) );
+        AppendWrapperUtilities( builder );
+    }
+
+    /// <summary>
+    /// Builds the styles for a menu container.
+    /// </summary>
+    /// <param name="builder">Style builder used to append the styles.</param>
+    protected virtual void BuildContainerStyles( StyleBuilder builder )
+    {
+        string positionStrategy = ClassProvider.BarDropdownMenuPositionStrategy( ParentDropdownState.Mode, ParentDropdownState.PositionStrategy );
+
+        builder.Append( $"position: {positionStrategy}", positionStrategy is not null && ParentDropdownState.Mode != BarMode.Horizontal && !ParentDropdownState.IsInlineDisplay );
+        AppendWrapperUtilities( builder );
+    }
+
+    /// <inheritdoc/>
+    internal protected override void DirtyClasses()
+    {
+        ContainerClassBuilder.Dirty();
+
+        base.DirtyClasses();
+    }
+
+    /// <inheritdoc/>
+    protected internal override void DirtyStyles()
+    {
+        ContainerStyleBuilder.Dirty();
+
+        base.DirtyStyles();
+    }
+
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Gets the classnames for a dropdown-menu container.
+    /// </summary>
+    protected string ContainerClassNames => ContainerClassBuilder.Class;
+
+    /// <summary>
+    /// Dropdown-menu container class builder.
+    /// </summary>
+    protected ClassBuilder ContainerClassBuilder { get; private set; }
+
+    /// <summary>
+    /// Dropdown-menu container style builder.
+    /// </summary>
+    protected StyleBuilder ContainerStyleBuilder { get; private set; }
+
+    /// <summary>
+    /// Gets the styles for a dropdown-menu container.
+    /// </summary>
+    protected string ContainerStyleNames => ContainerStyleBuilder.Styles;
+
+    /// <summary>
+    /// Gets the string representation of visibility flag.
+    /// </summary>
+    protected string VisibleString => ParentDropdownState.Visible.ToString().ToLower();
+
+    /// <summary>
+    /// Specifies the content to be rendered inside this <see cref="BarDropdownMenu"/>.
+    /// </summary>
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    /// <summary>
+    /// Cascaded <see cref="Dropdown"/> component state object.
+    /// </summary>
+    [CascadingParameter]
+    protected BarDropdownState ParentDropdownState
+    {
+        get => parentDropdownState;
+        set
+        {
+            if ( parentDropdownState == value )
+                return;
+
+            parentDropdownState = value;
+
+            DirtyClasses();
+            DirtyStyles();
+        }
+    }
+
+    /// <summary>
+    /// Provides the reference to the parent <see cref="BarDropdown"/> component.
+    /// </summary>
+    [CascadingParameter] protected BarDropdown ParentBarDropdown { get; set; }
+
+    #endregion
+}

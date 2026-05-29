@@ -1,0 +1,137 @@
+﻿@page "/docs/components/card"
+
+<Seo Canonical="/docs/components/card" Title="Blazorise Card component" Description="The Blazorise Card component is a versatile component that can be used for anything from a panel to a static image." />
+
+<DocsPageTitle Path="Components/Card">
+    Blazorise Card component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Blazorise cards provide a flexible and extensible content container with multiple variants and options.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The <Code Tag>Card</Code> component is a versatile component that can be used for anything from a panel to a static image. The <Strong>card</Strong> component has numerous helper components to make markup as easy as possible.
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>Card</Code> the main container.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>CardHeader</Code> optional header within a card.
+                </Paragraph>
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>CardImage</Code> optional image within a card.
+                </Paragraph>
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>CardBody</Code> The building block of a card.
+                </Paragraph>
+                <UnorderedList>
+                    <UnorderedListItem>
+                        <Paragraph>
+                            <Code Tag>CardTitle</Code> required title within a card.
+                        </Paragraph>
+                    </UnorderedListItem>
+                    <UnorderedListItem>
+                        <Paragraph>
+                            <Code Tag>CardSubtitle</Code> optional subtitle within a card.
+                        </Paragraph>
+                    </UnorderedListItem>
+                    <UnorderedListItem>
+                        <Paragraph>
+                            <Code Tag>CardText</Code> optional text within a card.
+                        </Paragraph>
+                    </UnorderedListItem>
+                </UnorderedList>
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Code Tag>CardFooter</Code> optional footer within a card.
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>CardGroup</Code> groups cards together.
+        </Paragraph>
+    </UnorderedListItem>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>CardDeck</Code> groups cards together with equal width and height.
+        </Paragraph>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Default card">
+        Use the following simple card component with a title and description.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="CardExample" Outlined>
+        <CardExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Card with button">
+        Use the following example of a card element if you also want to have an action button.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="CardButtonExample" Outlined>
+        <CardButtonExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Card with image">
+        You can use the following example of a card element with an image for blog posts, user cards, and many more.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="CardImageExample" Outlined>
+        <CardImageExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Card deck">
+        A set of equal width and height cards that aren't attached to one another.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="CardDeckExample" Outlined>
+        <CardDeckExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Styling cards">
+        <Paragraph>
+            Use <Code>Classes</Code> or <Code>Styles</Code> to target the wrapper element rendered for cards inside a <Code>CardDeck</Code>.
+        </Paragraph>
+        <Paragraph>
+            For advanced styling of card wrappers and inner elements, see the <Anchor To="docs/helpers/utilities/styling">Styling</Anchor> guide.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="CardDeckStylingExample" Outlined>
+        <CardDeckStylingExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Background color">
+        <Paragraph>
+            If you want to make the card standout you can set its background color.
+        </Paragraph>
+        <Paragraph>
+            Please note, depending on the used background color you might need to adjust the text color. This can be done by setting the <Code>WhiteText</Code> parameters.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="CardBackgroundExample" Outlined>
+        <CardBackgroundExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+
+<ComponentApiDocs ComponentTypes="[typeof(Card), typeof(CardText), typeof(CardTitle), typeof(CardSubtitle), typeof(CardLink), typeof(CardImage)]" />

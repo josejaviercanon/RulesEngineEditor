@@ -1,0 +1,29 @@
+﻿@page "/pricing"
+
+<Seo Canonical="/pricing" Title="Blazorise Pricing & Plans" Description="Per-developer licenses with monthly or annual billing. 80+ production-ready Blazor components, premium support, and long-term maintenance. Choose Community, Professional, Enterprise, or Enterprise Plus." />
+
+<PageHeader>
+    <Title>
+        Blazorise <Span Class="gradient-commercial">Plans</Span>
+    </Title>
+    <Subtitle>
+        Build on a solid foundation that scales from side project to enterprise.
+    </Subtitle>
+    <Description>
+        <Paragraph>
+            Partner with the creators of Blazorise to ship faster with predictable costs, premium support, and up to 15 years of maintenance.
+        </Paragraph>
+    </Description>
+</PageHeader>
+
+<Container TextAlignment="TextAlignment.Center">
+    <BenefitsGrid />
+
+    <Pricing @bind-Quantity="@quantity" @bind-Plan="@plan" ProfessionalPrices="@professionalPrices" EnterprisePrices="@enterprisePrices" />
+
+    <PlansComparer Quantity="@quantity" Plan="@plan" ProfessionalPrices="@professionalPrices" EnterprisePrices="@enterprisePrices" />
+
+    <CustomWorkTeaser />
+
+    <Faq />
+</Container>

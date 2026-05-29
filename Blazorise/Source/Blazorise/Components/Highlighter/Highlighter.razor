@@ -1,0 +1,15 @@
+﻿@namespace Blazorise
+@inherits BaseComponent
+@foreach ( var fragment in fragments )
+{
+    if ( fragment.IsMatch )
+    {
+        <mark @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+            @fragment.Text
+        </mark>
+    }
+    else
+    {
+        @fragment.Text
+    }
+}

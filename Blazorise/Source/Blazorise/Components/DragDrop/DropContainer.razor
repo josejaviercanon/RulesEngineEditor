@@ -1,0 +1,9 @@
+﻿@namespace Blazorise
+@typeparam TItem
+@inherits BaseComponent
+@attribute [CascadingTypeParameter( nameof( TItem ) )]
+<CascadingValue Value="@this" IsFixed>
+    <div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+        @ChildContent
+    </div>
+</CascadingValue>

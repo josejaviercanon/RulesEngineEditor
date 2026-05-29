@@ -1,0 +1,32 @@
+﻿.badge-close {
+    cursor: pointer;
+
+    &::before {
+        height: 2px;
+        width: 50%;
+    }
+
+    &::after {
+        height: 50%;
+        width: 2px;
+    }
+
+    &:hover,
+    &:focus {
+        background-color: rgba(10, 10, 10, 0.3);
+    }
+
+    &:active {
+        background-color: rgba(10, 10, 10, 0.4);
+    }
+}
+
+.badge, .badge-close {
+    @each $color-name, $color-value in $theme-colors-text {
+        &.badge-#{$color-name}-subtle {
+            color: #{$color-value};
+            background-color: #{map-get($theme-colors-bg-subtle, $color-name)};
+            border-color: #{map-get($theme-colors-border-subtle, $color-name)};
+        }
+    }
+}

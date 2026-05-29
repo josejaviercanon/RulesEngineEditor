@@ -1,0 +1,109 @@
+﻿@page "/docs/components/numeric-picker"
+
+<Seo Canonical="/docs/components/numeric-picker" Title="Blazorise NumericPicker component" Description="Learn to use and work with the Blazorise NumericPicker component, which is a fully featured numeric input that lets users input numbers." />
+
+<DocsPageTitle Path="Components/Numeric Picker">
+    Blazorise NumericPicker component
+</DocsPageTitle>
+
+<DocsPageLead>
+    A customizable <Code>NumericPicker</Code> component allows you to enter numeric values and contains controls for increasing and reducing the value.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    Use <Code Tag>NumericPicker</Code> to have a field for any kind of numeric values.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    All basic types are supported, including nullable types: (<Code>int</Code>, <Code>long</Code>, <Code>float</Code>, <Code>double</Code>, <Code>decimal</Code>, etc.).
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="NumericPickerBasicExample" Outlined FullWidth>
+        <NumericPickerBasicExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Styling buttons">
+        <Paragraph>
+            Use <Code>Classes</Code> or <Code>Styles</Code> to customize the step buttons and wrapper elements.
+        </Paragraph>
+        <Paragraph>
+            For advanced styling of the wrapper and step buttons, see the <Anchor To="docs/helpers/utilities/styling">Styling</Anchor> guide.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="NumericPickerStylingExample" Outlined FullWidth>
+        <NumericPickerStylingExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Rules
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Generic type">
+        Since <Code>NumericPicker</Code> is a generic component you will have to specify the exact data type for the value.
+        Most of the time it will be recognized automatically when you set the <Code>Value</Code> attribute, but if
+        not you will just use the <Code>TValue</Code> attribute and define the type manually eg.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="NumericPickerGenericExample" Outlined FullWidth>
+        <NumericPickerGenericExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Curency symbols">
+        The display format of the <Code>NumericPicker</Code> can be adjusted to provide more context for the value it represents,
+        such as displaying currency. By defining the <Code>CurrencySymbol</Code> parameter you can use any symbol. Additionally you can define the symbol position
+        with the <Code>CurrencySymbolPlacement</Code> parameter.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="NumericPickerCurrencyExample" Outlined FullWidth>
+        <NumericPickerCurrencyExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Controlling the step value">
+        Set the amount to increment or decrement the value when the spinner buttons are used with the <Code>step</Code> parameter.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="NumericPickerStepExample" Outlined FullWidth>
+        <NumericPickerStepExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Setting the Min &amp; Max">
+        Set the <Code>Min</Code> &amp; <Code>Max</Code> to limit the values allowed into the input.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="NumericPickerMinMaxExample" Outlined FullWidth>
+        <NumericPickerMinMaxExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Integer values">
+        If you define a <Code>TValue</Code> as an integer type, <Code>NumericPicker</Code> will automatically ignore <Code>Decimals</Code> parameter and you will only be able to enter number without decimals.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="NumericPickerIntegerExample" Outlined FullWidth>
+        <NumericPickerIntegerExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Modify Value With Mouse Wheel">
+        Sometime you want to be able to change the value by scrolling with the mouse wheel when it is focused over the input. To enable it just use the <Code>ModifyValueOnWheel</Code> parameter.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="NumericPickerMouseWheelExample" Outlined FullWidth>
+        <NumericPickerMouseWheelExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(NumericPicker<>)]" />

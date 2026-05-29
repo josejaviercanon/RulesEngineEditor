@@ -1,0 +1,152 @@
+﻿@page "/docs/components/typography"
+
+<Seo Canonical="/docs/components/typography" Title="Blazorise Typography components" Description="Learn to use and work with the Blazorise typography components to change text size, alignment, wrapping, overflow, transforms and more." />
+
+<DocsPageTitle Path="Components/Typography">
+    Blazorise Typography components
+</DocsPageTitle>
+
+<DocsPageLead>
+    Control text size, alignment, wrapping, overflow, transforms and more.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    We create a font convention to ensure the best presentation across different platforms.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Text">
+        Displays a simple static text on a page.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TypographyTextExample" Outlined FullWidth>
+        <TypographyTextExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Paragraph">
+        Block of text separated from adjacent blocks by blank lines and/or first-line indentation.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TypographyParagraphExample" Outlined FullWidth>
+        <TypographyParagraphExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Lead">
+        The leading text can be used as the first paragraph inside an article content page.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TypographyLeadExample" Outlined FullWidth>
+        <TypographyLeadExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Headings">
+        All HTML headings, <Code>h1</Code> through <Code>h6</Code>, are available.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TypographyHeadingExample" Outlined FullWidth>
+        <TypographyAltHeadingExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Heading Aliases">
+        For convenience, Blazorise provides heading alias components for each heading level.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TypographyHeadingAliasesExample" Outlined FullWidth>
+        <TypographyHeadingAliasesExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Display Headings">
+        Traditional heading elements are designed to work best in the meat of your page content.
+        When you need a heading to stand out, consider using a display heading—a larger, slightly more opinionated heading style.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TypographyDisplayHeadingExample" Outlined FullWidth>
+        <TypographyAltDisplayHeadingExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Display Heading Aliases">
+        For convenience, Blazorise provides display heading alias components for each display heading level.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TypographyDisplayHeadingAliasesExample" Outlined FullWidth>
+        <TypographyDisplayHeadingAliasesExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Unordered Lists">
+        Use the <Code>UnorderedList</Code> component to show an unordered or ordered list of items based on multiple styles, layouts, and variants.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TypographyUnorderedListExample" Outlined FullWidth>
+        <TypographyUnorderedListExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Ordered Lists">
+        Use the <Code>OrderedList</Code> component to show an ordered list of items based on multiple styles, layouts, and variants.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TypographyOrderedListExample" Outlined FullWidth>
+        <TypographyOrderedListExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="List Style Image">
+        <Paragraph>
+            Control the marker image for list items using the <Code>ListStyleImage</Code> parameter.
+        </Paragraph>
+        <Paragraph>
+            This parameter accepts either a <Strong>Base64</Strong> encoded string that represents an image, or a <Strong>URL</Strong> that points to an image resource.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TypographyListImageStyleExample" Outlined FullWidth>
+        <TypographyListImageStyleExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Unstyled List">
+        Use the <Code>Unstyled</Code> parameter to disable the list style bullets or numbers.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TypographyUnstyledListExample" Outlined FullWidth>
+        <TypographyUnstyledListExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Text Size">
+        <Paragraph>
+            The <Code>TextSize</Code> fluent utility in Blazorise provides an easy way to control the size of the text in your Blazor components. It comes with a range of predefined sizes and also supports heading sizes.
+        </Paragraph>
+        <Paragraph>
+            The usage of the <Code>TextSize</Code> fluent utility is quite straightforward. You just need to set the <Code>TextSize</Code> property of the Paragraph component (or any other component supporting this attribute) to one of the available enum values.
+        </Paragraph>
+        <Paragraph>
+            Also, as most of Blazorise fluent-based utilities, you can define different text sizes for different screens, eg. <Code>TextSize="TextSize.IsLarge.OnMobile.IsSmall.OnDesktop"</Code>.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TypographyTextSizeExample" Outlined FullWidth>
+        <TypographyTextSizeExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Text Decoration">
+        Blazorise allows you to style text with various decorations. You can use underline to place a line beneath the text, line-through to strike through it, or overline to add a line above. To remove any decorations, use the none option. These styles help enhance and highlight text as needed.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="TypographyTextDecorationExample" Outlined FullWidth>
+        <TypographyTextDecorationExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(Text),typeof(Paragraph),typeof(Lead), typeof(Heading),typeof(DisplayHeading),typeof(UnorderedList),typeof(UnorderedListItem), typeof(OrderedList),typeof(OrderedListItem)]" />

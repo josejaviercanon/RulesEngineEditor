@@ -1,0 +1,9 @@
+﻿@namespace Blazorise
+@inherits BaseComponent
+<CascadingValue Value="@this" IsFixed>
+    <CascadingValue Value="@State">
+        <nav @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" data-mode="@ModeString" data-collapse="@CollapseModeString" data-broken="@BrokenStateString" @attributes="@Attributes">
+            @ChildContent
+        </nav>
+    </CascadingValue>
+</CascadingValue>

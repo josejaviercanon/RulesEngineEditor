@@ -13,6 +13,15 @@ Rules Engine Editor is a library/NuGet package for use with [Microsoft Rules Eng
 
 For agent-assisted development workflow conventions (including how migrations must read the development DB connection and derive the database name), see [AGENTIC_DEVELOPMENT.md](AGENTIC_DEVELOPMENT.md).
 
+## UI Technology Standard
+
+For `src/RulesEngine.UI`, the required UI component library is Blazorise.
+
+- Build UI screens, forms, modals, and data grids with Blazorise components.
+- Use the configured stack in `Program.cs`: `Blazorise`, `Blazorise.Tailwind`, and `Blazorise.Icons.Lucide`.
+- Do not add new Radzen-based UI surfaces for RulesEngine.UI.
+- Prefer Blazorise component APIs over raw HTML for app-level interactive UI when equivalent components exist.
+
 ## Backend Rule Versioning (Workflow API)
 
 The backend now supports rule revision history per logical rule identity.

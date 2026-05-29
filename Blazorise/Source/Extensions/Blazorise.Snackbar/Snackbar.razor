@@ -1,0 +1,6 @@
+﻿@inherits BaseComponent
+<CascadingValue Value="@this" IsFixed>
+    <div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" role="status" aria-live="polite" @onclick="@OnClickHandler" @attributes="@Attributes">
+        @ChildContent
+    </div>
+</CascadingValue>

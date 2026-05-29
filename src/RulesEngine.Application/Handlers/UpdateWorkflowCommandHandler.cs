@@ -3,6 +3,7 @@ using AutoMapper;
 using MediatR;
 using RulesEngine.Application.Commands;
 using RulesEngine.Application.Dtos;
+using RulesEngine.Application.Exceptions;
 using RulesEngine.Application.Policies;
 using RulesEngine.Core.Execution;
 using RulesEngine.Core.Models;
@@ -30,14 +31,13 @@ public sealed class UpdateWorkflowCommandHandler(
             : (await workflowRepository.ListWorkflowRulesAsync(active.Id, active.Version, WorkflowRuleQueryMode.ActiveOnly, cancellationToken))
                 .ToDictionary(rule => rule.RuleGuidId, rule => rule.Status);
 
-        var normalized = NormalizeRuleStatuses(request.Workflow, validationsPassed: true, previousStatuses);
+        var normalized = NormalizeRuleStatuses(request.Workflow, previousStatuses);
         var workflowDefinition = mapper.Map<Workflow>(normalized);
-        var validationsPassed = TryValidateWorkflow(workflowDefinition, out _);
+        var validationsPassed = TryValidateWorkflow(workflowDefinition, out var validationErrors);
 
         if (!validationsPassed)
         {
-            normalized = NormalizeRuleStatuses(request.Workflow, validationsPassed: false, previousStatuses);
-            workflowDefinition = mapper.Map<Workflow>(normalized);
+            throw new WorkflowValidationException(validationErrors);
         }
 
         normalized = AddJsonPayloads(normalized);
@@ -86,7 +86,6 @@ public sealed class UpdateWorkflowCommandHandler(
 
     private WorkflowDto NormalizeRuleStatuses(
         WorkflowDto workflow,
-        bool validationsPassed,
         IReadOnlyDictionary<Guid, RuleStatus> previousStatuses)
     {
         var normalizedRules = workflow.Rules
@@ -101,10 +100,8 @@ public sealed class UpdateWorkflowCommandHandler(
                     ? previousStatus
                     : (RuleStatus?)null;
 
-                var requested = ruleStatusPolicy.ResolveUserRequestedStatus(previous, rule.Status, validationsPassed);
-                var final = validationsPassed
-                    ? requested
-                    : ruleStatusPolicy.ResolveCompileFailureStatus(requested);
+                var requested = ruleStatusPolicy.ResolveUserRequestedStatus(previous, rule.Status, validationsPassed: true);
+                var final = requested;
 
                 return new RuleDto
                 {

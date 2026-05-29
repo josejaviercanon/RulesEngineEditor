@@ -1,0 +1,14 @@
+﻿@using Blazorise.Docs.Services
+<Alert Color="Color.Info" Visible>
+    👀 Want to see it in action? Check out the
+    <Anchor To="@ProviderData.DemoUrl" Title="@($"Link to {TitleDemo}")" Target="Target.Blank">
+        @TitleDemo here
+    </Anchor>!
+</Alert>
+
+@code {
+    ProviderData ProviderData => CssProvidersService.GetProvider( Provider );
+    string TitleDemo => ProviderData.TitleDemo;
+
+    [Parameter, EditorRequired] public CssProvider Provider { get; set; }
+}

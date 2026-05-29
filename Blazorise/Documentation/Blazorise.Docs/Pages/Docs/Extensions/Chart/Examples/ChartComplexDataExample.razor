@@ -1,0 +1,80 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+
+<LineChart @ref="lineChart" TItem="WatcherEvent" Options="@lineChartOptions" />
+
+@code {
+    private LineChart<WatcherEvent> lineChart;
+
+    LineChartOptions lineChartOptions = new()
+    {
+        Parsing = new ChartParsing
+        {
+            XAxisKey = "sector",
+            YAxisKey = "count",
+        }
+    };
+
+    private static List<string> BackgroundColors = new()
+    {
+        ChartColor.FromRgba( 76, 110, 245, 0.25f ),   // Indigo
+        ChartColor.FromRgba( 18, 184, 134, 0.25f ),   // Teal
+        ChartColor.FromRgba( 245, 159, 0, 0.25f ),    // Amber
+        ChartColor.FromRgba( 240, 62, 62, 0.25f ),    // Red
+        ChartColor.FromRgba( 132, 94, 247, 0.25f ),   // Purple
+        ChartColor.FromRgba( 34, 139, 230, 0.25f )    // Blue
+    };
+
+    private static List<string> BorderColors = new()
+    {
+        ChartColor.FromRgba( 76, 110, 245, 1f ),      // Indigo
+        ChartColor.FromRgba( 18, 184, 134, 1f ),      // Teal
+        ChartColor.FromRgba( 245, 159, 0, 1f ),       // Amber
+        ChartColor.FromRgba( 240, 62, 62, 1f ),       // Red
+        ChartColor.FromRgba( 132, 94, 247, 1f ),      // Purple
+        ChartColor.FromRgba( 34, 139, 230, 1f )       // Blue
+    };
+
+    private bool isAlreadyInitialised;
+
+    public class WatcherEvent
+    {
+        public string Sector { get; set; }
+
+        public int Count { get; set; }
+
+        public DateTime Date { get; } = DateTime.Now;
+    }
+
+    protected override async Task OnAfterRenderAsync( bool firstRender )
+    {
+        if ( !isAlreadyInitialised )
+        {
+            isAlreadyInitialised = true;
+
+            await lineChart.Clear();
+            await lineChart.AddDataSet( GetLineChartDataset() );
+        }
+    }
+
+    private LineChartDataset<WatcherEvent> GetLineChartDataset()
+    {
+        return new()
+        {
+            Label = "# of randoms",
+            Data = new List<WatcherEvent>
+            {
+                new WatcherEvent { Sector = "A", Count = 1400 },
+                new WatcherEvent { Sector = "B", Count = 900 },
+                new WatcherEvent { Sector = "C", Count = 1800 },
+                new WatcherEvent { Sector = "D", Count = 1300 },
+            },
+            BackgroundColor = BackgroundColors[0], // line chart can only have one color
+            BorderColor = BorderColors[0],
+            Fill = true,
+            PointRadius = 3,
+            BorderWidth = 1,
+            PointBorderColor = Enumerable.Repeat( BorderColors.First(), 6 ).ToList(),
+            CubicInterpolationMode = "monotone",
+        };
+    }
+}

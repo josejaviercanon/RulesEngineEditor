@@ -1,0 +1,83 @@
+﻿<Autocomplete @ref="AutoCompleteRef"
+              TItem="Country"
+              TValue="string"
+              Data="@Countries"
+              TextField="@(( item ) => item.Name)"
+              ValueField="@(( item ) => item.Iso)"
+              SelectedValue="@SelectedValue"
+              SelectedValueChanged="@OnSelectedValueChanged"
+              SelectedText="@SelectedText"
+              SelectedTextChanged="@OnSelectedTextChanged"
+              Placeholder="Search..."
+              FreeTyping="@FreeTyping"
+              MinSearchLength="@MinSearchLength"
+              AutoPreSelect="@AutoPreSelect"
+              Closed="Closed"
+              Opened="Opened"
+              SearchFocus="SearchFocus"
+              SearchBlur="SearchBlur"
+              SearchTextChanged="SearchTextChanged"
+              SearchKeyDown="SearchKeyDown"
+              >
+    <NotFoundTemplate> Sorry... @context was not found! :( </NotFoundTemplate>
+    <FreeTypingNotFoundTemplate> Add "@context"</FreeTypingNotFoundTemplate>
+</Autocomplete>
+
+@code {
+    [Inject] public CountryData CountryData { get; set; }
+
+    [Parameter] public IEnumerable<Country> Countries { get; set; }
+
+    public Autocomplete<Country, string> AutoCompleteRef { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Countries is null)
+            Countries = await CountryData.GetDataAsync();
+        await base.OnInitializedAsync();
+    }
+
+    private Task OnSelectedValueChanged(string e)
+    {
+        SelectedValue = e;
+        return SelectedValueChanged.InvokeAsync(e);
+    }
+
+    private Task OnSelectedTextChanged(string e)
+    {
+        SelectedText = e;
+        return SelectedTextChanged.InvokeAsync( e );
+    }
+
+    [Parameter]
+    public bool FreeTyping { get; set; } = true;
+
+    [Parameter]
+    public string SelectedValue { get; set; }
+
+    [Parameter]
+    public EventCallback<string> SelectedValueChanged { get; set; }
+
+    [Parameter]
+    public string SelectedText { get; set; }
+
+    [Parameter]
+    public EventCallback<string> SelectedTextChanged { get; set; }
+
+    [Parameter]
+    public int MinSearchLength { get; set; } = 1;
+
+    [Parameter]
+    public bool AutoPreSelect { get; set; } = true;
+    
+    [Parameter]
+    public EventCallback<AutocompleteClosedEventArgs> Closed { get; set; }
+    
+    [Parameter]
+    public EventCallback Opened { get; set; }
+
+    [Parameter] public EventCallback<string> SearchTextChanged { get; set; }
+    [Parameter] public EventCallback<KeyboardEventArgs> SearchKeyDown { get; set; }
+    [Parameter] public EventCallback<FocusEventArgs> SearchFocus { get; set; }
+    [Parameter] public EventCallback<FocusEventArgs> SearchBlur { get; set; }
+}

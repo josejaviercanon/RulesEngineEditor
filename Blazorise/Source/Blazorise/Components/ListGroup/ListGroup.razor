@@ -1,0 +1,9 @@
+﻿@namespace Blazorise
+@inherits BaseComponent
+<CascadingValue Value="@this" IsFixed>
+    <CascadingValue Value="@State">
+        <ul @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" role="@Role" aria-multiselectable="@AriaMultiselectable" @attributes="@Attributes">
+            @ChildContent
+        </ul>
+    </CascadingValue>
+</CascadingValue>

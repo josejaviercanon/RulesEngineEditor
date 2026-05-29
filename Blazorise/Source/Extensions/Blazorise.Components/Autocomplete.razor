@@ -1,0 +1,136 @@
+@using Blazorise.Extensions
+@using Blazorise
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@inherits BaseInputComponent<TValue, AutocompleteClasses<TItem, TValue>, AutocompleteStyles<TItem, TValue>>
+@typeparam TItem
+@typeparam TValue
+
+<Dropdown ElementId="@ElementId" Class="@DropdownClassNames" Style="@CssStyle" Visible="@(DropdownVisible || NotFoundVisible || FreeTypingNotFoundVisible)" PositionStrategy="@PositionStrategy" DropdownMenuTargetId="@DropdownMenuTargetElementId" Disabled="@Disabled" AriaInvalid="@ResolvedAriaInvalid" AriaRequired="@ResolvedAriaRequired" AriaDescribedBy="@ResolvedAriaDescribedBy" AriaLabelledBy="@ExplicitAriaLabelledBy" Attributes="@Attributes">
+    @if ( IsMultiple && !SelectedTexts.IsNullOrEmpty() )
+    {
+        @foreach ( var selectedText in SelectedTexts )
+        {
+            @if ( TagTemplate is null )
+            {
+                <Badge Color="@GetMultipleBadgeColor()" Margin="Blazorise.Margin.Is2.FromStart" Class="@Classes?.Tag" Style="@Styles?.Tag" CloseClicked="async () => await RemoveMultipleTextAndValue( selectedText )">@selectedText</Badge>
+            }
+            else
+            {
+                var item = GetItemByText( selectedText );
+                var value = GetItemValue( selectedText );
+                var removeCallback = EventCallback.Factory.Create( this, async () => await RemoveMultipleTextAndValue( selectedText ) );
+                @TagTemplate( new( item, value, selectedText, removeCallback ) )
+            }
+        }
+    }
+
+    <CascadingValue Value="(Validation)null">
+        <TextInput @ref="@textInputRef"
+                   ElementId="@InputElementId"
+                   Role="TextRole.Search"
+                   Value="@Search"
+                   ValueChanged="@OnTextChangedHandler"
+                   Placeholder="@Placeholder"
+                   Size="@Size"
+                   MaxLength="@MaxEntryLength"
+                   Disabled="@Disabled"
+                   ReadOnly="@ReadOnly"
+                   TabIndex="@TabIndex"
+                   KeyDown="@OnTextKeyDownHandler"
+                   KeyPress="@OnTextKeyPressHandler"
+                   KeyUp="@OnTextKeyUpHandler"
+                   OnFocus="OnTextFocusHandler"
+                   FocusIn="@OnTextFocusInHandler"
+                   FocusOut="@OnTextFocusOutHandler"
+                   Blur="OnTextBlurHandler"
+                   Immediate="@Immediate"
+                   Debounce="@Debounce"
+                   DebounceInterval="@DebounceInterval"
+                   Background="@SearchBackground"
+                   TextColor="@SearchTextColor"
+                   Class="@SearchClassNames"
+                   Style="@SearchStyleNames"
+                   AriaRequired="@SearchInputAriaRequired">
+        </TextInput>
+    </CascadingValue>
+    <DropdownMenu Class="@Classes?.Menu" Style="@Styles?.Menu">
+        @if ( DropdownVisible )
+        {
+            @if ( VirtualizeManualReadMode )
+            {
+                <Virtualize @ref="virtualizeRef" TItem="TItem" Context="item" ItemsProvider="VirtualizeItemsProviderHandler">
+                    @itemFragment( item )
+                </Virtualize>
+            }
+            else if ( Virtualize )
+            {
+                <Virtualize @ref="virtualizeRef" TItem="TItem" Context="item" Items="@FilteredData">
+                    @itemFragment( item )
+                </Virtualize>
+            }
+            else
+            {
+                @foreach ( var item in FilteredData ?? Enumerable.Empty<TItem>() )
+                {
+                    @itemFragment( item )
+                }
+            }
+        }
+        else if ( NotFoundVisible )
+        {
+            var notFoundContext = GetNotFoundItemContext();
+
+            <DropdownItem Disabled TabIndex="-1" CloseParentDropdowns="@CloseParentDropdowns" Class="@DropdownItemClassNames( notFoundContext )" Style="@DropdownItemStyleNames( notFoundContext )">
+                @NotFoundTemplate( Search )
+            </DropdownItem>
+        }
+        else if ( FreeTypingNotFoundVisible )
+        {
+            var notFoundContext = GetNotFoundItemContext();
+
+            <DropdownItem Disabled TabIndex="-1" CloseParentDropdowns="@CloseParentDropdowns" Class="@DropdownItemClassNames( notFoundContext )" Style="@DropdownItemStyleNames( notFoundContext )">
+                @FreeTypingNotFoundTemplate( Search )
+            </DropdownItem>
+        }
+    </DropdownMenu>
+</Dropdown>
+@Feedback
+@code {
+    protected RenderFragment<TItem> itemFragment => item => __builder =>
+    {
+        var isActiveItem = IsSuggestedActiveItem( item );
+        var itemIndex = FilteredData.IndexOf( item );
+        var isFocusedItem = itemIndex == ActiveItemIndex;
+        var disabled = GetItemDisabled( item );
+
+        var isCheckbox = SelectionMode == AutocompleteSelectionMode.Checkbox;
+
+        var text = GetItemText( item );
+        var value = GetItemValue( item );
+        var itemContext = CreateItemContext( item, value, text, itemIndex, isActiveItem, isFocusedItem, disabled );
+
+        <DropdownItem @key="@item" ElementId="@DropdownItemId( itemIndex )" Active="@isActiveItem" Checked=@isActiveItem ShowCheckbox=@isCheckbox TabIndex="-1" Class="@DropdownItemClassNames( itemContext )" Style="@DropdownItemStyleNames( itemContext )" Value="@value"
+                      Disabled="@disabled"
+                      CloseParentDropdowns="@CloseParentDropdowns"
+                      @onmousedown="@(() => clickFromCheck = true)"
+                      @onpointerdown="@(() => clickFromCheck = true)"
+                      Clicked="() => isCheckbox ? Task.CompletedTask : OnDropdownItemSelected(value)"
+                      CheckedChanged="() => isCheckbox ? OnDropdownItemSelected(value) : Task.CompletedTask">
+            @if ( ItemContent is not null )
+            {
+                @ItemContent( itemContext )
+            }
+            else
+            {
+                @if ( HighlightSearch && Search?.Length > 0 )
+                {
+                    <Highlighter Text="@text" HighlightedText="@Search" />
+                }
+                else
+                {
+                    @text
+                }
+            }
+        </DropdownItem>
+    };
+}

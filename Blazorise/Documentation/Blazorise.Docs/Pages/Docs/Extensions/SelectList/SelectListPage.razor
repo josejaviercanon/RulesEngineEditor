@@ -1,0 +1,62 @@
+﻿@page "/docs/extensions/selectlist"
+
+<Seo Canonical="/docs/extensions/selectlist" Title="Blazorise SelectList component" Description="Learn how to use the Blazorise SelectList component to select values from a list of predefined items." />
+
+<DocsPageTitle Path="Extensions/SelectList">
+    Blazorise SelectList component
+</DocsPageTitle>
+
+<DocsPageLead>
+    The <Code>SelectList</Code> component allows you to select a value from a list of predefined items.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    To use the <Code>SelectList</Code> component, install the <Code>Blazorise.Components</Code> package first.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<Alert Color="Color.Info" Visible>
+    <AlertDescription>
+        The SelectList extension is part of the <Code>Blazorise.Components</Code> NuGet package.
+    </AlertDescription>
+</Alert>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="ComponentsNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        In your main <Code>_Imports.razor</Code> add:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="ComponentsImportExample" />
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic Example">
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="SelectListExample" Outlined FullWidth>
+        <SelectListExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="With Multiple Selections">
+        Just like with a regular <Code Tag>Select</Code> component, add the <Code>Multiple</Code> parameter to allow more than one option to be selected. Also, bind the <Code>Value</Code> parameter.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="SelectListMultipleExample" Outlined FullWidth>
+        <SelectListMultipleExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(SelectList<,>)]" />

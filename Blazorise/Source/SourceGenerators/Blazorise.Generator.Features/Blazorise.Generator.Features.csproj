@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\..\Build\Blazorise.Version.props" />
+  <Import Project="..\..\..\Build\Blazorise.Pack.props" />
+  <PropertyGroup>
+    <Version>$(BlazoriseVersion)</Version>
+    <PackageVersion>$(BlazoriseVersion)</PackageVersion>
+
+    <TargetFramework>netstandard2.0</TargetFramework>
+
+    <LangVersion>14.0</LangVersion>
+  </PropertyGroup>
+
+</Project>

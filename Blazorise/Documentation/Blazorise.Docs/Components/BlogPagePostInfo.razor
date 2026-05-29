@@ -1,0 +1,32 @@
+﻿<Div Flex="Flex.AlignItems.Center" Margin="Margin.Is3.OnY">
+    <Div Margin="Margin.Is2.FromEnd">
+        @{
+            // If the ImageName already looks like a URL, use it as-is
+            var avatarSrc = string.IsNullOrWhiteSpace( ImageName )
+            ? "img/avatars/default.png"
+            : ( ImageName.StartsWith( "http", StringComparison.OrdinalIgnoreCase ) || ImageName.StartsWith( "/" ) )
+            ? ImageName
+            : $"img/avatars/{ImageName}.png";
+        }
+        <Image Source="@avatarSrc" Text="Blog creator avatar image" Border="Border.RoundedCircle" Loading Width="Width.Px(48)" Height="Height.Px(48)" />
+    </Div>
+    <Div>
+        <Div TextSize="TextSize.Large">
+            <Span>@UserName</Span>
+        </Div>
+        <Div>
+            <Span>@PostedOn</Span>
+            <Span>·</Span>
+            <Span>@Read</Span>
+        </Div>
+    </Div>
+</Div>
+@code {
+    [Parameter] public string ImageName { get; set; }
+
+    [Parameter] public string UserName { get; set; }
+
+    [Parameter] public string PostedOn { get; set; }
+
+    [Parameter] public string Read { get; set; }
+}

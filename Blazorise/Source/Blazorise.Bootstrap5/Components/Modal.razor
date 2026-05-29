@@ -1,0 +1,17 @@
+﻿@inherits Blazorise.Modal
+<CascadingValue Value="@this" IsFixed>
+    <CascadingValue Value="@State">
+        <div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" role="dialog" aria-modal="@AriaModal" aria-labelledby="@AriaLabelledBy" aria-describedby="@AriaDescribedBy" @attributes="@Attributes">
+            @if ( ShouldRenderContent )
+            {
+                <FocusTrap Active>
+                    @ChildContent
+                </FocusTrap>
+            }
+        </div>
+        @if ( ShowBackdrop && BackdropVisible )
+        {
+            <_ModalBackdrop Animated="@Animated" AnimationDuration="@AnimationDuration" />
+        }
+    </CascadingValue>
+</CascadingValue>

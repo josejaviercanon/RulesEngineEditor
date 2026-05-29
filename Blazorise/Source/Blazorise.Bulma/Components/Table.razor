@@ -1,0 +1,43 @@
+﻿@inherits Blazorise.Table
+<CascadingValue Value="@this" IsFixed>
+    @if ( HasContainer )
+    {
+        <div style="display: grid;">
+            <div class="@ContainerClassNames" style="@ContainerStyleNames">
+                <table @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames"
+                       draggable="@DraggableString"
+                       @ondragend="@OnDragEndHandler"
+                       @ondragend:preventDefault="@DragEndPreventDefault"
+                       @ondragenter="@OnDragEnterHandler"
+                       @ondragenter:preventDefault="@DragEnterPreventDefault"
+                       @ondragleave="@OnDragLeaveHandler"
+                       @ondragleave:preventDefault="@DragLeavePreventDefault"
+                       @ondragstart="@OnDragStartHandler"
+                       @ondragstart:preventDefault="@DragStartPreventDefault"
+                       @ondrop="@OnDropHandler"
+                       @ondrop:preventDefault="@DropPreventDefault"
+                       @attributes="@Attributes">
+                    @ChildContent
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <table @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames"
+               draggable="@DraggableString"
+               @ondragend="@OnDragEndHandler"
+               @ondragend:preventDefault="@DragEndPreventDefault"
+               @ondragenter="@OnDragEnterHandler"
+               @ondragenter:preventDefault="@DragEnterPreventDefault"
+               @ondragleave="@OnDragLeaveHandler"
+               @ondragleave:preventDefault="@DragLeavePreventDefault"
+               @ondragstart="@OnDragStartHandler"
+               @ondragstart:preventDefault="@DragStartPreventDefault"
+               @ondrop="@OnDropHandler"
+               @ondrop:preventDefault="@DropPreventDefault"
+               @attributes="@Attributes">
+            @ChildContent
+        </table>
+    }
+</CascadingValue>

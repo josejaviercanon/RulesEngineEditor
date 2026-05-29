@@ -1,0 +1,162 @@
+﻿@page "/docs/usage"
+@using Blazorise.Docs.Services
+
+<Seo Canonical="/docs/usage" Title="Blazorise Usage" Description="Blazorise is the only Blazor UI components library offering development independent of CSS frameworks, exclusively using C#, with support for CSS frameworks like Bootstrap, Tailwind, Bulma, AntDesign, Fluent 2, and Material." />
+
+<DocsPageTitle Path="Usage">
+    Blazorise Integration Guides
+</DocsPageTitle>
+
+<DocsPageLead>
+    Get started with the only UI component library for Blazor that can work with the most popular CSS framework.
+</DocsPageLead>
+
+<DocsPageSubtitle>
+    Introduction
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Blazorise is the only Blazor UI components library offering development independent of CSS frameworks, exclusively using C#, with support for CSS frameworks like Bootstrap, Tailwind, Bulma, AntDesign, Fluent 2, and Material.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    We achieve this through intelligently rendering the precise HTML and CSS needed for the underlying CSS framework.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    It includes all of the commonly used components that a website requires, such as buttons, dropdowns, navigation bars, modals, but also some more advanced interactive elements such as datepickers.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    If you rely on an AI client, connect it to the <Anchor To="docs/mcp" Title="Link to MCP server guide">MCP server guide</Anchor> so it can pull Blazorise docs and examples when you ask.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Accessibility defaults
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Blazorise enables its form accessibility integrations by default. When you compose inputs with <Anchor To="docs/components/field">Field</Anchor>,
+    <Code Tag>FieldLabel</Code>, <Code Tag>FieldHelp</Code>, and validation components, Blazorise can automatically keep label, help text, and
+    validation metadata associated with the correct control.
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Code>UseLabelForAttribute</Code> enables automatic <Code>for</Code> generation on <Code Tag>FieldLabel</Code> when the target control is labelable.
+    </UnorderedListItem>
+    <UnorderedListItem>
+        <Code>UseAriaLabelledByAttribute</Code> enables automatic <Code>aria-labelledby</Code> generation for non-labelable controls.
+    </UnorderedListItem>
+    <UnorderedListItem>
+        <Code>UseAutoAriaInvalidAttribute</Code> enables automatic <Code>aria-invalid</Code> generation from validation state.
+    </UnorderedListItem>
+    <UnorderedListItem>
+        <Code>UseAutoAriaDescribedByAttribute</Code> enables automatic <Code>aria-describedby</Code> generation from <Code Tag>FieldHelp</Code> and validation messages.
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageParagraph>
+    All of these switches are available through <Code>BlazoriseOptions.AccessibilityOptions</Code> inside <Code>AddBlazorise( options =&gt; ... )</Code>.
+    For example, set <Code>options.AccessibilityOptions.UseLabelForAttribute = false</Code> when you want to turn off automatic label linking globally.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Supported CSS Providers
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Blazorise is build as an abstration layer that can work with the most popular CSS frameworks. You can choose the one that fits your needs the best.
+</DocsPageParagraph>
+
+<Row Margin="Margin.Is5.OnY">
+    @foreach ( var providerData in CssProvidersService.ProvidersData.Values )
+    {
+        <Column @key="@providerData" ColumnSize="ColumnSize.Is4.OnTablet.Is3.OnWidescreen.Is12.OnMobile" Margin="Margin.Is3.FromBottom">
+            <Anchor To="@($"docs/usage/{providerData.UsageLink}")" TextDecoration="TextDecoration.None" TextColor="TextColor.Dark">
+                <Card Shadow="Shadow.Small" Border="Border.Is0">
+                    <CardImage Source="@($"_content/Blazorise.Docs/assets/img/logos/{providerData.ImageFileName}")" Alt="@providerData.ImageAltText" Height="Height.Px( 200 )" />
+                    <CardBody>
+                        <CardTitle Size="HeadingSize.Is5">@providerData.Title</CardTitle>
+                    </CardBody>
+                </Card>
+            </Anchor>
+        </Column>
+    }
+</Row>
+
+<DocsPageSubtitle>
+    Components naming convention
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Blazorise follows the ASP.NET Core Razor naming convention for components. See: <Anchor To="https://docs.microsoft.com/en-us/aspnet/core/blazor/components/">ASP.NET Core Razor components</Anchor>
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    This means, that when you encounter a similar named Html and Blazorise component, the Blazorise component will be distinguished by the starting upper-case letter.
+    For example:
+    <UnorderedList>
+        <UnorderedListItem>
+            <Strong>HTML dropdown list</Strong> : <Code>&lt;select&gt;...&lt;/select&gt;</Code>
+        </UnorderedListItem>
+        <UnorderedListItem>
+            <Strong>Blazorise dropdown list</Strong>: <Code>&lt;Select&gt;...&lt;/Select&gt;</Code>
+        </UnorderedListItem>
+    </UnorderedList>
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Empty provider
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Generally you will always want to use and register one of the provided CSS frameworks. But in the case that you
+    only want to use any of the custom Blazorise extensions, like for example: Chart or Sidebar, you can register an “Empty” provider.
+    This way the extensions will still work but the default Blazorise components will be unused.
+</DocsPageParagraph>
+
+<DocsPageSection>
+    <DocsPageSectionSource Code="EmptyProviderExample" />
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Testing with bUnit
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    For testing purposes, there is currently an internal Blazorise Service that should be configured as Transient so the bUnit test engine does not throw an error.
+    You should add this setup:
+    <Code>ctx.Services.AddBlazorise().Replace(ServiceDescriptor.Transient&lt;IComponentActivator, ComponentActivator&gt;());</Code>
+
+    Other than that it should pretty much work out of the box. Let us know if you're having any difficulties.
+    For some testing examples, you can look at some of our <Anchor To="https://github.com/Megabit/Blazorise/tree/master/Tests/Blazorise.Tests" Target="Target.Blank">tests</Anchor>.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Javascript resources
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    Blazorise loads any additional JavaScript it needs dynamically once a component needs it.
+    This means that Blazorise expects that the resources are available and placed relative to the app root.
+    You can configure this by using the app.UseStaticFiles(); and it does not need any other additional configuration from your part. If you're having any difficulties,
+    please refer to the following issues:
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Anchor To="https://github.com/Megabit/Blazorise/issues/3122" Target="Target.Blank">#3122</Anchor>
+    </UnorderedListItem>
+    <UnorderedListItem>
+        <Anchor To="https://github.com/Megabit/Blazorise/issues/3150" Target="Target.Blank">#3150</Anchor>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSubtitle>
+    PWA &amp; Offline Support
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    For information about PWAs &amp; offline support, please take a look at our <Anchor To="docs/pwa">PWA docs.</Anchor>
+</DocsPageParagraph>

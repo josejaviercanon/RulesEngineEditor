@@ -1,0 +1,6 @@
+﻿@inherits Blazorise.Field
+<CascadingValue Value="@this" IsFixed>
+    <Dynamic TagName="@ContainerTagName" @bind-ElementRef="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+        @ChildContent
+    </Dynamic>
+</CascadingValue>

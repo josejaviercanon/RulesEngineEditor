@@ -1,0 +1,52 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+
+<Steps @ref="stepsRef" @bind-SelectedStep="@selectedStep" NavigationAllowed="NavigationAllowed">
+    <Items>
+        <Step Name="1">Step 1</Step>
+        <Step Name="2">Step 2</Step>
+        <Step Name="3">Step 3</Step>
+        <Step Name="4">Step 4</Step>
+    </Items>
+    <Content>
+        <StepPanel Name="1">
+            Step 1
+        </StepPanel>
+        <StepPanel Name="2">
+            <Field>
+                <FieldLabel>Email address</FieldLabel>
+                <TextInput @bind-Value="email" Placeholder="Enter email">
+                    <FieldHelp>This field is required in order to proceed to the next step.</FieldHelp>
+                </TextInput>
+            </Field>
+        </StepPanel>
+        <StepPanel Name="3">
+            Step 3
+        </StepPanel>
+        <StepPanel Name="4">
+            Step 4
+        </StepPanel>
+    </Content>
+</Steps>
+<Div Flex="Flex.JustifyContent.Center">
+    <Button Color="Color.Secondary" Margin="Margin.Is2.FromEnd" Clicked="() => stepsRef.PreviousStep()">
+        Previous
+    </Button>
+    <Button Color="Color.Primary" Clicked="() => stepsRef.NextStep()">
+        Next
+    </Button>
+</Div>
+@code {
+    private Steps stepsRef;
+    private string email;
+    private string selectedStep = "2";
+
+    private Task<bool> NavigationAllowed( StepNavigationContext context )
+    {
+        if ( context.CurrentStepIndex == 2 && context.NextStepIndex > 2 && !ValidationRule.IsEmail( email ) )
+        {
+            return Task.FromResult( false );
+        }
+
+        return Task.FromResult( true );
+    }
+}

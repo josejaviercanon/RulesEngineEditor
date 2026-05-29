@@ -1,0 +1,362 @@
+﻿@using System.Globalization
+@using Blazorise.Licensing
+<Paragraph TextSize="TextSize.Heading1" TextAlignment="TextAlignment.Center" Margin="Margin.Is5.FromTop.Is4.FromBottom">
+    Compare Plan Features
+</Paragraph>
+
+<Table Responsive TextAlignment="TextAlignment.Center">
+    <TableHeader>
+        <TableRow>
+            <TableHeaderCell style="width: 40%;"></TableHeaderCell>
+            <TableHeaderCell style="width: 15%;">
+                <Div Flex="Flex.InlineFlex.Column.JustifyContent.Center.AlignItems.Center">
+                    <Div>
+                        Community
+                    </Div>
+                    <Div Padding="Padding.Is2.OnY">
+                        <Small TextColor="TextColor.Muted" TextWeight="TextWeight.Light">Free</Small>
+                    </Div>
+                </Div>
+            </TableHeaderCell>
+            <TableHeaderCell style="width: 15%;">
+                <Div Flex="Flex.InlineFlex.Column.JustifyContent.Center.AlignItems.Center">
+                    <Div>
+                        Professional
+                    </Div>
+                    <Div Padding="Padding.Is2.OnY">
+                        <Span>
+                            @($"{ProfessionalPrices[Plan].CurrencySymbol}{( ProfessionalPrices[Plan].Price * Quantity ):n0}")
+                        </Span>
+                        <Small TextColor="TextColor.Muted" TextWeight="TextWeight.Light">
+                            /@ProfessionalPrices[Plan].Unit per developer
+                        </Small>
+                    </Div>
+                </Div>
+            </TableHeaderCell>
+            <TableHeaderCell style="width: 15%;">
+                <Div Flex="Flex.InlineFlex.Column.JustifyContent.Center.AlignItems.Center">
+                    <Div>
+                        Enterprise
+                    </Div>
+                    <Div Padding="Padding.Is2.OnY">
+                        <Span>
+                            @($"{EnterprisePrices[Plan].CurrencySymbol}{( EnterprisePrices[Plan].Price * Quantity ):n0}")
+                        </Span>
+                        <Small TextColor="TextColor.Muted" TextWeight="TextWeight.Light">
+                            /@EnterprisePrices[Plan].Unit per developer
+                        </Small>
+                    </Div>
+                </Div>
+            </TableHeaderCell>
+            <TableHeaderCell style="width: 15%;">
+                <Div Flex="Flex.InlineFlex.Column.JustifyContent.Center.AlignItems.Center">
+                    <Div>
+                        Enterprise Plus
+                    </Div>
+                    <Div Padding="Padding.Is2.OnY">
+                        <Small TextColor="TextColor.Muted" TextWeight="TextWeight.Light">On Request</Small>
+                    </Div>
+                </Div>
+            </TableHeaderCell>
+        </TableRow>
+    </TableHeader>
+    <TableBody>
+        <TableRow>
+            <TableRowHeader TextAlignment="TextAlignment.Start">Core UI</TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                Private
+                <Tooltip Multiline Text="Access to Blazorise private repositories (themes, templates, blocks, premium support forum, and other projects).">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+        </TableRow>
+    </TableBody>
+
+    <TableBody>
+        <TableRow>
+            <TableRowHeader TextAlignment="TextAlignment.Start">
+                Commercial Use
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader TextAlignment="TextAlignment.Start">
+                Regular updates
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                Unlimited number of applications
+                <Tooltip Multiline Text="No restrictions on a number of applications or deployment! You can deploy to as many servers as you want, including the cloud services or on-premises.">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                <Anchor To="themes" TextColor="TextColor.Primary">
+                    Blazorise Themes
+                </Anchor>
+                <Tooltip Multiline Text="Access to source code of premium themes and code samples.">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                <Anchor To="blocks" TextColor="TextColor.Primary">
+                    Blazorise Blocks
+                </Anchor>
+                <Tooltip Multiline Text="Access to the source code of growing list of UI blocks that includes full code samples.">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                <Anchor To="support" TextColor="TextColor.Primary">
+                    1 year premium forum support
+                </Anchor>
+                <Tooltip Multiline Text="You get premium support for one year (renew your license to extend).">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell>
+                <Icon Name="IconName.Times" TextColor="TextColor.Light" />
+            </TableRowCell>
+            <TableRowCell>
+                <Tooltip Text="24-hour response time">
+                    <Icon Name="IconName.Clock" TextColor="TextColor.Success" />
+                </Tooltip>
+            </TableRowCell>
+            <TableRowCell>
+                <Tooltip Text="16-hour response time">
+                    <Icon Name="IconName.Clock" TextColor="TextColor.Success" />
+                </Tooltip>
+            </TableRowCell>
+            <TableRowCell>
+                <Tooltip Text="16-hour response time, or a direct call with our developers.">
+                    <Icon Name="IconName.Headset" TextColor="TextColor.Success" />
+                </Tooltip>
+            </TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                Forum support incident count/year
+                <Tooltip Multiline Text="Professional and Enterprise include incident limits. Each additional developer license adds 10 incidents (Professional) or 25 incidents (Enterprise).">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell>10</TableRowCell>
+            <TableRowCell>25</TableRowCell>
+            <TableRowCell><Strong TextColor="TextColor.Primary">Unlimited</Strong></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                Guaranteed response time
+                <Tooltip Multiline Text="Guaranteed response times apply on weekdays (Monday–Friday).">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell>24 hours</TableRowCell>
+            <TableRowCell>16 hours</TableRowCell>
+            <TableRowCell><Strong TextColor="TextColor.Muted">Custom</Strong></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                Bug-fix prioritization
+                <Tooltip Multiline Text="Enterprise licenses include private support (email and ticket support).">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                Priority scheduling for new features
+                <Tooltip Multiline Text="Enterprise licenses include private support (email and ticket support).">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                Legal indemnification
+                <Tooltip Multiline Text="Indemnification options can be customized to suit an organization or project.">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                Escrow
+                <Tooltip Multiline Text="Escrow options are held by a third party until the agreed services are completed.">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                <Anchor To="enterprise-plus" Title="Link to enterprise plus page" TextColor="TextColor.Primary">
+                    Blazorise Mentor
+                </Anchor>
+                <Tooltip Multiline Text="We will get to know your project on a personal level and will actively guide your team to the most efficient path to successful completion.">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                <Anchor To="enterprise-plus" Title="Link to enterprise plus page" TextColor="TextColor.Primary">
+                    Expert on Demand
+                </Anchor>
+                <Tooltip Multiline Text="Allow our team to lend their expertise so you can focus on the business logic while we ensure you avoid common pitfalls!">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Times" TextColor="TextColor.Light" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between" Padding="Padding.Is5.FromEnd">
+                Development license
+                <Tooltip Multiline Text="For active development.">
+                    <Icon Name="IconName.InfoCircle" TextColor="TextColor.Muted" />
+                </Tooltip>
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell>1 year</TableRowCell>
+            <TableRowCell>1 year</TableRowCell>
+            <TableRowCell>1 year</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between">
+                Access to new releases
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Check" TextColor="TextColor.Success" /></TableRowCell>
+            <TableRowCell>1 year</TableRowCell>
+            <TableRowCell>1 year</TableRowCell>
+            <TableRowCell>1 year</TableRowCell>
+        </TableRow>
+        <TableRow Background="Background.Light">
+            <TableRowHeader ColumnSpan="5" TextAlignment="TextAlignment.Start">
+                Extensions Record Limit
+            </TableRowHeader>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between">
+                Core UI Components
+            </TableRowHeader>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between">
+                DataGrid
+            </TableRowHeader>
+            <TableRowCell>@BlazoriseLicenseProvider.DEFAULT_UNLICENSED_LIMIT_DATAGRID_MAX_ROWS rows</TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between">
+                Autocomplete
+            </TableRowHeader>
+            <TableRowCell>@BlazoriseLicenseProvider.DEFAULT_UNLICENSED_LIMIT_AUTOCOMPLETE_MAX_ROWS items</TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between">
+                Charts
+            </TableRowHeader>
+            <TableRowCell>@BlazoriseLicenseProvider.DEFAULT_UNLICENSED_LIMIT_CHARTS_MAX_ROWS points</TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between">
+                ListView
+            </TableRowHeader>
+            <TableRowCell>@BlazoriseLicenseProvider.DEFAULT_UNLICENSED_LIMIT_LISTVIEW_MAX_ROWS items</TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between">
+                TransferList
+            </TableRowHeader>
+            <TableRowCell>@BlazoriseLicenseProvider.DEFAULT_UNLICENSED_LIMIT_TRANSFERVIEW_MAX_ROWS items</TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowHeader Flex="Flex.JustifyContent.Between">
+                TreeView
+            </TableRowHeader>
+            <TableRowCell>@BlazoriseLicenseProvider.DEFAULT_UNLICENSED_LIMIT_TREEVIEW_MAX_ROWS nodes</TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+            <TableRowCell><Icon Name="IconName.Infinity" TextColor="TextColor.Primary" /></TableRowCell>
+        </TableRow>
+    </TableBody>
+</Table>

@@ -1,0 +1,8 @@
+﻿@inherits Blazorise.Bar
+<CascadingValue Value="@this" IsFixed>
+    <CascadingValue Value="@State">
+        <ul @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" direction="ltr" role="menu" data-collapse="@CollapseModeString" data-broken="@BrokenStateString" @attributes="@Attributes">
+            @ChildContent
+        </ul>
+    </CascadingValue>
+</CascadingValue>

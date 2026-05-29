@@ -1,0 +1,198 @@
+﻿@page "/docs/components/modal"
+
+<Seo Canonical="/docs/components/modal" Title="Blazorise Modal component" Description="Learn to use and work with the Blazorise Modal component, which provides a solid foundation for creating dialogs, popovers, lightboxes, or whatever else." />
+
+<DocsPageTitle Path="Components/Modal">
+    Blazorise Modal component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Dialog is a small window that can be used to present information and user interface elements in an overlay.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The modal component provides a solid foundation for creating dialogs, popovers, lightboxes, or whatever else.
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>Modal</Code> the main container.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>ModalContent</Code> a horizontally and vertically centered container, in which you can include any content.
+                </Paragraph>
+                <UnorderedList>
+                    <UnorderedListItem>
+                        <Paragraph>
+                            <Code Tag>ModalHeader</Code> top part of the modal, usually contains a title and close button.
+                        </Paragraph>
+                        <UnorderedList>
+                            <UnorderedListItem>
+                                <Paragraph>
+                                    <Code Tag>ModalTitle</Code> a title of the modal.
+                                </Paragraph>
+                            </UnorderedListItem>
+                            <UnorderedListItem>
+                                <Paragraph>
+                                    <Code Tag>CloseButton</Code> a simple close button located in the top right corner.
+                                </Paragraph>
+                            </UnorderedListItem>
+                        </UnorderedList>
+                    </UnorderedListItem>
+                    <UnorderedListItem>
+                        <Paragraph>
+                            <Code Tag>ModalBody</Code> main part of the modal, holds the input fields, images, etc.
+                        </Paragraph>
+                    </UnorderedListItem>
+                    <UnorderedListItem>
+                        <Paragraph>
+                            <Code Tag>ModalFooter</Code> bottom part of the modal, usually contains the action buttons.
+                        </Paragraph>
+                    </UnorderedListItem>
+                </UnorderedList>
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+        Place the modal markup somewhere at root of you component layout.
+        <br />
+        <br />
+        To work with the modal you must use the reference to the Modal component.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicModalExample" Outlined FullWidth>
+        <BasicModalExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Two-way binding">
+        You can also control the <Code>Modal</Code> visibility by declaring the <Code>Visible</Code> state.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ModalBindingExample" Outlined FullWidth>
+        <ModalBindingExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Closing">
+        If you want to prevent modal from closing you can use <Code>Closing</Code> event.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ModalClosingExample" Outlined FullWidth>
+        <ModalClosingExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Backdrop styling">
+        <Paragraph>
+            Use <Code>Styles</Code> to tint the backdrop element rendered behind the modal.
+        </Paragraph>
+        <Paragraph>
+            For advanced styling of the modal backdrop and inner elements, see the <Anchor To="docs/helpers/utilities/styling">Styling</Anchor> guide.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ModalBackdropStylingExample" Outlined FullWidth>
+        <ModalBackdropStylingExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Fullscreen">
+        If the built-in sizes are not enough you can show the modal in fullscreen.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="ModalFullscreenExample" Outlined FullWidth>
+        <ModalFullscreenExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Best Practices
+</DocsPageSubtitle>
+
+<Heading Size="HeadingSize.Is3">
+    Use Sparingly
+</Heading>
+
+<DocsPageParagraph>
+    Modal dialogs are disruptive by nature and should be used sparingly. Do not use them to communicate nonessential information, such as success messages like "Logged in", "Copied", etc. Instead, use <Anchor To="docs/services/notification-provider">Notifications</Anchor> when appropriate.
+</DocsPageParagraph>
+
+<Heading Size="HeadingSize.Is3">
+    Fullscreen Mode
+</Heading>
+
+<DocsPageParagraph>
+    When using the Fullscreen mode for the Modal component, it's crucial to be aware of how you structure your layout within the <Strong>ModalBody</Strong>.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    If the <Strong>ModalBody</Strong> is wrapped within a container that has the CSS property <Code>'display'</Code> set to <Code>'block'</Code>, this can cause issues with the overflow behavior in the Fullscreen mode. Specifically, the <Code>'display: block'</Code> CSS property can interfere with the automatic adjustments that are applied to the <Strong>Modal</Strong> in Fullscreen mode.
+</DocsPageParagraph>
+
+<Heading Size="HeadingSize.Is4">
+    Impact:
+</Heading>
+
+<DocsPageParagraph>
+    This interference could lead to the loss of smooth scrolling, content being cut off, or the display not fitting correctly within the viewport dimensions.
+</DocsPageParagraph>
+
+<Heading Size="HeadingSize.Is4">
+    Solution:
+</Heading>
+
+<DocsPageParagraph>
+    To avoid such problems
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    <OrderedList>
+        <OrderedListItem>
+            Refrain from using <Code>'display: block'</Code> style with containers within <Strong>ModalBody</Strong> when working in Fullscreen mode.
+        </OrderedListItem>
+        <OrderedListItem>
+            <Paragraph>
+                As an alternative, consider using a container with the CSS property <Code>'display'</Code> set to <Code>'contents'</Code>, eg. <Code>'display: contents;'</Code>. This property value allows the container to behave as though it's replaced by its children. This way, you can ensure the structure and style of your content are compatible with the Fullscreen modal settings.
+            </Paragraph>
+        </OrderedListItem>
+    </OrderedList>
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Please take this warning into consideration when implementing your Modals to ensure an optimal user experience and accurate content display.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Functions
+</DocsPageSubtitle>
+
+<Table>
+    <TableHeader ThemeContrast="ThemeContrast.Light">
+        <TableRow>
+            <TableHeaderCell>Name</TableHeaderCell>
+            <TableHeaderCell>Description</TableHeaderCell>
+        </TableRow>
+    </TableHeader>
+    <TableBody>
+        <TableRow>
+            <TableRowCell><Code>Show()</Code></TableRowCell>
+            <TableRowCell>Open the modal dialog.</TableRowCell>
+        </TableRow>
+        <TableRow>
+            <TableRowCell><Code>Hide()</Code></TableRowCell>
+            <TableRowCell>Close the modal dialog.</TableRowCell>
+        </TableRow>
+    </TableBody>
+</Table>
+
+<ComponentApiDocs ComponentTypes="[typeof(Modal), typeof(ModalContent), typeof(ModalBody), typeof(ModalTitle)]" />

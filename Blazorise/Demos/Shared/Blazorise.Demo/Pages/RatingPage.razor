@@ -1,0 +1,64 @@
+﻿@page "/tests/ratings"
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Basic Example</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Rating.</CardText>
+            </CardBody>
+            <CardBody>
+                <Rating Color="Color.Primary" @bind-SelectedValue="@SelectedValue" MaxValue="10" GetTooltip="@GetTooltip" />
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.Is12.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Read Only</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Default rating.</CardText>
+            </CardBody>
+            <CardBody>
+                <Rating SelectedValue="@SelectedValue" MaxValue="10" ReadOnly />
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is12.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Disabled</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Default rating.</CardText>
+            </CardBody>
+            <CardBody>
+                <Rating SelectedValue="@SelectedValue" MaxValue="10" Disabled />
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+@code {
+    public int SelectedValue { get; set; } = 2;
+    public int SelectedMaterialValue { get; set; } = 1;
+
+    RatingTooltip GetTooltip( int value )
+    {
+        if ( value <= 2 )
+            return new RatingTooltip( "Very bad" );
+        else if ( value <= 4 )
+            return new RatingTooltip( "Bad", TooltipPlacement.Bottom );
+        else if ( value <= 6 )
+            return new RatingTooltip( "Fair" );
+        else if ( value <= 8 )
+            return new RatingTooltip( "Good", TooltipPlacement.Top, false, false );
+        else if ( value <= 10 )
+            return new RatingTooltip( "Very good" );
+
+        return null;
+    }
+}

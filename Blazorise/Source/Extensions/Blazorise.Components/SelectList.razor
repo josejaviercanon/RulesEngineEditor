@@ -1,0 +1,31 @@
+﻿@typeparam TItem
+@typeparam TValue
+<Select @ref="@selectRef" ElementId="@ElementId" TValue="TValue" Multiple="@Multiple" Value="@Value" ValueChanged="@OnValueChanged" ValueExpression="@ValueExpression" Class="@Class" Style="@Style" Size="@Size" MaxVisibleItems="@MaxVisibleItems" TabIndex="@TabIndex" Disabled="@Disabled" Attributes="@Attributes">
+    <ChildContent>
+        @if ( DefaultItemText != null )
+        {
+            <SelectItem @key="@DefaultItemValue" Value="@DefaultItemValue" Disabled="@DefaultItemDisabled" Hidden="@DefaultItemHidden">@DefaultItemText</SelectItem>
+        }
+        @if ( Data != null )
+        {
+            @foreach ( var item in Data ?? Enumerable.Empty<TItem>() )
+            {
+                @itemFragment(item)
+            }
+        }
+        @ChildContent
+    </ChildContent>
+    <Feedback>
+        @Feedback
+    </Feedback>
+</Select>
+@code {
+    protected RenderFragment<TItem> itemFragment => item => __builder =>
+    {
+        var text = TextField?.Invoke( item );
+        var value = ValueField != null ? ValueField.Invoke( item ) : default;
+        var disabled = ItemDisabled != null ? ItemDisabled.Invoke( item ) : false;
+
+        <SelectItem @key="@value" Value="@value" Disabled="@disabled">@text</SelectItem>
+    };
+}

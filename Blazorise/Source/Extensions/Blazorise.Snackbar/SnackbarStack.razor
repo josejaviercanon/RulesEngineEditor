@@ -1,0 +1,66 @@
+﻿@inherits BaseComponent
+<div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+    <CascadingValue Value="@this" IsFixed>
+        @ChildContent
+        @foreach ( var snackbarInfo in snackbarInfos )
+        {
+            <Snackbar @key="@snackbarInfo.Key"
+                      Key="@snackbarInfo.Key"
+                      Visible="@snackbarInfo.Visible"
+                      Color="@snackbarInfo.Color"
+                      Multiline="@snackbarInfo.Multiline"
+                      Interval="@(snackbarInfo.IntervalBeforeClose ?? Constants.DefaultIntervalBeforeClose)"
+                      AnimationDuration="@(snackbarInfo?.AnimationDuration ?? Constants.DefaultAnimationDuration)"
+                      DelayCloseOnClick="@DelayCloseOnClick"
+                      DelayCloseOnClickInterval="@DelayCloseOnClickInterval"
+                      Closed="@(async (e)=> await OnSnackbarClosed(e.Key, e.CloseReason))">
+                @if ( snackbarInfo.Title is not null )
+                {
+                    <SnackbarHeader>
+                        @snackbarInfo.Title
+
+                        @if ( snackbarInfo.ShowCloseButton )
+                        {
+                            var closeButtonText = snackbarInfo.CloseButtonText ?? CloseButtonText;
+                            var closeButtonIcon = snackbarInfo.CloseButtonIcon ?? CloseButtonIcon ?? IconName.Times;
+
+                            var key = snackbarInfo.Key;
+
+                            <SnackbarAction Clicked="@(async ( e ) => await OnSnackbarClosed( key, SnackbarCloseReason.UserClosed ))">
+                                <Icon Name="@closeButtonIcon" />
+                                @closeButtonText
+                            </SnackbarAction>
+                        }
+                    </SnackbarHeader>
+                }
+                <SnackbarBody>
+                    @if ( snackbarInfo.MessageTemplate is not null )
+                    {
+                        @snackbarInfo.MessageTemplate
+                    }
+                    else
+                    {
+                        @snackbarInfo.Message
+                    }
+
+
+                    @if ( snackbarInfo.ShowActionButton )
+                    {
+                        var actionButtonText = snackbarInfo.ActionButtonText ?? ActionButtonText;
+                        var actionButtonIcon = snackbarInfo.ActionButtonIcon ?? ActionButtonIcon;
+
+                        var key = snackbarInfo.Key;
+
+                        <SnackbarAction Clicked="@(async (e)=> await OnSnackbarClosed(key, SnackbarCloseReason.UserClosed))">
+                            @if ( actionButtonIcon is not null )
+                            {
+                                <Icon Name="@actionButtonIcon" Margin="Blazorise.Margin.Is2.FromEnd" />
+                            }
+                            @actionButtonText
+                        </SnackbarAction>
+                    }
+                </SnackbarBody>
+            </Snackbar>
+        }
+    </CascadingValue>
+</div>

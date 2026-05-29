@@ -1,0 +1,36 @@
+﻿@inherits BaseDocsLayout
+
+<Layout>
+    <LayoutHeader>
+        <Bar Class="b-top-bar" @bind-Visible="@topbarVisible" Breakpoint="Breakpoint.Desktop" Background="@ThemeService.BarBackground" ThemeContrast="@ThemeService.BarThemeContrast" Shadow="Shadow.Default">
+            <Container>
+                <BarBrand>
+                    <BarItem>
+                        <BarLink To="" TextSize="TextSize.Large">
+                            <BarIcon IconName="customIcon" Display="Display.InlineBlock" />
+                            Blazorise
+                        </BarLink>
+                    </BarItem>
+                </BarBrand>
+                <BarToggler />
+                <BarMenu>
+                    <BarStart>
+                        <TopMenuStart />
+                    </BarStart>
+                    <BarEnd>
+                        <TopMenuEnd />
+                    </BarEnd>
+                </BarMenu>
+            </Container>
+        </Bar>
+    </LayoutHeader>
+    <LayoutContent>
+        @Body
+    </LayoutContent>
+    <LayoutFooter Padding="Padding.Is4.FromTop.Is5.FromTop.OnDesktop" Margin="Margin.Is5.OnY.OnDesktop" Border="Border.OnTop">
+        <Footer />
+    </LayoutFooter>
+</Layout>
+@code {
+    RenderFragment customIcon = @<img src="img/logos/blazorise-small.svg" alt="Blazorise logo" style="width:32px; height: 32px" />;
+}

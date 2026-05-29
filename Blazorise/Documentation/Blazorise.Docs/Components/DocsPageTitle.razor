@@ -1,0 +1,68 @@
+﻿@if ( Path != null )
+{
+    <Breadcrumb>
+        @{
+            var pathValues = Path.Split( '/' ).Where( x => !string.IsNullOrEmpty( x ) ).ToList();
+            var isLast = pathValues.Count == 0 || ( pathValues.IndexOf( "docs" ) == pathValues.Count - 1 );
+            var url = "docs";
+        }
+
+        <BreadcrumbItem Active="@isLast">
+            <BreadcrumbLink To="docs">Documentation</BreadcrumbLink>
+        </BreadcrumbItem>
+
+        @if ( pathValues.Count > 0 )
+        {
+            @foreach ( var pathValue in pathValues )
+            {
+                isLast = pathValues.IndexOf( pathValue ) == pathValues.Count - 1;
+                url = $"{url}/{pathValue.ToLowerInvariant()}";
+                var currentUrl = url;
+
+                <BreadcrumbItem Active="@isLast">
+                    <BreadcrumbLink To="@currentUrl">@pathValue</BreadcrumbLink>
+                </BreadcrumbItem>
+            }
+        }
+    </Breadcrumb>
+}
+
+@if ( !string.IsNullOrEmpty( AddedVersion ) )
+{
+    <Div Flex="Flex.Default.OnDesktop.Flex.ReverseRow.OnDesktop.JustifyContent.Between.AlignItems.Center">
+        <Alert Visible Flex="Flex.InlineFlex" Color="Color.Success" Padding="Padding.Is2.OnX.Is1.OnY" TextWeight="TextWeight.SemiBold">
+            @AddedVersion
+        </Alert>
+        @HeadingFragment
+    </Div>
+}
+else
+{
+    @HeadingFragment
+}
+
+@code {
+    [Parameter] public bool Display { get; set; }
+
+    [Parameter] public string Path { get; set; }
+
+    [Parameter] public string AddedVersion { get; set; }
+
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    private RenderFragment HeadingFragment => __builder =>
+    {
+        @if ( Display )
+        {
+            <DisplayHeading ElementId="b-docs-page-title" Size="DisplayHeadingSize.Is1" Margin="Margin.Is4.FromBottom">
+                @ChildContent
+            </DisplayHeading>
+        }
+        else
+        {
+            <Heading ElementId="b-docs-page-title" Size="HeadingSize.Is1" Margin="Margin.Is4.FromBottom">
+                @ChildContent
+            </Heading>
+        }
+    };
+}

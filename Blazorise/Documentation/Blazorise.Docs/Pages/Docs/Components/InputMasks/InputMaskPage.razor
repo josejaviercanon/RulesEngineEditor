@@ -1,0 +1,65 @@
+﻿@page "/docs/components/input-mask"
+
+<Seo Canonical="/docs/components/input-mask" Title="Blazorise InputMask system" Description="Learn to use and work with the Blazorise InputMask component, that helps the user with the input by ensuring a predefined format. This can be useful for dates, numerics, phone numbers, ..." />
+
+<DocsPageTitle Path="Components/Input Mask">
+    Blazorise InputMask component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Input mask allows the user to input a value in a specific format while typing.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The <Code Tag>InputMask</Code> helps the user with the input by ensuring a predefined format. This can be useful for dates, numerics, phone numbers, ...
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Span Padding="Padding.Is2.OnX"><Code>9</Code></Span>: numeric
+    </UnorderedListItem>
+    <UnorderedListItem>
+        <Span Padding="Padding.Is2.OnX"><Code>a</Code></Span>: alphabetical
+    </UnorderedListItem>
+    <UnorderedListItem>
+        <Span Padding="Padding.Is2.OnX"><Code>*</Code></Span>: alphanumeric
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic Mask">
+        To start you only need to define the <Code>Mask</Code> parameter.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicInputMaskExample" Outlined FullWidth>
+        <BasicInputMaskExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="With Alias">
+        Instead of masking an input element, it is also possible to use the inputmask for formatting given values.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="AliasInputMaskExample" Outlined FullWidth>
+        <AliasInputMaskExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Other examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="With Placeholder">
+        You can control the placeholder that will be used for the mask. The <Code>Placeholder</Code> will be used when the mask is not defined. And the <Code>MaskPlaceholder</Code> will be used when the mask is defined for extra information to the user about the valid input format.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="InputMaskPlaceholderExample" Outlined FullWidth>
+        <InputMaskPlaceholderExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+
+<ComponentApiDocs ComponentTypes="[typeof(InputMask)]" />

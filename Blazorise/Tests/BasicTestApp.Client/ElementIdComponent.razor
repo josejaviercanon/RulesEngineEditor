@@ -1,0 +1,8 @@
+﻿<DateInput TValue="DateTime?"></DateInput>
+<Button Clicked="@OnClick"></Button>
+@code{
+    Task OnClick()
+    {
+        return InvokeAsync( StateHasChanged );
+    }
+}

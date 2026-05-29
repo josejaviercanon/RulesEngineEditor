@@ -1,0 +1,22 @@
+﻿@inherits Blazorise.Progress
+<CascadingValue Value="@this" IsFixed>
+    <CascadingValue Value="@State">
+        @if ( HasProgressBar )
+        {
+            <div class="progress-bars-wrapper">
+                @ChildContent
+            </div>
+        }
+        else
+        {
+            <div class="progress-wrapper">
+                <progress @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" value="@GetPercentage()" min="@Min" max="@Max" @attributes="@Attributes">
+                    @ChildContent
+                </progress>
+            </div>
+        }
+    </CascadingValue>
+</CascadingValue>
+@code {
+    int? GetPercentage() => Indeterminate ? null : Percentage ?? 0;
+}

@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <Import Project="..\..\..\Build\Blazorise.props" />
+
+  <PropertyGroup>
+    <PackageTags>blazorise blazor components datagrid</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Blazorise\Blazorise.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Localization\**\*.json" />
+    <EmbeddedResource Include="Resources\Localization\**\*.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Localization\*.json" />
+    <EmbeddedResource Include="Resources\Localization\*.json" />
+  </ItemGroup>
+
+</Project>

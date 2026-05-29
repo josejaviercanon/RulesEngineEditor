@@ -1,0 +1,8 @@
+﻿@inherits Blazorise.Addons
+<CascadingValue Value="@this" IsFixed>
+    <div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+        <div class="ant-input-wrapper ant-input-group">
+            @ChildContent
+        </div>
+    </div>
+</CascadingValue>

@@ -2,6 +2,18 @@
 
 This repository uses agent-assisted workflows for OpenSpec implementation, validation, and database migration operations.
 
+## UI Component Library Rule
+
+For all UI work in `src/RulesEngine.UI`, contributors and agents MUST use the Blazorise UI component library.
+
+- Use Blazorise components and patterns (`Form`, `Field`, `TextInput`, `Select`, `Modal`, `DataGrid`, `Button`, etc.) for new UI features.
+- Use the configured providers in `src/RulesEngine.UI/Program.cs` (`Blazorise`, `Blazorise.Tailwind`, `Blazorise.Icons.Lucide`).
+- Do not introduce new Radzen UI dependencies or new raw HTML form/grid/modal implementations for app features when an equivalent Blazorise component exists.
+- When touching existing UI, prefer converging the edited surface area to Blazorise components.
+- For component APIs and usage patterns, consult local Blazorise sources and demos first:
+  - `./Blazorise/Source`
+  - `./Blazorise/Demos`
+
 ## Database Migration Rule
 
 When running migrations from an agent workflow, always use the connection string from [src/RulesEngine.API/appsettings.Development.json](src/RulesEngine.API/appsettings.Development.json).

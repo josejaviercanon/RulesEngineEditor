@@ -1,0 +1,79 @@
+﻿<Heading Size="HeadingSize.Is2" TextSize="TextSize.Heading1" TextAlignment="TextAlignment.Center" Margin="Margin.Is4.FromBottom">
+    Replace <Span Class="gradient-commercial">1,200+ hours</Span> of UI engineering
+</Heading>
+
+<Paragraph>
+    Explore the Blazorise Benefits Grid to see how our Blazor UI components eliminate
+    <Strong>significant development time and cost</Strong>.
+    Quickly estimate the engineering effort avoided per component and accelerate delivery without compromising quality.
+</Paragraph>
+
+<Paragraph Margin="Margin.Is3.FromBottom">
+    <Button Type="ButtonType.Link" To="roi-calculator" Color="Color.Primary" Size="Size.Large" Padding="Padding.Is4.OnX">
+        Open ROI Calculator
+    </Button>
+</Paragraph>
+
+<Div>
+    <Table Responsive Bordered Striped TextAlignment="TextAlignment.Center">
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell Style="width: 65%;" TextAlignment="TextAlignment.Start">Component / Work</TableHeaderCell>
+                <TableHeaderCell Style="width: 20%;">Development Hours</TableHeaderCell>
+                <TableHeaderCell Style="width: 15%;" TextAlignment="TextAlignment.End">Replacement Cost</TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+
+        <TableBody>
+            @foreach ( var work in Works )
+            {
+                <TableRow @key="work.Name">
+                    <TableRowCell TextAlignment="TextAlignment.Start">@work.Name</TableRowCell>
+                    <TableRowCell TextAlignment="TextAlignment.Center">@PluralizeHours( work.HoursWorked )</TableRowCell>
+                    <TableRowCell TextAlignment="TextAlignment.End">@($"€{work.HoursWorked * HourlyRate:n0}")</TableRowCell>
+                </TableRow>
+            }
+        </TableBody>
+
+        <TableFooter>
+            <TableRow>
+                <TableRowCell TextAlignment="TextAlignment.Start"><Strong>Total</Strong></TableRowCell>
+                <TableRowCell TextAlignment="TextAlignment.Center">@PluralizeHours( TotalHours )</TableRowCell>
+                <TableRowCell TextAlignment="TextAlignment.End"><Strong>@($"€{TotalSavings:n0}")</Strong></TableRowCell>
+            </TableRow>
+        </TableFooter>
+    </Table>
+</Div>
+
+<Paragraph TextColor="TextColor.Muted">
+    <Span>*</Span> Replacement cost is calculated using an average enterprise development rate of <Strong>€85/hour</Strong>.
+    Actual costs may vary depending on requirements, testing, accessibility standards, and long-term maintenance.
+</Paragraph>
+
+@code {
+    const decimal HourlyRate = 85m;
+
+    sealed class WorkInfo
+    {
+        public string Name { get; set; } = string.Empty;
+        public int HoursWorked { get; set; }
+    }
+
+    List<WorkInfo> Works = new()
+    {
+        new WorkInfo { Name = "Button and other interaction components", HoursWorked = 90 },
+        new WorkInfo { Name = "DataGrid component with sorting, filtering, paging, editing, etc.", HoursWorked = 240 },
+        new WorkInfo { Name = "Modal with keyboard navigation and form validation", HoursWorked = 120 },
+        new WorkInfo { Name = "Form inputs and validation", HoursWorked = 180 },
+        new WorkInfo { Name = "Navigation bar and sidebar", HoursWorked = 90 },
+        new WorkInfo { Name = "Charting components", HoursWorked = 160 },
+        new WorkInfo { Name = "Notifications and messaging system", HoursWorked = 60 },
+        new WorkInfo { Name = "Scheduler component with recurrence, drag & drop, and multiple views", HoursWorked = 260 },
+    };
+
+    int TotalHours => Works.Sum( x => x.HoursWorked );
+    decimal TotalSavings => Works.Sum( x => x.HoursWorked * HourlyRate );
+
+    static string PluralizeHours( int hours )
+        => hours == 1 ? "1 hour" : $"{hours:n0} hours";
+}

@@ -1,0 +1,28 @@
+﻿@page "/themes/blazestack"
+@using Blazorise.Docs.Models;
+
+<ThemePage SeoCanonical="/themes/blazestack"
+           SeoTitle="BlazeStack - Admin &amp; Dashboard Template - Blazorise Themes"
+           SeoDescription="BlazeStack - Admin &amp; Dashboard Template is a responsive Blazorise administrator dashboard built for everyone who wants to create web apps on top of the most popular frameworks, Bootstrap, Bulma &amp; AntDesign."
+           ImageUrl="img/themes/blazestack/dashboard-small.jpg"
+           ImageText="BlazeStack"
+           PreviewUrl="https://blazestack.blazorforest.com/"
+           Products="@products">
+    <Title>
+        BlazeStack - Admin &amp; Dashboard Template - Blazorise Themes
+    </Title>
+    <Description>
+        <Strong>BlazeStack - Admin &amp; Dashboard Template</Strong> is a responsive Blazorise administrator dashboard built
+        for everyone who wants to create web apps on top of the most popular frameworks, <Strong>Bootstrap, Bulma &amp; AntDesign</Strong>.
+        BlazeStack helps you to create your next Blazorise even faster than before. It can be used to create a
+        Saas based interface, administrator dashboard, or anything you want to build on the web.
+        BlazeStack helps your team moving faster and saving development costs.
+    </Description>
+</ThemePage>
+@code {
+    ThemeInfo[] products = new ThemeInfo[]
+    {
+        new ThemeInfo( PaddlePrices.SinglesiteBlazeStackTheme, "Standard", "Single Site", 39m, "€" ),
+        new ThemeInfo( PaddlePrices.MultisiteBlazeStackTheme, "Multisite", "Unlimited sites", 99m, "€" ),
+    };
+}

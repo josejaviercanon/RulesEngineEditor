@@ -1,0 +1,92 @@
+﻿@page "/docs/extensions/video"
+
+<Seo Canonical="/docs/extensions/video" Title="Blazorise Video component" Description="Learn how to use the Blazorise Video component to play local or streaming media with configurable sources, playback controls, responsive sizing, and browser-friendly markup." />
+
+<DocsPageTitle Path="Extensions/Video">
+    Blazorise Video component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Play local files or streaming media with the <Code>Video</Code> component.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    To use the <Code>Video</Code> component, install the <Code>Blazorise.Video</Code> package first.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="VideoNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        In your main <Badge Color="Color.Light">_Imports.razor</Badge> add:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="ImportVideoExample" />
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+        To play the video you just need to define the <Code>Source</Code> of the video.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicVideoExample" Outlined FullWidth>
+        <BasicVideoExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Streaming Dash">
+        We also support streaming videos. To stream the video you just define the <Code>Source</Code> as usual, along with the <Code>StreamingLibrary</Code> used to handle the video media type.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="VideoDashExample" Outlined FullWidth>
+        <VideoDashExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Streaming HLS">
+        We also support streaming of HLS videos. To stream the video you just define the <Code>Source</Code> as usual, along with the <Code>StreamingLibrary</Code> used to handle the video media type.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="VideoHlsExample" Outlined FullWidth>
+        <VideoHlsExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Widevine DRM instantiation">
+        This example shows how to use <Code>Video</Code> to play streams with Widevine DRM protection.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DRMVideoExample" Outlined FullWidth>
+        <DRMVideoExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Multiple files">
+        <Paragraph>
+            The <Strong>VideoSource</Strong> object contains a list of <Strong>VideoMedia</Strong> instances, each representing a different quality of the same video. Each <Strong>VideoMedia</Strong> is initialized with a unique URL that points to the video source, a media type, and a quality represented as resolution (in pixels).
+        </Paragraph>
+        <Paragraph>
+            Here, three versions of the same video are provided: a 576p, a 720p, and a 1080p. These different versions give users the ability to choose the video quality according to their network conditions or preferences.
+        </Paragraph>
+        <Paragraph>
+            The <Strong>DefaultQuality</Strong> property set on the <Strong>Video</Strong> component dictates which version of the video is loaded by default when the component is rendered. In this case, it is set to "720", meaning the 720p version of the video will be the default.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="VideoMultipleSourcesExample" Outlined FullWidth>
+        <VideoMultipleSourcesExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<VideoApi />

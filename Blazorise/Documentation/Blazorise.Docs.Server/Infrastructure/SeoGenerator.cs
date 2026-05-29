@@ -1,0 +1,126 @@
+﻿using System;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using Blazorise.Docs.BlogRuntime;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
+
+namespace Blazorise.Docs.Server.Infrastructure;
+
+public class SeoGenerator
+{
+    public static async Task GenerateRobots( HttpContext context )
+    {
+        var baseUrl = GetBaseUrl( context );
+
+        context.Response.ContentType = "text/plain";
+
+        await context.Response.WriteAsync( $"User-agent: *\n" );
+        await context.Response.WriteAsync( $"Disallow: /block/\n" );
+        await context.Response.WriteAsync( $"Disallow: /blocks/\n" );
+        await context.Response.WriteAsync( $"Disallow: /support/\n\n" );
+
+        await context.Response.WriteAsync( $"Sitemap: {baseUrl}/sitemap.txt" );
+    }
+
+    public static async Task GenerateSitemap( HttpContext context )
+    {
+        var urls = GetSitemapUrls( context );
+
+        context.Response.ContentType = "text/plain";
+
+        foreach ( var url in urls )
+        {
+            await context.Response.WriteAsync( $"{url}\n" );
+        }
+    }
+
+    public static async Task GenerateSitemapXml( HttpContext context )
+    {
+        var urls = GetSitemapUrls( context );
+        var sitemapNamespace = XNamespace.Get( "http://www.sitemaps.org/schemas/sitemap/0.9" );
+
+        context.Response.ContentType = "application/xml";
+
+        var sitemap = new XElement( sitemapNamespace + "urlset",
+                 from url in urls
+                 select new XElement( sitemapNamespace + "url",
+                     new XElement( sitemapNamespace + "loc", url ) ) );
+
+        await context.Response.WriteAsync( sitemap.ToString() );
+    }
+
+    public static async Task GenerateRssFeed( HttpContext context, IBlogProvider blogProvider )
+    {
+        var baseUrl = GetBaseUrl( context );
+        var pages = await blogProvider.GetListAsync( null );
+
+        var sitemap = new XElement( "rss",
+                 new XAttribute( XNamespace.Xmlns + "atom", "http://www.w3.org/2005/Atom" ),
+                 new XAttribute( "version", "2.0" ),
+                 new XElement( "channel",
+                     new XElement( "title", "Blazorise Blog" ),
+                     new XElement( "link", CombineUrl( baseUrl, "/blog" ) ),
+                     new XElement( "description", "Blazorise Blog Feed" ),
+                     new XElement( "language", "en" ),
+                     new XElement( "lastBuildDate", DateTime.UtcNow.ToString( "R" ) ),
+                     from p in pages
+                     orderby p.PostedOn descending
+                     select new XElement( "item",
+                         new XElement( "title", p.Title ),
+                         new XElement( "link", CombineUrl( baseUrl, BlogPermalinks.ToCanonicalBlogPath( p.Permalink ) ) ),
+                         new XElement( "description", p.Summary ),
+                         new XElement( "pubDate", DateTime.TryParse( p.PostedOn, CultureInfo.InvariantCulture, out var dt ) ? dt.ToString( "R" ) : null ) ) ) );
+
+        await context.Response.WriteAsync( sitemap.ToString() );
+    }
+
+    private static string CombineUrl( string baseUrl, string permalink )
+    {
+        if ( string.IsNullOrWhiteSpace( permalink ) )
+            return baseUrl;
+
+        permalink = permalink.Trim();
+        if ( permalink.StartsWith( "http", StringComparison.OrdinalIgnoreCase ) )
+            return permalink;
+
+        if ( !permalink.StartsWith( "/" ) )
+            permalink = "/" + permalink;
+
+        return baseUrl + permalink;
+    }
+
+    private static string[] GetSitemapUrls( HttpContext context )
+    {
+        var baseUrl = GetBaseUrl( context );
+
+        return typeof( App ).Assembly.ExportedTypes
+            .Where( p => p.IsSubclassOf( typeof( ComponentBase ) )
+                         && p.Namespace.StartsWith( "Blazorise.Docs.Pages" )
+                         && p.Namespace != "Blazorise.Docs.Docs.Examples" )
+            .Where( p => p.CustomAttributes is not null )
+            .SelectMany( x => x.GetCustomAttributes<RouteAttribute>() )
+            .Select( x => x.Template )
+            .Where( IsConcreteRoute )
+            .Where( x => !string.Equals( x, "/news", StringComparison.OrdinalIgnoreCase ) )
+            .Distinct( StringComparer.OrdinalIgnoreCase )
+            .OrderBy( x => x, StringComparer.OrdinalIgnoreCase )
+            .Select( x => $"{baseUrl}{x}" )
+            .ToArray();
+    }
+
+    private static bool IsConcreteRoute( string routeTemplate )
+    {
+        return !string.IsNullOrWhiteSpace( routeTemplate )
+               && !routeTemplate.Contains( "{", StringComparison.Ordinal )
+               && !routeTemplate.Contains( "}", StringComparison.Ordinal );
+    }
+
+    private static string GetBaseUrl( HttpContext context )
+    {
+        return $"{context.Request.Scheme}://{context.Request.Host.Value}{context.Request.PathBase.Value}";
+    }
+}

@@ -1,0 +1,719 @@
+﻿@page "/tests/tables"
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnDesktop.IsHalf.OnWidescreen">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Basic Example</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Basic table with lightly padded cells and horizontal dividers.</CardText>
+            </CardBody>
+            <CardBody>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>#</TableHeaderCell>
+                            <TableHeaderCell>First Name</TableHeaderCell>
+                            <TableHeaderCell>Last Name</TableHeaderCell>
+                            <TableHeaderCell>Username</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach ( var user in tableUsers )
+                        {
+                            <TableRow @key="@user.Id">
+                                <TableRowHeader>@user.Id</TableRowHeader>
+                                <TableRowCell>@user.FirstName</TableRowCell>
+                                <TableRowCell>@user.LastName</TableRowCell>
+                                <TableRowCell>@user.Social</TableRowCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnDesktop.IsHalf.OnWidescreen">
+        <Card Margin="Margin.Is4.OnY">
+            <CardHeader>
+                <CardTitle>Striped Rows</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>For alternating background colors on the rows, add <code>Striped</code> attribute.</CardText>
+            </CardBody>
+            <CardBody>
+                <Table Striped>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>#</TableHeaderCell>
+                            <TableHeaderCell>First Name</TableHeaderCell>
+                            <TableHeaderCell>Last Name</TableHeaderCell>
+                            <TableHeaderCell>Username</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach ( var user in tableUsers )
+                        {
+                            <TableRow @key="@user.Id">
+                                <TableRowHeader>@user.Id</TableRowHeader>
+                                <TableRowCell>@user.FirstName</TableRowCell>
+                                <TableRowCell>@user.LastName</TableRowCell>
+                                <TableRowCell>@user.Social</TableRowCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnDesktop.IsHalf.OnWidescreen">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Bordered Table</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>For borders all around the table, use <code>Bordered</code> attribute.</CardText>
+            </CardBody>
+            <CardBody>
+                <Table Bordered>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>#</TableHeaderCell>
+                            <TableHeaderCell>First Name</TableHeaderCell>
+                            <TableHeaderCell>Last Name</TableHeaderCell>
+                            <TableHeaderCell>Username</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach ( var user in tableUsers )
+                        {
+                            <TableRow @key="@user.Id">
+                                <TableRowHeader>@user.Id</TableRowHeader>
+                                <TableRowCell>@user.FirstName</TableRowCell>
+                                <TableRowCell>@user.LastName</TableRowCell>
+                                <TableRowCell>@user.Social</TableRowCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnDesktop.IsHalf.OnWidescreen">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Hoverable Rows</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>To achieve that "hover" effect when mousing over the table rows, use <code>Hoverable</code> attribute.</CardText>
+            </CardBody>
+            <CardBody>
+                <Table Hoverable>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>#</TableHeaderCell>
+                            <TableHeaderCell>First Name</TableHeaderCell>
+                            <TableHeaderCell>Last Name</TableHeaderCell>
+                            <TableHeaderCell>Username</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach ( var user in tableUsers )
+                        {
+                            <TableRow @key="@user.Id">
+                                <TableRowHeader>@user.Id</TableRowHeader>
+                                <TableRowCell>@user.FirstName</TableRowCell>
+                                <TableRowCell>@user.LastName</TableRowCell>
+                                <TableRowCell>@user.Social</TableRowCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnDesktop.IsHalf.OnWidescreen">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Borderless Table</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>For table without any borders set the <code>Borderless</code> attribute.</CardText>
+            </CardBody>
+            <CardBody>
+                <Table Borderless>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>#</TableHeaderCell>
+                            <TableHeaderCell>First Name</TableHeaderCell>
+                            <TableHeaderCell>Last Name</TableHeaderCell>
+                            <TableHeaderCell>Username</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach ( var user in tableUsers )
+                        {
+                            <TableRow @key="@user.Id">
+                                <TableRowHeader>@user.Id</TableRowHeader>
+                                <TableRowCell>@user.FirstName</TableRowCell>
+                                <TableRowCell>@user.LastName</TableRowCell>
+                                <TableRowCell>@user.Social</TableRowCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnDesktop.IsHalf.OnWidescreen">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Small Table</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Add <code>Narrow</code> to make tables more compact by cutting cell padding in half.</CardText>
+            </CardBody>
+            <CardBody>
+                <Table Narrow>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>#</TableHeaderCell>
+                            <TableHeaderCell>First Name</TableHeaderCell>
+                            <TableHeaderCell>Last Name</TableHeaderCell>
+                            <TableHeaderCell>Username</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach ( var user in tableUsers )
+                        {
+                            <TableRow @key="@user.Id">
+                                <TableRowHeader>@user.Id</TableRowHeader>
+                                <TableRowCell>@user.FirstName</TableRowCell>
+                                <TableRowCell>@user.LastName</TableRowCell>
+                                <TableRowCell>@user.Social</TableRowCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnDesktop.IsHalf.OnWidescreen">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Light Header</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Use the <code>Theme</code> attribute to make header appear light or dark gray.</CardText>
+            </CardBody>
+            <CardBody>
+                <Table>
+                    <TableHeader ThemeContrast="ThemeContrast.Light">
+                        <TableRow>
+                            <TableHeaderCell>#</TableHeaderCell>
+                            <TableHeaderCell>First Name</TableHeaderCell>
+                            <TableHeaderCell>Last Name</TableHeaderCell>
+                            <TableHeaderCell>Username</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach ( var user in tableUsers )
+                        {
+                            <TableRow @key="@user.Id">
+                                <TableRowHeader>@user.Id</TableRowHeader>
+                                <TableRowCell>@user.FirstName</TableRowCell>
+                                <TableRowCell>@user.LastName</TableRowCell>
+                                <TableRowCell>@user.Social</TableRowCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnDesktop.IsHalf.OnWidescreen">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Dark Header</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Use the <code>Theme</code> attribute to make header appear light or dark gray.</CardText>
+            </CardBody>
+            <CardBody>
+                <Table>
+                    <TableHeader ThemeContrast="ThemeContrast.Dark">
+                        <TableRow>
+                            <TableHeaderCell>#</TableHeaderCell>
+                            <TableHeaderCell>First Name</TableHeaderCell>
+                            <TableHeaderCell>Last Name</TableHeaderCell>
+                            <TableHeaderCell>Username</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach ( var user in tableUsers )
+                        {
+                            <TableRow @key="@user.Id">
+                                <TableRowHeader>@user.Id</TableRowHeader>
+                                <TableRowCell>@user.FirstName</TableRowCell>
+                                <TableRowCell>@user.LastName</TableRowCell>
+                                <TableRowCell>@user.Social</TableRowCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Group</CardTitle>
+            </CardHeader>
+            <CardBody>
+                An example of grouped rows.
+            </CardBody>
+            <CardBody>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>Product Name</TableHeaderCell>
+                            <TableHeaderCell>Category</TableHeaderCell>
+                            <TableHeaderCell>Color</TableHeaderCell>
+                            <TableHeaderCell>Price</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach ( var group in products.GroupBy( x => x.Color ).Select( x => x.Key ) )
+                        {
+                            <TableRowGroup>
+                                <TitleTemplate>
+                                    @group
+                                </TitleTemplate>
+                                <ChildContent>
+                                    @foreach ( var product in products.Where( x => x.Color == group ) )
+                                    {
+                                        <TableRow>
+                                            <TableRowCell>@product.Name</TableRowCell>
+                                            <TableRowCell>@product.Category</TableRowCell>
+                                            <TableRowCell>@product.Color</TableRowCell>
+                                            <TableRowCell>@product.Price</TableRowCell>
+                                        </TableRow>
+                                    }
+                                </ChildContent>
+                            </TableRowGroup>
+                        }
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnDesktop.IsHalf.OnWidescreen">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Contextual Colors</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Use <code>Color</code> on table rows or individual cells.</CardText>
+            </CardBody>
+            <CardBody>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>#</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        <TableRow Color="Color.Primary">
+                            <TableRowHeader>1</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowHeader>2</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow Color="Color.Success">
+                            <TableRowHeader>3</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowHeader>4</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow Color="Color.Info">
+                            <TableRowHeader>5</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowHeader>6</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow Color="Color.Warning">
+                            <TableRowHeader>7</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowHeader>8</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow Color="Color.Danger">
+                            <TableRowHeader>9</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnDesktop.IsHalf.OnWidescreen">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Contextual With Background Color</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Use <code>Background</code> and <code>TextColor</code> on table rows or individual cells.</CardText>
+            </CardBody>
+            <CardBody>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>#</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        <TableRow Background="Background.Dark" TextColor="TextColor.White">
+                            <TableRowHeader>1</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowHeader>2</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow Background="Background.Success" TextColor="TextColor.White">
+                            <TableRowHeader>3</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowHeader>4</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow Background="Background.Info" TextColor="TextColor.White">
+                            <TableRowHeader>5</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowHeader>6</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow Background="Background.Warning" TextColor="TextColor.White">
+                            <TableRowHeader>7</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableRowHeader>8</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                        <TableRow Background="Background.Danger" TextColor="TextColor.White">
+                            <TableRowHeader>9</TableRowHeader>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                            <TableRowCell>Column content</TableRowCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Fixed columns</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Use <code>FixedColumns</code> to lock some columns.</CardText> Try to drag the horizontal scrollbar to see it in action.
+            </CardBody>
+            <CardBody>
+                <Table Bordered FixedColumns>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell Width="Width.Px( 50 )" FixedPosition="TableColumnFixedPosition.Start">#</TableHeaderCell>
+                            <TableHeaderCell Width="Width.Px( 200 )">Column heading</TableHeaderCell>
+                            <TableHeaderCell Width="Width.Px( 150 )" FixedPosition="TableColumnFixedPosition.Start">Fixed heading</TableHeaderCell>
+                            <TableHeaderCell Width="Width.Px( 200 )">Column heading</TableHeaderCell>
+                            <TableHeaderCell Width="Width.Px( 850 )">Column heading</TableHeaderCell>
+                            <TableHeaderCell Width="Width.Px( 330 )">Column heading</TableHeaderCell>
+                            <TableHeaderCell Width="Width.Px( 420 )" FixedPosition="TableColumnFixedPosition.End">Fixed end heading</TableHeaderCell>
+                            <TableHeaderCell Width="Width.Px( 400 )" FixedPosition="TableColumnFixedPosition.End">Fixed end heading</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @for ( int i = 1; i <= 3; ++i )
+                        {
+                            var index = i.ToString();
+
+                            <TableRow @key="@index">
+                                <TableRowHeader Width="Width.Px( 50 )" FixedPosition="TableColumnFixedPosition.Start">@index</TableRowHeader>
+                                <TableRowCell Width="Width.Px( 200 )">Column content</TableRowCell>
+                                <TableRowCell Width="Width.Px( 150 )" FixedPosition="TableColumnFixedPosition.Start">Fixed column</TableRowCell>
+                                <TableRowCell Width="Width.Px( 200 )">Column content</TableRowCell>
+                                <TableRowCell Width="Width.Px( 850 )">Column content</TableRowCell>
+                                <TableRowCell Width="Width.Px( 330 )">Column content</TableRowCell>
+                                <TableRowCell Width="Width.Px( 420 )" FixedPosition="TableColumnFixedPosition.End">Fixed end content</TableRowCell>
+                                <TableRowCell Width="Width.Px( 400 )" FixedPosition="TableColumnFixedPosition.End">Fixed end content</TableRowCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Responsive</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Use <code>Responsive</code> for horizontally scrolling tables.</CardText>
+            </CardBody>
+            <CardBody>
+                <Table Responsive>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>#</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                            <TableHeaderCell>Column heading</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @for ( int i = 1; i <= 3; ++i )
+                        {
+                            var index = i.ToString();
+
+                            <TableRow @key="@index">
+                                <TableRowHeader>@index</TableRowHeader>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                                <TableRowCell>Column content</TableRowCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+
+<Row>
+    <Column>
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Dynamic Settings</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <CardText>Select different settings to see the result.</CardText>
+            </CardBody>
+            <CardBody>
+                <Row>
+                    <Column ColumnSize="ColumnSize.Is3.OnWidescreen.Is12.OnMobile">
+                        <Field>
+                            <Row>
+                                <Column>
+                                    <Switch @bind-Value="@fixedHeader">Fixed header</Switch>
+                                </Column>
+                            </Row>
+                            <Row>
+                                <Column>
+                                    @if ( fixedHeader )
+                                    {
+                                        <Column>
+                                            <Addons>
+                                                <Addon AddonType="AddonType.Body">
+                                                    <NumericInput TValue="int" @bind-Value="scrollToValue" />
+                                                </Addon>
+                                                <Addon AddonType="AddonType.End">
+                                                    <Button Color="Color.Primary" Clicked="@ScrollToRow"> Scroll To Row </Button>
+                                                </Addon>
+                                            </Addons>
+                                        </Column>
+                                    }
+                                </Column>
+                            </Row>
+                        </Field>
+                        <Field>
+                            <Switch @bind-Value="@stripped">Stripped</Switch>
+                        </Field>
+                        <Field>
+                            <Switch @bind-Value="@bordered">Bordered</Switch>
+                        </Field>
+                        <Field>
+                            <Switch @bind-Value="@borderless">Borderless</Switch>
+                        </Field>
+                        <Field>
+                            <Switch @bind-Value="@hoverable">Hoverable</Switch>
+                        </Field>
+                        <Field>
+                            <Switch @bind-Value="@small">Narrow rows</Switch>
+                        </Field>
+                        <Field>
+                            <Row>
+                                <Column>
+                                    <Switch @bind-Value="@resizable">Resizable</Switch>
+                                </Column>
+                                @if ( resizable )
+                                {
+                                    <Column>
+                                        <Select @bind-Value="@resizeMode">
+                                            <SelectItem Value="TableResizeMode.Header">Header</SelectItem>
+                                            <SelectItem Value="TableResizeMode.Columns">Columns</SelectItem>
+                                        </Select>
+                                    </Column>
+                                }
+                            </Row>
+                        </Field>
+                        <Field>
+                            <Select @bind-Value="@responsiveMode">
+                                <SelectItem Value="TableResponsiveMode.Default">Default</SelectItem>
+                                <SelectItem Value="TableResponsiveMode.Mobile">Mobile</SelectItem>
+                            </Select>
+                        </Field>
+                    </Column>
+                    <Column ColumnSize="ColumnSize.Is9.OnWidescreen.Is12.OnMobile">
+                        <Table @ref="@tableRef" FixedHeader="@fixedHeader" Striped="@stripped" Bordered="@bordered" Borderless="@borderless" Hoverable="@hoverable" Narrow="@small" Resizable="@resizable" ResizeMode="@resizeMode" ResponsiveMode="@responsiveMode" FixedHeaderTableHeight="300px">
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHeaderCell>#</TableHeaderCell>
+                                    <TableHeaderCell>Column heading</TableHeaderCell>
+                                    <TableHeaderCell>Column heading</TableHeaderCell>
+                                    <TableHeaderCell>Column heading</TableHeaderCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableHeaderCell>#2</TableHeaderCell>
+                                    <TableHeaderCell>Column heading2</TableHeaderCell>
+                                    <TableHeaderCell>Column heading2</TableHeaderCell>
+                                    <TableHeaderCell>Column heading2</TableHeaderCell>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                @for ( int i = 1; i <= 10; ++i )
+                                {
+                                    var index = i.ToString();
+
+                                    <TableRow @key="@index">
+                                        <TableRowHeader MobileModeCaption="#">@index</TableRowHeader>
+                                        <TableRowCell MobileModeCaption="Column heading">Column content</TableRowCell>
+                                        <TableRowCell MobileModeCaption="Column heading">Column content</TableRowCell>
+                                        <TableRowCell MobileModeCaption="Column heading">Column content</TableRowCell>
+                                    </TableRow>
+                                }
+                            </TableBody>
+                        </Table>
+                    </Column>
+                </Row>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+@code {
+    class ProductInfo
+    {
+        public string Name { get; set; }
+
+        public string Category { get; set; }
+
+        public string Color { get; set; }
+
+        public string Price { get; set; }
+    }
+
+    List<ProductInfo> products = new()
+    {
+        new() { Name = "Apple MacBook Pro 17", Category = "Laptop", Color = "Sliver", Price = "$2999" },
+        new() { Name = "Microsoft Surface Pro", Category = "Laptop PC", Color = "White", Price = "$1999" },
+        new() { Name = "Magic Mouse 2", Category = "Accessories", Color = "Black", Price = "$99" },
+        new() { Name = "Apple Watch", Category = "Watches", Color = "Black", Price = "$199" },
+        new() { Name = "Apple iMac", Category = "PC", Color = "Sliver", Price = "$2999" },
+        new() { Name = "Apple AirPods", Category = "Accessories", Color = "White", Price = "$399" },
+        new() { Name = "iPad Pro", Category = "Tablet", Color = "Gold", Price = "$699" },
+        new() { Name = "Magic Keyboard", Category = "Accessories", Color = "Black", Price = "$99" },
+        new() { Name = "Apple TV 4K", Category = "TV", Color = "Black", Price = "$179" },
+        new() { Name = "AirTag", Category = "Accessories", Color = "Sliver", Price = "$29" },
+    };
+}

@@ -1,0 +1,120 @@
+@page "/docs/extensions/loadingindicator"
+
+<Seo Canonical="/docs/extensions/loadingindicator" Title="Blazorise LoadingIndicator component" Description="Learn how to use the Blazorise LoadingIndicator component to show loading states for child content, async operations, data fetches, and custom progress overlays." />
+
+<DocsPageTitle Path="Extensions/LoadingIndicator" AddedVersion="Added in v1.1">
+    Blazorise LoadingIndicator component
+</DocsPageTitle>
+
+<DocsPageLead>
+    A wrapper component that adds a loading indicator to child content. Default spinner courtesy of <Anchor To="https://icons8.com/preloaders/en/search/spinner#" Target="Target.Blank">icons8.com</Anchor>.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    To use the <Code>LoadingIndicator</Code> component, install the <Code>Blazorise.LoadingIndicator</Code> package first.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="LoadingIndicatorNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        In your main <Code>_Imports.razor</Code> add:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="LoadingIndicatorImportsExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Static files">
+        Include CSS link into your <Code>index.html</Code> or <Code>_Layout.cshtml</Code> / <Code>_Host.cshtml</Code> file, depending if you're using a Blazor WebAssembly or Blazor Server side project.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="LoadingIndicatorResourcesExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic example">
+        The basic usage scenario for <Code>LoadingIndicator</Code> with default settings using a <Code>LoadingIndicator</Code> object reference.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LoadingIndicatorBasicExample" Outlined FullWidth>
+        <LoadingIndicatorBasicExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Two-way Binding">
+        Having a more declarative approach to control the indicator is also supported. To make it work, you just need to bind a variable to the <Code>Visible</Code> parameter, and it will work.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LoadingIndicatorTwoWayBindingExample" Outlined FullWidth>
+        <LoadingIndicatorTwoWayBindingExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Status text">
+        Display progress text by providing <Code>IndicatorTemplate</Code>. The template receives a <Code>LoadingIndicatorContext</Code> with <Code>Text</Code> and <Code>Progress</Code> updated via <Code>SetStatus</Code>.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LoadingIndicatorStatusExample" Outlined FullWidth>
+        <LoadingIndicatorStatusExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Application busy service">
+        Use <Code>ApplicationLoadingIndicator</Code> to add a global application busy UI. Register <Code>ILoadingIndicatorService</Code> as a scoped service in your configuration. <Code>ApplicationLoadingIndicator</Code> automatically registers with <Code>ILoadingIndicatorService</Code> if one is registered or unless <Code>Service</Code> property is set directly. Use dependency injection to obtain a reference to the <Code>ILoadingIndicatorService</Code> to control <Code>ApplicationLoadingIndicator</Code>. The application busy UI comes with an awesome Blazorise logo spinner, which is recommended, but if you prefer the default spinner set <Code>IndicatorTemplate</Code> to <Code>null</Code>.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LoadingIndicatorAddScopedExample">
+        Add <Code>ILoadingIndicatorService</Code> as a scoped service.
+    </DocsPageSectionContent>
+    <DocsPageSectionContent Code="LoadingIndicatorApplicationWrapperExample">
+        Add <Code>ApplicationLoadingIndicator</Code> to your <Code>App.razor</Code> file.
+    </DocsPageSectionContent>
+    <DocsPageSectionContent Code="LoadingIndicatorApplicationBusyExample">
+        Inject <Code>ILoadingIndicatorService</Code> into your component where you want to trigger the application busy UI from.
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Using as cascading parameter">
+        You can also use the wrapper as a cascading parameter.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LoadingIndicatorCascadingWrapperExample">
+        To implement a global application busy UI using cascading parameter add the wrapper to your main layout.
+    </DocsPageSectionContent>
+    <DocsPageSectionContent Code="LoadingIndicatorCascadingBusyExample">
+        Declare a <Code>CascadingParameter</Code> of type <Code>LoadingIndicator</Code> in your component.
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Disabling input controls">
+        While the busy screen prevents click events from reaching child content it has no effect on keyboard input. You may want to disable your input controls such as textboxes and buttons while your component is busy.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LoadingIndicatorBusyReferenceExample">
+        Using the <Code>Visible</Code> property directly.
+    </DocsPageSectionContent>
+    <DocsPageSectionContent Code="LoadingIndicatorBusyServiceExample">
+        Disabling your controls using <Code>LoadingIndicatorService</Code>.
+    </DocsPageSectionContent>
+    <DocsPageSectionContent Code="LoadingIndicatorBusyFormExample">
+        Disable the entire input form using <Code>&lt;fieldset&gt;</Code>
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Using animation">
+        Loading indicator can animate its visibility state by fading into view. This is on by default for <Code>ApplicationLoadingIndicator</Code>. You can also use the <Code>Animate</Code> component to add a visual effect.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LoadingIndicatorAnimationExample" Outlined FullWidth>
+        <LoadingIndicatorAnimationExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(LoadingIndicator)]" />

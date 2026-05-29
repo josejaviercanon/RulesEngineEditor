@@ -1,0 +1,239 @@
+﻿@page "/tests/forms/pickers"
+<Row>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.FromTop">
+            <CardHeader>
+                <CardTitle>Date Picker</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Field Horizontal>
+                    <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Date Single</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                        <DatePicker @bind-Value="@d1" Placeholder="Select date..." ShowTodayButton ShowClearButton />
+                    </FieldBody>
+                </Field>
+                <Field Horizontal="true">
+                    <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Date & Time Single</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                        <DatePicker @bind-Value="@dt1" Placeholder="Select date and time..." InputMode="DateInputMode.DateTime" />
+                    </FieldBody>
+                </Field>
+                <Field Horizontal="true">
+                    <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Date Range</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                        <DatePicker @bind-Value="@d2" Placeholder="Select range..." SelectionMode="DateInputSelectionMode.Range" />
+                    </FieldBody>
+                </Field>
+                <Field Horizontal="true">
+                    <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Date & Time Range</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                        <DatePicker @bind-Value="@dt2" Placeholder="Select date and time range..." InputMode="DateInputMode.DateTime" SelectionMode="DateInputSelectionMode.Range" />
+                    </FieldBody>
+                </Field>
+                <Field Horizontal="true">
+                    <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Date Multi</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                        <DatePicker @bind-Value="@d3" Placeholder="Select multiple date..." SelectionMode="DateInputSelectionMode.Multiple" />
+                    </FieldBody>
+                </Field>
+                <Field Horizontal="true">
+                    <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Date & Time Multi</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                        <DatePicker @bind-Value="@dt3" Placeholder="Select multiple date and time..." InputMode="DateInputMode.DateTime" SelectionMode="DateInputSelectionMode.Multiple" />
+                    </FieldBody>
+                </Field>
+            </CardBody>
+            <CardBody>
+                <Div>
+                    Date 1: @d1
+                </Div>
+                <Div>
+                    Date-Time 1: @dt1
+                </Div>
+                <Div>
+                    Date Range: @string.Join( " to ", @d2?.Select( x => x.Value.ToString( "dd.MM.yyyy" ) ) ?? Enumerable.Empty<string>() )
+                </Div>
+                <Div>
+                    Date-Time Range: @string.Join( " to ", @dt2?.Select( x => x.Value.ToString( "dd.MM.yyyy HH:mm" ) ) ?? Enumerable.Empty<string>() )
+                </Div>
+                <Div>
+                    Date Multi: @string.Join( ", ", @d3?.Select( x => x.Value.ToString( "dd.MM.yyyy" ) ) ?? Enumerable.Empty<string>() )
+                </Div>
+                <Div>
+                    Date-Time Multi: @string.Join( ", ", @dt3?.Select( x => x.Value.ToString( "dd.MM.yyyy HH:mm" ) ) ?? Enumerable.Empty<string>() )
+                </Div>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.FromTop">
+            <CardHeader>
+                <CardTitle>Time Picker</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Field Horizontal>
+                    <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">TimeOnly</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                        <TimePicker TValue="TimeOnly?" @bind-Value="@t1" Placeholder="Select time..." />
+                    </FieldBody>
+                </Field>
+                <Field Horizontal="true">
+                    <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">24h Format</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                        <TimePicker TValue="TimeOnly?" @bind-Value="@t2" Placeholder="Select time in 24h format..." TimeAs24hr />
+                    </FieldBody>
+                </Field>
+                <Field Horizontal>
+                    <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">TimeSpan</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                        <TimePicker TValue="TimeSpan?" @bind-Value="@ts1" Placeholder="Select time..." />
+                    </FieldBody>
+                </Field>
+                <Field Horizontal="true">
+                    <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">24h Format</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                        <TimePicker TValue="TimeSpan?" @bind-Value="@ts2" Placeholder="Select time in 24h format..." TimeAs24hr />
+                    </FieldBody>
+                </Field>
+                <Div>
+                    TimeOnly 1: @t1
+                </Div>
+                <Div>
+                    TimeOnly 1 (24h): @t2
+                </Div>
+                <Div>
+                    TimeSpan 2: @ts1
+                </Div>
+                <Div>
+                    TimeSpan 2 (24h): @ts2
+                </Div>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.FromTop">
+            <CardHeader>
+                <CardTitle>Color Picker</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Field Horizontal>
+                    <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Color</FieldLabel>
+                    <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                        <ColorPicker />
+                    </FieldBody>
+                </Field>
+            </CardBody>
+        </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.IsFull.OnMobile.IsHalf.OnTablet">
+        <Card Margin="Margin.Is4.FromTop">
+            <CardHeader>
+                <CardTitle>Numeric Picker</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <Validation Validator="@ValidateNumber">
+                    <Field Horizontal>
+                        <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Immediate enabled</FieldLabel>
+                        <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                            <Addons>
+                                <Addon AddonType="AddonType.Body">
+                                    <NumericPicker @bind-Value="@num1" Immediate="true" />
+                                </Addon>
+                                <Addon AddonType="AddonType.End">
+                                    <Button Color="Color.Primary" Clicked="@(() => num1 = 5.1m)">Set</Button>
+                                </Addon>
+                            </Addons>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Validation Validator="@ValidateNumber">
+                    <Field Horizontal>
+                        <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Immediate disabled</FieldLabel>
+                        <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                            <Addons>
+                                <Addon AddonType="AddonType.Body">
+                                    <NumericPicker @bind-Value="@num2" Immediate="false" />
+                                </Addon>
+                                <Addon AddonType="AddonType.End">
+                                    <Button Color="Color.Primary" Clicked="@(() => num2 = 6.2m)">Set</Button>
+                                </Addon>
+                            </Addons>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Validation Validator="@ValidateNumber">
+                    <Field Horizontal>
+                        <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Debounce enabled</FieldLabel>
+                        <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                            <Addons>
+                                <Addon AddonType="AddonType.Body">
+                                    <NumericPicker @bind-Value="@num3" Debounce="true" />
+                                </Addon>
+                                <Addon AddonType="AddonType.End">
+                                    <Button Color="Color.Primary" Clicked="@(() => num3 = 7.3m)">Set</Button>
+                                </Addon>
+                            </Addons>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Validation Validator="@ValidateNumber">
+                    <Field Horizontal>
+                        <FieldLabel ColumnSize="ColumnSize.IsFull.OnTablet.Is3.OnDesktop">Currency Symbol</FieldLabel>
+                        <FieldBody ColumnSize="ColumnSize.IsFull.OnTablet.Is9.OnDesktop">
+                            <Addons>
+                                <Addon AddonType="AddonType.Body">
+                                    <NumericPicker @bind-Value="@num4" CurrencySymbol="$" />
+                                </Addon>
+                                <Addon AddonType="AddonType.End">
+                                    <Button Color="Color.Primary" Clicked="@(() => num4 = 8.4m)">Set</Button>
+                                </Addon>
+                            </Addons>
+                        </FieldBody>
+                    </Field>
+                </Validation>
+                <Div>
+                    Num 1: @num1
+                </Div>
+                <Div>
+                    Num 2: @num2
+                </Div>
+                <Div>
+                    Num 3: @num3
+                </Div>
+                <Div>
+                    Num 4: @num4
+                </Div>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+@code {
+    DateOnly? d1;
+    DateTime? dt1 = DateTime.Now;
+    IReadOnlyList<DateOnly?> d2;
+    IReadOnlyList<DateTime?> dt2 = new DateTime?[] { DateTime.Now.AddDays( -3 ), DateTime.Now.AddDays( 3 ) };
+    IReadOnlyList<DateOnly?> d3;
+    IReadOnlyList<DateTime?> dt3 = new DateTime?[] { DateTime.Now, DateTime.Now.AddDays( 1 ) };
+    TimeOnly? t1;
+    TimeOnly? t2;
+    TimeSpan? ts1;
+    TimeSpan? ts2;
+    decimal? num1 = 1m;
+    decimal? num2 = 2m;
+    decimal? num3 = 3m;
+    decimal? num4 = 4m;
+
+    void ValidateNumber( ValidatorEventArgs e )
+    {
+        var date = e.Value as decimal?;
+
+        if ( date == null )
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Success;
+        }
+    }
+}

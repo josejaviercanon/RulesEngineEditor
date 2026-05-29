@@ -1,0 +1,68 @@
+﻿@page "/docs/components/drag-drop"
+
+<Seo Canonical="/docs/components/drag-drop" Title="Blazorise DropZone system" Description="Learn to use and work with the Blazorise DropZone component which allows you to easily drag and drop any component or HTML element." />
+
+<DocsPageTitle Path="Components/Drop Zone" AddedVersion="Added in v1.0">
+    Blazorise Drag &amp; Drop component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Quickly drag and drop elements between the containers.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The Drag &amp; Drop is comprised of <Code>DropContainer</Code> and <Code>DropZone</Code> components. The <Code>DropContainer</Code> is used as a container for all items that are being dragged,
+    along with the <Code>DropZone</Code>'s that are basically an areas to drag the items.
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>DropContainer</Code> the main container.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>DropZone</Code> wrapper for drop zone content.
+                </Paragraph>
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+        <Paragraph>
+            To start, first define a <Code>DropContainer</Code> and assign the <Code>Items</Code> to it.
+        </Paragraph>
+        <Paragraph>
+            Next you define <Code>DropZone</Code>'s and assign them a unique <Code>Name</Code>. The <Code>Name</Code>, along with the <Code>ItemsFilter</Code> parameter is used to determine to which <Code>DropZone</Code> an item will belong.
+        </Paragraph>
+        <Paragraph>
+            The callback <Code>ItemDropped</Code> is used to update the data item, when a drag operation has finished.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicDragDropExample" Outlined FullWidth>
+        <BasicDragDropExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Reorder items">
+        <Paragraph>
+            Items can be reordered inside each dropzone with the <Code>AllowReorder</Code> bool set to true on the dropzone.
+            The <Code>Reordered</Code> function triggers each time the order changes or items are added or removed from the dropzone, providing the current order in a dictionary.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="DragDropReorderingExample" Outlined FullWidth>
+        <DragDropReorderingExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(DropContainer<>), typeof(DropZone<>)]" />

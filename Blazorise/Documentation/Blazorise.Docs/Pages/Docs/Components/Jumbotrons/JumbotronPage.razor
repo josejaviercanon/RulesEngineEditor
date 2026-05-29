@@ -1,0 +1,55 @@
+﻿@page "/docs/components/jumbotron"
+
+<Seo Canonical="/docs/components/jumbotron" Title="Blazorise Jumbotron system" Description="Learn to use and work with the Blazorise Jumbotron, a lightweight, flexible component for showcasing hero unit style content." />
+
+<DocsPageTitle Path="Components/Jumbotron">
+    Blazorise Jumbotron component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Lightweight, flexible component for showcasing hero unit style content.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    A lightweight, flexible component that can optionally extend the entire viewport to showcase some special content or information.
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>Jumbotron</Code> the main container.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>JumbotronTitle</Code> required title of the jumbotron.
+                </Paragraph>
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>JumbotronSubtitle</Code> optional subtitle of the jumbotron.
+                </Paragraph>
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+        <Paragraph>
+            Jumbotron is a full width <Anchor To="docs/components/card" Title="Link to card component">card</Anchor> that is usually displayed at the top of the page, sometimes also referred to as a "Hero component".
+        </Paragraph>
+        <Paragraph>
+            The jumbotron color should be only slightly off the background of the page to make your design feel "light".
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicJumbotronExample" Outlined FullWidth>
+        <BasicJumbotronExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(Jumbotron)]" />

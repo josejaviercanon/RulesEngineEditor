@@ -1,0 +1,14 @@
+﻿@namespace Blazorise
+@inherits BaseComponent
+@if ( IsActive )
+{
+    <span id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+        @ChildContent
+    </span>
+}
+else
+{
+    <Anchor ElementId="@ElementId" Class="@ClassNames" Style="@StyleNames" To="@To" Target="@Target" Title="@Title" Match="@Match" Clicked="@ClickHandler" Attributes="@Attributes">
+        @ChildContent
+    </Anchor>
+}

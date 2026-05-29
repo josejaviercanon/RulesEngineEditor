@@ -1,0 +1,9 @@
+﻿<UnorderedListItem>
+    <Anchor To="@Url">@Name</Anchor>
+</UnorderedListItem>
+
+@code {
+    [Parameter] public string Name { get; set; }
+
+    [Parameter] public string Url { get; set; }
+}

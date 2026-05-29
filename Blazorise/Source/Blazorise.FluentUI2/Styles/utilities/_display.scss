@@ -1,0 +1,41 @@
+﻿@each $breakpoint in map-keys($grid-breakpoints) {
+    @include media-breakpoint-up($breakpoint) {
+        $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+        .fui-Display-none#{$infix} {
+            display: none !important;
+        }
+
+        .fui-Display-flex#{$infix} {
+            display: flex !important;
+        }
+
+        .fui-Display-inline-flex#{$infix} {
+            display: inline-flex !important;
+        }
+
+        .fui-Display-block#{$infix} {
+            display: block !important;
+        }
+
+        .fui-Display-inline-block#{$infix} {
+            display: inline-block !important;
+        }
+
+        .fui-Display-inline#{$infix} {
+            display: inline !important;
+        }
+
+        .fui-Display-table#{$infix} {
+            display: table !important;
+        }
+
+        .fui-Display-table-row#{$infix} {
+            display: table-row !important;
+        }
+
+        .fui-Display-table-cell#{$infix} {
+            display: table-cell !important;
+        }
+    }
+}

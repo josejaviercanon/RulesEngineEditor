@@ -1,10 +1,445 @@
 ﻿@page "/"
+@inject WorkflowApiClient WorkflowApiClient
+@inject WorkflowManagementService WorkflowManagementService
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<Heading Size="HeadingSize.Is2" Margin="Margin.Is3.FromBottom">Workflow Home</Heading>
 
-Welcome to your new app.
+@if (!string.IsNullOrWhiteSpace(statusMessage))
+{
+	<Alert Color="@statusColor" Visible Margin="Margin.Is3.FromBottom">
+		<AlertDescription>@statusMessage</AlertDescription>
+	</Alert>
+}
+
+<Card>
+	<CardHeader>
+		<CardTitle>Workflows</CardTitle>
+	</CardHeader>
+	<CardBody>
+		<Button Color="Color.Primary" Margin="Margin.Is3.FromBottom" Clicked="OpenCreateModal">
+			<Icon Name="IconName.Plus" />
+			New Workflow
+		</Button>
+
+		<Table Striped Hoverable Bordered FullWidth>
+			<TableHeader>
+				<TableRow>
+					<TableHeaderCell>Actions</TableHeaderCell>
+					<TableHeaderCell>Guid ID</TableHeaderCell>
+					<TableHeaderCell>Last Version</TableHeaderCell>
+					<TableHeaderCell>Workflow Name</TableHeaderCell>
+					<TableHeaderCell>Is Enabled</TableHeaderCell>
+				</TableRow>
+			</TableHeader>
+			<TableBody>
+				@foreach (var row in workflowRows)
+				{
+					<TableRow>
+						<TableRowCell>
+							<Button Color="Color.Primary" Size="Size.Small" Clicked="@(() => OpenEditModalAsync(row))">
+								<Icon Name="IconName.Pen" />
+								Edit
+							</Button>
+						</TableRowCell>
+						<TableRowCell>@row.Id</TableRowCell>
+						<TableRowCell>@row.Version</TableRowCell>
+						<TableRowCell>@row.WorkflowName</TableRowCell>
+						<TableRowCell>
+							<Badge Color="@(row.IsEnabled ? Color.Success : Color.Warning)">
+								@(row.IsEnabled ? "Enabled" : "Disabled")
+							</Badge>
+						</TableRowCell>
+					</TableRow>
+				}
+			</TableBody>
+		</Table>
+	</CardBody>
+</Card>
+
+<Modal @ref="createModalRef" Centered>
+	<ModalContent>
+		<ModalHeader>
+			<ModalTitle>New Workflow</ModalTitle>
+			<CloseButton Clicked="CloseCreateModal" />
+		</ModalHeader>
+		<ModalBody>
+			<Field>
+				<FieldLabel>Workflow Name</FieldLabel>
+				<TextInput @bind-Value="createForm.WorkflowName" Placeholder="Enter workflow name" />
+			</Field>
+			<Field>
+				<FieldLabel>Comments</FieldLabel>
+				<MemoInput @bind-Value="createForm.Comments" Rows="4" Placeholder="Optional comments" />
+			</Field>
+			<Field>
+				<Switch @bind-Value="createForm.IsEnabled">Enabled</Switch>
+			</Field>
+		</ModalBody>
+		<ModalFooter>
+			<Button Color="Color.Secondary" Clicked="CloseCreateModal">Cancel</Button>
+			<Button Color="Color.Primary" Clicked="SaveCreateAsync">Save</Button>
+		</ModalFooter>
+	</ModalContent>
+</Modal>
+
+<Modal @ref="editModalRef" Centered Size="ModalSize.Large">
+	<ModalContent>
+		<ModalHeader>
+			<ModalTitle>Edit Workflow</ModalTitle>
+			<CloseButton Clicked="CloseEditModal" />
+		</ModalHeader>
+		<ModalBody>
+			<Field>
+				<FieldLabel>Workflow Version</FieldLabel>
+				<Select TValue="int" Value="selectedWorkflowVersion" ValueChanged="OnSelectedVersionChangedAsync">
+					@foreach (var item in workflowVersionItems)
+					{
+						<SelectItem Value="@item.Version">
+							Version @item.Version @(item.IsActive ? "(Active)" : string.Empty)
+						</SelectItem>
+					}
+				</Select>
+			</Field>
+
+			<Field>
+				<Button Color="Color.Info" Clicked="ActivateSelectedVersionAsync" Disabled="@(!CanActivateSelectedVersion)">
+					<Icon Name="IconName.Check" />
+					Activate Selected Version
+				</Button>
+			</Field>
+
+			<Field>
+				<FieldLabel>Workflow Name</FieldLabel>
+				<TextInput @bind-Value="editForm.WorkflowName" />
+			</Field>
+
+			<Field>
+				<FieldLabel>Comments</FieldLabel>
+				<MemoInput @bind-Value="editForm.Comments" Rows="4" />
+			</Field>
+
+			<Field>
+				<Switch @bind-Value="editForm.IsEnabled" Disabled="@(!IsSelectedVersionActive)">
+					Enabled (active version only)
+				</Switch>
+			</Field>
+
+			@if (!IsSelectedVersionActive)
+			{
+				<Paragraph TextColor="TextColor.Warning">Only the active workflow version can be enabled or disabled.</Paragraph>
+			}
+
+			<Field>
+				<Button Color="Color.Warning"
+						Clicked="ToggleEnablementAsync"
+						Disabled="@(!IsSelectedVersionActive)">
+					@(editForm.IsEnabled ? "Disable Active Version" : "Enable Active Version")
+				</Button>
+			</Field>
+		</ModalBody>
+		<ModalFooter>
+			<Button Color="Color.Secondary" Clicked="CloseEditModal">Cancel</Button>
+			<Button Color="Color.Primary" Clicked="SaveEditAsync">Save</Button>
+		</ModalFooter>
+	</ModalContent>
+</Modal>
+
+@code {
+	private readonly List<WorkflowGridRow> workflowRows = [];
+	private readonly List<WorkflowResponsePayload> workflowVersionPayloads = [];
+	private readonly List<WorkflowVersionItem> workflowVersionItems = [];
+	private Modal createModalRef = default!;
+	private Modal editModalRef = default!;
+	private Guid editingWorkflowId;
+	private int selectedWorkflowVersion;
+	private string statusMessage = string.Empty;
+	private Color statusColor = Color.Info;
+
+	private WorkflowCreateFormModel createForm = new();
+	private WorkflowEditFormModel editForm = new();
+
+	private bool CanActivateSelectedVersion
+		=> workflowVersionPayloads.Any(item => item.Version == selectedWorkflowVersion && !item.IsActive);
+
+	private bool IsSelectedVersionActive
+		=> workflowVersionPayloads.Any(item => item.Version == selectedWorkflowVersion && item.IsActive);
+
+	protected override async Task OnInitializedAsync()
+	{
+		await ReloadWorkflowRowsAsync();
+	}
+
+	private async Task ReloadWorkflowRowsAsync()
+	{
+		workflowRows.Clear();
+		workflowRows.AddRange(await WorkflowManagementService.ListWorkflowGridRowsAsync());
+	}
+
+	private async Task OpenEditModalAsync(WorkflowGridRow row)
+	{
+		editingWorkflowId = row.Id;
+		await ReloadWorkflowVersionsAsync(editingWorkflowId, row.Version);
+		await editModalRef.Show();
+	}
+
+	private async Task ReloadWorkflowVersionsAsync(Guid workflowId, int preferredVersion)
+	{
+		workflowVersionPayloads.Clear();
+		workflowVersionPayloads.AddRange(await WorkflowApiClient.ListWorkflowVersionsAsync(workflowId));
+
+		workflowVersionItems.Clear();
+		workflowVersionItems.AddRange(workflowVersionPayloads
+			.OrderBy(item => item.Version)
+			.Select(item => new WorkflowVersionItem(
+				item.Version,
+				item.IsActive,
+				item.IsEnabled,
+				item.Workflow.WorkflowName,
+				item.Workflow.EffectiveFromUtc,
+				item.Workflow.EffectiveToUtc,
+				item.Workflow.Comments)));
+
+		selectedWorkflowVersion = workflowVersionPayloads.Any(item => item.Version == preferredVersion)
+			? preferredVersion
+			: workflowVersionPayloads.FirstOrDefault(item => item.IsActive)?.Version ?? workflowVersionPayloads.LastOrDefault()?.Version ?? 0;
+
+		ApplySelectedVersionToEditForm();
+	}
+
+	private Task OpenCreateModal()
+	{
+		createForm = new WorkflowCreateFormModel();
+		return createModalRef.Show();
+	}
+
+	private Task CloseCreateModal() => createModalRef.Hide();
+
+	private Task CloseEditModal() => editModalRef.Hide();
+
+	private async Task SaveCreateAsync()
+	{
+		if (string.IsNullOrWhiteSpace(createForm.WorkflowName))
+		{
+			SetStatus("Workflow name is required.", Color.Warning);
+			return;
+		}
+
+		var workflow = BuildWorkflowForCreate(createForm);
+
+		try
+		{
+			await WorkflowApiClient.CreateWorkflowAsync(workflow);
+			await ReloadWorkflowRowsAsync();
+			SetStatus("Workflow created successfully.", Color.Success);
+			await CloseCreateModal();
+		}
+		catch (WorkflowApiException exception)
+		{
+			SetStatus(string.Join(" ", exception.Errors), Color.Danger);
+		}
+	}
+
+	private async Task SaveEditAsync()
+	{
+		if (editingWorkflowId == Guid.Empty)
+		{
+			return;
+		}
+
+		if (string.IsNullOrWhiteSpace(editForm.WorkflowName))
+		{
+			SetStatus("Workflow name is required.", Color.Warning);
+			return;
+		}
+
+		var selectedPayload = workflowVersionPayloads.FirstOrDefault(item => item.Version == selectedWorkflowVersion);
+
+		if (selectedPayload is null)
+		{
+			SetStatus("Unable to find selected workflow version.", Color.Warning);
+			return;
+		}
+
+		if (!selectedPayload.IsActive)
+		{
+			SetStatus("Activate the selected version before saving metadata changes.", Color.Warning);
+			return;
+		}
+
+		var updatedWorkflow = CloneWorkflow(selectedPayload.Workflow);
+		updatedWorkflow.WorkflowName = editForm.WorkflowName.Trim();
+		updatedWorkflow.Comments = string.IsNullOrWhiteSpace(editForm.Comments) ? null : editForm.Comments.Trim();
+		updatedWorkflow.IsEnabled = editForm.IsEnabled;
+
+		try
+		{
+			await WorkflowApiClient.UpdateWorkflowAsync(editingWorkflowId, updatedWorkflow);
+			await ReloadWorkflowRowsAsync();
+			await ReloadWorkflowVersionsAsync(editingWorkflowId, selectedWorkflowVersion);
+			SetStatus("Workflow updated successfully.", Color.Success);
+			await CloseEditModal();
+		}
+		catch (WorkflowApiException exception)
+		{
+			SetStatus(string.Join(" ", exception.Errors), Color.Danger);
+		}
+	}
+
+	private async Task ActivateSelectedVersionAsync()
+	{
+		if (editingWorkflowId == Guid.Empty || selectedWorkflowVersion == 0)
+		{
+			return;
+		}
+
+		try
+		{
+			await WorkflowApiClient.ActivateWorkflowVersionAsync(editingWorkflowId, selectedWorkflowVersion);
+			await ReloadWorkflowRowsAsync();
+			await ReloadWorkflowVersionsAsync(editingWorkflowId, selectedWorkflowVersion);
+			SetStatus($"Workflow version {selectedWorkflowVersion} activated.", Color.Success);
+		}
+		catch (WorkflowApiException exception)
+		{
+			SetStatus(string.Join(" ", exception.Errors), Color.Danger);
+		}
+	}
+
+	private async Task ToggleEnablementAsync()
+	{
+		if (!IsSelectedVersionActive)
+		{
+			SetStatus("Only the active version can be enabled or disabled.", Color.Warning);
+			return;
+		}
+
+		try
+		{
+			await WorkflowApiClient.SetWorkflowVersionEnabledAsync(editingWorkflowId, selectedWorkflowVersion, !editForm.IsEnabled);
+			await ReloadWorkflowRowsAsync();
+			await ReloadWorkflowVersionsAsync(editingWorkflowId, selectedWorkflowVersion);
+			SetStatus("Workflow enablement updated.", Color.Success);
+		}
+		catch (WorkflowApiException exception)
+		{
+			SetStatus(string.Join(" ", exception.Errors), Color.Danger);
+		}
+	}
+
+	private Task OnSelectedVersionChangedAsync(int version)
+	{
+		selectedWorkflowVersion = version;
+		ApplySelectedVersionToEditForm();
+		return Task.CompletedTask;
+	}
+
+	private void ApplySelectedVersionToEditForm()
+	{
+		var selectedPayload = workflowVersionPayloads.FirstOrDefault(item => item.Version == selectedWorkflowVersion);
+
+		if (selectedPayload is null)
+		{
+			editForm = new WorkflowEditFormModel();
+			return;
+		}
+
+		editForm = new WorkflowEditFormModel
+		{
+			WorkflowName = selectedPayload.Workflow.WorkflowName,
+			Comments = selectedPayload.Workflow.Comments,
+			IsEnabled = selectedPayload.IsEnabled
+		};
+	}
+
+	private static WorkflowPayload BuildWorkflowForCreate(WorkflowCreateFormModel form)
+		=> new()
+		{
+			WorkflowName = form.WorkflowName.Trim(),
+			IsEnabled = form.IsEnabled,
+			Comments = string.IsNullOrWhiteSpace(form.Comments) ? null : form.Comments.Trim(),
+			IsActive = true,
+			Version = 1,
+			Rules =
+			[
+				new RulePayload
+				{
+					RuleGuidId = Guid.NewGuid(),
+					Version = 1,
+					IsActive = true,
+					Status = "draft",
+					RuleName = "DefaultRule",
+					Enabled = true,
+					Expression = "1 == 1"
+				}
+			]
+		};
+
+	private static WorkflowPayload CloneWorkflow(WorkflowPayload workflow)
+		=> new()
+		{
+			Id = workflow.Id,
+			WorkflowName = workflow.WorkflowName,
+			RuleExpressionType = workflow.RuleExpressionType,
+			GlobalParams = workflow.GlobalParams.Select(item => new ScopedParamPayload { Name = item.Name, Expression = item.Expression }).ToArray(),
+			Rules = workflow.Rules.Select(CloneRule).ToArray(),
+			WorkflowsToInject = workflow.WorkflowsToInject.ToArray(),
+			WorkflowJson = workflow.WorkflowJson,
+			Version = workflow.Version,
+			IsActive = workflow.IsActive,
+			IsEnabled = workflow.IsEnabled,
+			Comments = workflow.Comments,
+			EffectiveFromUtc = workflow.EffectiveFromUtc,
+			EffectiveToUtc = workflow.EffectiveToUtc
+		};
+
+	private static RulePayload CloneRule(RulePayload rule)
+		=> new()
+		{
+			RuleGuidId = rule.RuleGuidId,
+			Version = rule.Version,
+			IsActive = rule.IsActive,
+			Status = rule.Status,
+			RuleName = rule.RuleName,
+			Operator = rule.Operator,
+			ErrorMessage = rule.ErrorMessage,
+			Enabled = rule.Enabled,
+			RuleExpressionType = rule.RuleExpressionType,
+			Expression = rule.Expression,
+			RuleJson = rule.RuleJson,
+			SuccessEvent = rule.SuccessEvent,
+			LocalParams = rule.LocalParams.Select(item => new ScopedParamPayload { Name = item.Name, Expression = item.Expression }).ToArray(),
+			Rules = rule.Rules.Select(CloneRule).ToArray(),
+			Actions = rule.Actions,
+			WorkflowsToInject = rule.WorkflowsToInject.ToArray(),
+			Properties = new Dictionary<string, string>(rule.Properties)
+		};
+
+	private void SetStatus(string message, Color color)
+	{
+		statusMessage = message;
+		statusColor = color;
+	}
+
+	private sealed class WorkflowCreateFormModel
+	{
+		public string WorkflowName { get; set; } = string.Empty;
+
+		public string? Comments { get; set; }
+
+		public bool IsEnabled { get; set; } = true;
+	}
+
+	private sealed class WorkflowEditFormModel
+	{
+		public string WorkflowName { get; set; } = string.Empty;
+
+		public string? Comments { get; set; }
+
+		public bool IsEnabled { get; set; }
+	}
+}
 
 
 RulesEngine EDITOR

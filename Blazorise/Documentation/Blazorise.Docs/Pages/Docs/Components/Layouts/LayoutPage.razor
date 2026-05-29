@@ -1,0 +1,103 @@
+﻿@page "/docs/components/layout"
+
+<Seo Canonical="/docs/components/layout" Title="Blazorise Layout system" Description="Learn to use and work with the Blazorise Layout component, which is used to handle the overall layout of a page." />
+
+<DocsPageTitle Path="Components/Layout">
+    Blazorise Layout system
+</DocsPageTitle>
+
+<DocsPageLead>
+    Structure application pages with headers, sidebars, content regions, and footers.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The <Code Tag>Layout</Code> component is the outer structure for common application shells.
+    It composes with <Code Tag>Bar</Code>, utility parameters, and normal content components to create page layouts without custom wrapper markup.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    A layout can include a horizontal header, an optional sidebar, the main content area, and a footer.
+    Place application-wide navigation in <Code>LayoutHeader</Code> or <Code>LayoutSider</Code>, and render page content in <Code>LayoutContent</Code>.
+</DocsPageParagraph>
+
+<DocsPageParagraph>
+    Layout adjusts to desktop, tablet, and mobile screen sizes, while utility parameters handle most visual spacing, sizing, background, and alignment needs.
+</DocsPageParagraph>
+
+<UnorderedList>
+    <UnorderedListItem>
+        <Paragraph>
+            <Code Tag>Layout</Code> The main container.
+        </Paragraph>
+        <UnorderedList>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Paragraph>
+                        <Code Tag>LayoutHeader</Code> The top container for a Bar or navigation.
+                    </Paragraph>
+                </Paragraph>
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>LayoutContent</Code> The main content area.
+                </Paragraph>
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>LayoutFooter</Code> The bottom container for a Bar or navigation.
+                </Paragraph>
+            </UnorderedListItem>
+            <UnorderedListItem>
+                <Paragraph>
+                    <Code Tag>LayoutSider</Code> The sidebar container.
+                </Paragraph>
+                <UnorderedList>
+                    <UnorderedListItem>
+                        <Paragraph>
+                            <Code Tag>LayoutSiderContent</Code> The main content area of the sidebar.
+                        </Paragraph>
+                    </UnorderedListItem>
+                </UnorderedList>
+            </UnorderedListItem>
+        </UnorderedList>
+    </UnorderedListItem>
+</UnorderedList>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic App Shell">
+        Use <Code>LayoutHeader</Code>, <Code>LayoutContent</Code>, and <Code>LayoutFooter</Code> for a simple single-column application shell.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicLayoutExample" Outlined FullWidth>
+        <BasicLayoutExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Header Above Sidebar">
+        <Paragraph>
+            Place <Code>LayoutHeader</Code> before a nested <Code>Layout Sider</Code> when the header should span the full page width.
+        </Paragraph>
+        <Paragraph>
+            This pattern is common for products with global search, notifications, and account actions in the header, plus primary navigation in the sidebar.
+        </Paragraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LayoutWithSiderAndTopHeaderExample" Outlined FullWidth>
+        <LayoutWithSiderAndTopHeaderExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Sidebar With View Header">
+        Put <Code>LayoutHeader</Code> inside the content-side layout when the header belongs to the current view rather than the whole application.
+        This works well for dashboards, detail pages, and workspace screens with contextual actions.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="LayoutWithSiderExample" Outlined FullWidth>
+        <LayoutWithSiderExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<ComponentApiDocs ComponentTypes="[typeof(Layout),typeof(LayoutHeader),typeof(LayoutFooter)]" />

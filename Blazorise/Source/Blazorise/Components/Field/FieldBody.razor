@@ -1,0 +1,7 @@
+﻿@namespace Blazorise
+@inherits BaseSizableFieldComponent<FieldBodyClasses, FieldBodyStyles>
+<CascadingValue Value="@this" IsFixed>
+    <div @ref="@ElementRef" id="@ElementId" class="@ClassNames" style="@StyleNames" @attributes="@Attributes">
+        @ChildContent
+    </div>
+</CascadingValue>

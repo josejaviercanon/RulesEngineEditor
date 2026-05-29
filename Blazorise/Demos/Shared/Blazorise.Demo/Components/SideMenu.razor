@@ -1,0 +1,438 @@
+<Bar Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet"
+     Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small" MenuToggleBehavior=BarMenuToggleBehavior.AllowSingleMenu>
+    <BarToggler />
+    <BarBrand>
+        <BarItem>
+            <BarLink To="">
+                <BarIcon IconName="customIcon" />
+                Blazorise Demo
+            </BarLink>
+        </BarItem>
+    </BarBrand>
+    <BarMenu>
+        <BarStart>
+            <BarItem>
+                <BarLink To="">
+                    <BarIcon IconName="IconName.Dashboard" />
+                    Dashboard
+                </BarLink>
+            </BarItem>
+            <BarItem>
+                <BarDropdown @bind-Visible="uiElementsVisible">
+                    <BarDropdownToggle>
+                        <BarIcon IconName="IconName.Wrench" />
+                        UI Elements
+                    </BarDropdownToggle>
+                    <BarDropdownMenu>
+                        <BarDropdownItem To="tests/accordion">Accordion</BarDropdownItem>
+                        <BarDropdownItem To="tests/alerts">Alerts</BarDropdownItem>
+                        <BarDropdownItem To="tests/badges">Badges</BarDropdownItem>
+                        <BarDropdownItem To="tests/buttons">Buttons</BarDropdownItem>
+                        <BarDropdownItem To="tests/breadcrumbs">Breadcrumbs</BarDropdownItem>
+                        <BarDropdownItem To="tests/cards">Cards</BarDropdownItem>
+                        <BarDropdownItem To="tests/carousel">Carousel</BarDropdownItem>
+                        <BarDropdownItem To="tests/dividers">Dividers</BarDropdownItem>
+                        <BarDropdownItem To="tests/dragdrop">Drag & Drop</BarDropdownItem>
+                        <BarDropdownItem To="tests/dropdowns">Dropdowns</BarDropdownItem>
+                        <BarDropdownItem To="tests/figures">Figures</BarDropdownItem>
+                        <BarDropdownItem To="tests/file-picker">File Picker</BarDropdownItem>
+                        <BarDropdownItem To="tests/gestures">Gestures</BarDropdownItem>
+                        <BarDropdownItem To="tests/icons">Icons </BarDropdownItem>
+                        @*<BarDropdownItem To="tests/jumbotrons">Jumbotrons </BarDropdownItem>*@
+                        <BarDropdownItem To="tests/listgroup">List group</BarDropdownItem>
+                        <BarDropdownItem To="tests/modals">Modals</BarDropdownItem>
+                        <BarDropdownItem To="tests/offcanvas">Offcanvas</BarDropdownItem>
+                        <BarDropdownItem To="tests/modal-provider">Modal Provider</BarDropdownItem>
+                        <BarDropdownItem To="tests/paginations">Paginations</BarDropdownItem>
+                        <BarDropdownItem To="tests/progressbars">Progress bars</BarDropdownItem>
+                        <BarDropdownItem To="tests/ratings">Rating</BarDropdownItem>
+                        <BarDropdownItem To="tests/skeleton">Skeletons</BarDropdownItem>
+                        <BarDropdownItem To="tests/steps">Steps</BarDropdownItem>
+                        <BarDropdownItem To="tests/tables">Tables</BarDropdownItem>
+                        <BarDropdownItem To="tests/tabs">Tabs</BarDropdownItem>
+                        <BarDropdownItem To="tests/toasts">Toasts</BarDropdownItem>
+                        <BarDropdownItem To="tests/tooltips">Tooltips</BarDropdownItem>
+                        <BarDropdownItem To="tests/typography">Typography</BarDropdownItem>
+                    </BarDropdownMenu>
+                </BarDropdown>
+            </BarItem>
+            <BarItem>
+                <BarDropdown @bind-Visible="@formsVisible">
+                    <BarDropdownToggle>
+                        <BarIcon IconName="IconName.Edit" />
+                        Forms
+                    </BarDropdownToggle>
+                    <BarDropdownMenu>
+                        <BarDropdownItem To="tests/forms">
+                            Overview
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/forms/focus-trap">
+                            Focus Trap
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/forms/pickers">
+                            Pickers
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/forms/validations">
+                            Validations
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/forms/misc-forms">
+                            Misc
+                        </BarDropdownItem>
+                        <BarDropdown>
+                            <BarDropdownToggle>
+                                Nested Forms
+                            </BarDropdownToggle>
+                            <BarDropdownMenu>
+                                <BarDropdownItem To="tests/forms">
+                                    Nested Forms
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/forms/validations">
+                                    Nested Validations
+                                </BarDropdownItem>
+                            </BarDropdownMenu>
+                        </BarDropdown>
+                    </BarDropdownMenu>
+                </BarDropdown>
+            </BarItem>
+            <BarItem>
+                <BarDropdown @bind-Visible="@datagridVisible">
+                    <BarDropdownToggle>
+                        <BarIcon IconName="IconName.Table" />
+                        Datagrid
+                    </BarDropdownToggle>
+                    <BarDropdownMenu>
+                        <BarDropdownItem To="tests/datagrid/aggregates">
+                            Aggregates
+                        </BarDropdownItem>
+
+                        <BarDropdownItem To="tests/datagrid/auto-generate-columns">
+                            Auto Generate Columns
+                        </BarDropdownItem>
+
+                        <BarDropdownItem To="tests/datagrid/columns">
+                            Columns
+                        </BarDropdownItem>
+
+                        <BarDropdownItem To="tests/datagrid/column-chooser">
+                            Column Chooser
+                        </BarDropdownItem>
+
+                        <BarDropdown>
+                            <BarDropdownToggle>
+                                Data
+                            </BarDropdownToggle>
+                            <BarDropdownMenu>
+                                <BarDropdownItem To="tests/datagrid/data/in-memory">
+                                    In Memory
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/data/read-data">
+                                    From an External Source
+                                </BarDropdownItem>
+                            </BarDropdownMenu>
+                        </BarDropdown>
+
+                        <BarDropdownItem To="tests/datagrid/dynamic">
+                            Dynamic
+                        </BarDropdownItem>
+
+                        <BarDropdown>
+                            <BarDropdownToggle>
+                                Editing
+                            </BarDropdownToggle>
+                            <BarDropdownMenu>
+                                <BarDropdownItem To="tests/datagrid/editing/batch-editing">
+                                    Batch Editing
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/editing/button-row">
+                                    Button Row
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/editing/commands">
+                                    Commands
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/editing/update-cell">
+                                    Update Cell
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/editing/rapid-editing">
+                                    Rapid Editing
+                                </BarDropdownItem>
+                            </BarDropdownMenu>
+                        </BarDropdown>
+
+                        <BarDropdown>
+                            <BarDropdownToggle>
+                                Filtering
+                            </BarDropdownToggle>
+                            <BarDropdownMenu>
+                                <BarDropdownItem To="tests/datagrid/filter/custom">
+                                    Custom
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/filter/custom-column-filter">
+                                    Custom Column Filter
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/filter/menu-filter">
+                                    Menu Filter
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/filter/standard">
+                                    Standard
+                                </BarDropdownItem>
+                            </BarDropdownMenu>
+                        </BarDropdown>
+
+
+                        <BarDropdownItem To="tests/datagrid/fixed-header">
+                            Fixed Header
+                        </BarDropdownItem>
+
+
+                        <BarDropdown>
+                            <BarDropdownToggle>
+                                Grouping
+                            </BarDropdownToggle>
+                            <BarDropdownMenu>
+                                <BarDropdownItem To="tests/datagrid/group">
+                                    Function
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/group/multiple">
+                                    Multiple Columns
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/group/single">
+                                    Single Column
+                                </BarDropdownItem>
+                            </BarDropdownMenu>
+                        </BarDropdown>
+
+                        <BarDropdownItem To="tests/datagrid/pager">
+                            Pager
+                        </BarDropdownItem>
+
+
+                        <BarDropdownItem To="tests/datagrid/resize">
+                            Resize
+                        </BarDropdownItem>
+
+                        <BarDropdownItem To="tests/datagrid/fixed-columns">
+                            Fixed Columns
+                        </BarDropdownItem>
+
+                        <BarDropdown>
+                            <BarDropdownToggle>
+                                Selection
+                            </BarDropdownToggle>
+                            <BarDropdownMenu>
+                                <BarDropdownItem To="tests/datagrid/selection/multiple">
+                                    Multiple
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/selection/row-overlay">
+                                    Row Overlay
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/selection/single">
+                                    Single
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/selection/cell">
+                                    Cell
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/selection/styling">
+                                    Styling
+                                </BarDropdownItem>
+                            </BarDropdownMenu>
+                        </BarDropdown>
+
+                        <BarDropdown>
+                            <BarDropdownToggle>
+                                Hierarchy
+                            </BarDropdownToggle>
+                            <BarDropdownMenu>
+                                <BarDropdownItem To="tests/datagrid/hierarchy/row-detail">
+                                    Row Detail
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/hierarchy/self-reference">
+                                    Self Reference
+                                </BarDropdownItem>
+                            </BarDropdownMenu>
+                        </BarDropdown>
+
+                        <BarDropdown>
+                            <BarDropdownToggle>
+                                Sorting
+                            </BarDropdownToggle>
+                            <BarDropdownMenu>
+                                <BarDropdownItem To="tests/datagrid/sort/field">
+                                    Custom Field
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/sort/multiple">
+                                    Multiple
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/sort/single">
+                                    Single
+                                </BarDropdownItem>
+                            </BarDropdownMenu>
+                        </BarDropdown>
+
+                        <BarDropdownItem To="tests/datagrid/state">
+                            State Management
+                        </BarDropdownItem>
+
+                        <BarDropdownItem To="tests/datagrid/validations">
+                            Validations
+                        </BarDropdownItem>
+
+                        <BarDropdown>
+                            <BarDropdownToggle>
+                                Virtualize
+                            </BarDropdownToggle>
+                            <BarDropdownMenu>
+                                <BarDropdownItem To="tests/datagrid/virtualize/in-memory">
+                                    In Memory
+                                </BarDropdownItem>
+                                <BarDropdownItem To="tests/datagrid/virtualize/read-data">
+                                    From an External Source
+                                </BarDropdownItem>
+                            </BarDropdownMenu>
+                        </BarDropdown>
+
+                        <BarDropdownItem To="tests/datagrid">
+                            Configurable demo
+                        </BarDropdownItem>
+                    </BarDropdownMenu>
+                </BarDropdown>
+            </BarItem>
+            <BarItem>
+                <BarDropdown @bind-Visible="@extensionsVisible">
+                    <BarDropdownToggle>
+                        <BarIcon IconName="IconName.PuzzlePiece" />
+                        Extensions
+                    </BarDropdownToggle>
+                    <BarDropdownMenu>
+                        <BarDropdownItem To="tests/animate">Animate</BarDropdownItem>
+                        <BarDropdownItem To="tests/autocomplete">Autocomplete</BarDropdownItem>
+                        <BarDropdownItem To="tests/barcode">Barcode</BarDropdownItem>
+                        <BarDropdownItem To="tests/captcha">Captcha</BarDropdownItem>
+                        <BarDropdown>
+                            <BarDropdownToggle>
+                                Charts
+                            </BarDropdownToggle>
+                            <BarDropdownMenu>
+                                <BarDropdownItem To="tests/charts">Regular</BarDropdownItem>
+                                <BarDropdownItem To="tests/charts/annotations">Annotations</BarDropdownItem>
+                                <BarDropdownItem To="tests/charts/datalabels">Data Labels</BarDropdownItem>
+                                <BarDropdownItem To="tests/charts/streaming">Streaming</BarDropdownItem>
+                                <BarDropdownItem To="tests/charts/zoom">Zoom</BarDropdownItem>
+                            </BarDropdownMenu>
+                        </BarDropdown>
+                        <BarDropdown>
+                            <BarDropdownToggle>
+                                SVG Charts
+                            </BarDropdownToggle>
+                            <BarDropdownMenu>
+                                <BarDropdownItem To="tests/charts/svg/regular">Regular</BarDropdownItem>
+                                <BarDropdownItem To="tests/charts/svg/animation">Animation</BarDropdownItem>
+                                <BarDropdownItem To="tests/charts/svg/annotations">Annotations</BarDropdownItem>
+                                <BarDropdownItem To="tests/charts/svg/streaming">Streaming</BarDropdownItem>
+                                <BarDropdownItem To="tests/charts/svg/data-labels">Data Labels</BarDropdownItem>
+                                <BarDropdownItem To="tests/charts/svg/trendlines">Trendlines</BarDropdownItem>
+                                <BarDropdownItem To="tests/charts/svg/zoom">Zoom</BarDropdownItem>
+                            </BarDropdownMenu>
+                        </BarDropdown>
+                        <BarDropdownItem To="tests/cropper">Cropper</BarDropdownItem>
+                        <BarDropdownItem To="tests/dropdownlist">Dropdown List</BarDropdownItem>
+                        <BarDropdownItem To="tests/listview">List View</BarDropdownItem>
+                        <BarDropdownItem To="tests/loadingindicator">Loading Indicator</BarDropdownItem>
+                        <BarDropdownItem To="tests/lottie-animation">Lottie Animation</BarDropdownItem>
+                        <BarDropdownItem To="tests/markdown">Markdown</BarDropdownItem>
+                        <BarDropdownItem To="tests/maps">Maps</BarDropdownItem>
+                        <BarDropdownItem To="tests/onetimeinput">One Time Input</BarDropdownItem>
+                        <BarDropdownItem To="tests/pdfviewer">Pdf Viewer</BarDropdownItem>
+                        <BarDropdownItem To="tests/qrcode">QR Code</BarDropdownItem>
+                        <BarDropdownItem To="tests/repeater">Repeater</BarDropdownItem>
+                        <BarDropdownItem To="tests/richtextedit">RichTextEdit</BarDropdownItem>
+                        <BarDropdownItem To="tests/routertabs">Router Tabs</BarDropdownItem>
+                        <BarDropdownItem To="tests/scheduler">Scheduler</BarDropdownItem>
+                        <BarDropdownItem To="tests/gantt">Gantt</BarDropdownItem>
+                        <BarDropdownItem To="tests/passwordstrength">Password Strength</BarDropdownItem>
+                        <BarDropdownItem To="tests/selectlist">Select List</BarDropdownItem>
+                        <BarDropdownItem To="tests/signaturepad">SignaturePad</BarDropdownItem>
+                        <BarDropdownItem To="tests/snackbar">Snackbar</BarDropdownItem>
+                        <BarDropdownItem To="tests/spinkit">Spin Kit</BarDropdownItem>
+                        <BarDropdownItem To="tests/splitter">Splitter</BarDropdownItem>
+                        <BarDropdownItem To="tests/transferlist">Transfer List</BarDropdownItem>
+                        <BarDropdownItem To="tests/treeview">TreeView</BarDropdownItem>
+                        <BarDropdownItem To="tests/video">Video</BarDropdownItem>
+                    </BarDropdownMenu>
+                </BarDropdown>
+            </BarItem>
+        </BarStart>
+        <BarEnd>
+            <BarItem>
+                <BarDropdown @bind-Visible="@utilitiesVisible">
+                    <BarDropdownToggle>
+                        <BarIcon IconName="IconName.Flask" />
+                        Utilities
+                    </BarDropdownToggle>
+                    <BarDropdownMenu>
+                        <BarDropdownItem To="tests/utilities/borders">
+                            Borders
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/utilities/colors">
+                            Colors
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/utilities/flex">
+                            Flex
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/utilities/grid">
+                            Grid
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/utilities/gutter">
+                            Gutter
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/utilities/object-fit">
+                            Object Fit
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/utilities/overflow">
+                            Overflow
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/utilities/layout">
+                            Layout
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/utilities/position">
+                            Position
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/utilities/shadows">
+                            Shadows
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/utilities/sizing">
+                            Sizing
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/utilities/vertical-align">
+                            Vertical align
+                        </BarDropdownItem>
+                        <BarDropdownItem To="tests/utilities/services">
+                            Services
+                        </BarDropdownItem>
+                    </BarDropdownMenu>
+                </BarDropdown>
+            </BarItem>
+            <BarItem>
+                <BarDropdown>
+                    <BarDropdownToggle>
+                        <BarIcon IconName="IconName.Smartphone" />
+                        Apps
+                    </BarDropdownToggle>
+                    <BarDropdownMenu>
+                        <BarDropdownItem To="apps/todo">
+                            Todo
+                        </BarDropdownItem>
+                    </BarDropdownMenu>
+                </BarDropdown>
+            </BarItem>
+        </BarEnd>
+    </BarMenu>
+</Bar>
+@code {
+    private bool uiElementsVisible = true;
+    private bool utilitiesVisible = false;
+    private bool extensionsVisible = false;
+    private bool formsVisible = false;
+    private bool datagridVisible = false;
+
+    RenderFragment customIcon = @<img src="brand-logo.png" style="width:32px; height: 32px" />;
+}

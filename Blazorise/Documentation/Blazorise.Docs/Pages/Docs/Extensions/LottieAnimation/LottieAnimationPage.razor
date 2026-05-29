@@ -1,0 +1,60 @@
+﻿@page "/docs/extensions/lottie-animation"
+
+<Seo Canonical="/docs/extensions/lottie-animation" Title="Blazorise Lottie Animation component" Description="Learn how to use the Blazorise Lottie Animation component to embed JSON-based Lottie animations with playback options, sizing, looping, and reusable assets." />
+
+<DocsPageTitle Path="Extensions/LottieAnimation" AddedVersion="Added in v1.2">
+    Blazorise Lottie Animation component
+</DocsPageTitle>
+
+<DocsPageLead>
+    Embed JSON-based <Anchor To="https://airbnb.io/lottie/" Title="Link to lottie documentation" Target="Target.Blank">Lottie</Anchor> animations with the <Code>LottieAnimation</Code> component.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    To use the <Code>LottieAnimation</Code> component, install the <Code>Blazorise.LottieAnimation</Code> package first.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Installation
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="NuGet">
+        Install extension from NuGet.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="LottieAnimationNugetInstallExample" />
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Imports">
+        In your main <Badge Color="Color.Light">_Imports.razor</Badge> add:
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="ImportLottieAnimationExample" />
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+        To embed an animation you just need to define the <Code>Path</Code> of the animation.
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicLottieAnimationExample" Outlined FullWidth>
+        <BasicLottieAnimationExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Best Practices
+</DocsPageSubtitle>
+
+<Heading Size="HeadingSize.Is3">
+    Fixed Height
+</Heading>
+
+<DocsPageParagraph>
+    While the animation will work fine without it, it is advised to define a fixed height, eg. <Code Tag>LottieAnimation Style="height: 250px;"</Code>. That way, the user can see the loading animation until the component is fully loaded.
+</DocsPageParagraph>
+
+<ComponentApiDocs ComponentTypes="[typeof(LottieAnimation)]" />

@@ -1,0 +1,68 @@
+﻿@page "/docs/services/message"
+@page "/docs/services/message-provider"
+
+<Seo Canonical="/docs/services/message-provider" Title="Blazorise Message service" Description="The IMessageService is a powerful helper utility built on top of Modal component and is used for showing the messages and confirmation dialogs to the user." />
+
+<DocsPageTitle Path="Services/Message">
+    Blazorise Message service
+</DocsPageTitle>
+
+<DocsPageLead>
+    Message service is used for quick user confirmation actions.
+</DocsPageLead>
+
+<DocsPageParagraph>
+    The <Code>IMessageService</Code> is a powerful helper utility built on top of <Code>Modal</Code> component and is used for showing the messages and confirmation dialogs to the user.
+</DocsPageParagraph>
+
+<DocsPageSubtitle>
+    Quick Setup
+</DocsPageSubtitle>
+
+<DocsPageParagraph>
+    To install and use Message service you only need to define one simple thing.
+</DocsPageParagraph>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Step 1. Define wrapper component">
+        <Code>IMessageService</Code> is automatically registered by Blazorise but it needs just one thing on
+        your side to make it work. You need to place <Code Tag>MessageProvider</Code> somewhere in your application
+        razor code. It can be placed anywhere, but a good approach is to place it in <Code>App.razor</Code> like in
+        the following example.
+    </DocsPageSectionHeader>
+    <DocsPageSectionSource Code="MessageServiceUsageExample" />
+</DocsPageSection>
+
+<DocsPageSubtitle>
+    Examples
+</DocsPageSubtitle>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Basic">
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="BasicMessageServiceExample" Outlined>
+        <BasicMessageServiceExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Confirm">
+        <DocsPageParagraph>
+            The <Code>Confirm()</Code> method is used to show a confirmation dialog. It can be used to ask the user for confirmation before performing an action, such as deleting an item or submitting a form.
+        </DocsPageParagraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="MessageServiceConfirmExample" Outlined>
+        <MessageServiceConfirmExample />
+    </DocsPageSectionContent>
+</DocsPageSection>
+
+<DocsPageSection>
+    <DocsPageSectionHeader Title="Choose">
+        <DocsPageParagraph>
+            The <Code>Choose()</Code> method is used to show a dialog with multiple choices. It can be used to show a list of options to the user and wait for their selection.
+        </DocsPageParagraph>
+    </DocsPageSectionHeader>
+    <DocsPageSectionContent Code="MessageServiceChooseExample" Outlined>
+        <MessageServiceChooseExample />
+    </DocsPageSectionContent>
+</DocsPageSection>

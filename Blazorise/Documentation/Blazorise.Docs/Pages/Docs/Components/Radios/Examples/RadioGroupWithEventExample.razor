@@ -1,0 +1,18 @@
+﻿@namespace Blazorise.Docs.Docs.Examples
+
+<RadioGroup TValue="string" Name="colors" Value="@checkedValue" ValueChanged="@OnValueChanged">
+    <Radio Value="@("red")">Red</Radio>
+    <Radio Value="@("green")">Green</Radio>
+    <Radio Value="@("blue")">Blue</Radio>
+</RadioGroup>
+
+@code{
+    string checkedValue = "green";
+
+    Task OnValueChanged(string value)
+    {
+        checkedValue = value;
+
+        return Task.CompletedTask;
+    }
+}
