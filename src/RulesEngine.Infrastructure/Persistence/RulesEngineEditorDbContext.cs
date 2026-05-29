@@ -98,19 +98,19 @@ public sealed class RulesEngineEditorDbContext(DbContextOptions<RulesEngineEdito
         {
             entity.ToTable("workflows");
 
-            entity.HasKey(workflow => workflow.Id)
+            entity.HasKey(workflow => new { workflow.Id, workflow.Version })
                 .HasName("PK_workflows");
 
             entity.Property(workflow => workflow.Id)
                 .HasColumnName("Id");
 
+            entity.Property(workflow => workflow.Version)
+                .HasColumnName("Version")
+                .IsRequired();
+
             entity.Property(workflow => workflow.Name)
                 .HasColumnName("Name")
                 .HasColumnType("character varying(256)")
-                .IsRequired();
-
-            entity.Property(workflow => workflow.Version)
-                .HasColumnName("Version")
                 .IsRequired();
 
             entity.Property(workflow => workflow.IsActive)
@@ -128,9 +128,18 @@ public sealed class RulesEngineEditorDbContext(DbContextOptions<RulesEngineEdito
             entity.OwnsOne(workflow => workflow.Definition, definition =>
             {
                 definition.ToJson("Definition");
-                definition.Property(value => value.Expression).HasColumnName("Expression");
-                definition.Property(value => value.RuleJson).HasColumnName("RuleJson");
+                definition.Property(value => value.Expression).HasJsonPropertyName("Expression");
+                definition.Property(value => value.RuleJson).HasJsonPropertyName("RuleJson");
             });
+
+            entity.HasIndex(workflow => new { workflow.Id, workflow.Version })
+                .IsUnique()
+                .HasDatabaseName("UX_workflows_Id_Version");
+
+            entity.HasIndex(workflow => workflow.Id)
+                .IsUnique()
+                .HasFilter("\"IsActive\"")
+                .HasDatabaseName("UX_workflows_Id_Active");
         });
     }
 }

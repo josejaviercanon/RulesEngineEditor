@@ -1,8 +1,7 @@
 # api-surface Specification
 
-## Purpose
-Define the externally visible Minimal API behavior for workflow lifecycle operations, HTTP semantics, and response contract expectations.
-## Requirements
+## MODIFIED Requirements
+
 ### Requirement: Workflow CRUD Endpoints
 The system SHALL expose HTTP endpoints for workflow lifecycle operations and SHALL enforce consistent request validation, response payloads, and error contracts across create, read, update, delete, validate, and execute routes. Request and response payloads SHALL embed a typed `WorkflowDto` (with full `Rules`, `GlobalParams`, etc.) rather than a raw JSON string, and workflow responses SHALL surface version metadata for the active revision. The execute route SHALL accept a typed `Inputs` array and return a typed `Results` collection.
 
@@ -26,6 +25,8 @@ The system SHALL expose HTTP endpoints for workflow lifecycle operations and SHA
 - **WHEN** POST /api/workflows/validate is called with a WorkflowDto payload
 - **THEN** the API returns a structured validation result with IsValid and Errors and does not write to the persistence store
 
+## ADDED Requirements
+
 ### Requirement: Workflow version management endpoints
 The system SHALL expose HTTP endpoints to list workflow revisions for a workflow identity, retrieve a specific retained revision, and activate a specific version while preserving the full revision history.
 
@@ -40,4 +41,3 @@ The system SHALL expose HTTP endpoints to list workflow revisions for a workflow
 #### Scenario: Activate a specific workflow revision
 - **WHEN** the client submits POST /api/workflows/{id}/versions/{version}/activate
 - **THEN** the API marks the requested revision active, deactivates the other retained revisions for that workflow identity, and returns the updated active revision metadata
-

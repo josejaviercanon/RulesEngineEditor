@@ -51,6 +51,19 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         var updateResponse = await _client.PutAsJsonAsync($"/api/workflows/{createdId}", updateRequest);
         updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
+        var updated = await updateResponse.Content.ReadFromJsonAsync<WorkflowResponse>();
+        updated.Should().NotBeNull();
+        updated!.Version.Should().Be(2);
+        updated.IsActive.Should().BeTrue();
+
+        var versionsResponse = await _client.GetAsync($"/api/workflows/{createdId}/versions");
+        versionsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var versions = await versionsResponse.Content.ReadFromJsonAsync<List<WorkflowResponse>>();
+        versions.Should().NotBeNull();
+        versions!.Should().HaveCount(2);
+        versions.Should().ContainSingle(item => item.Version == 1 && !item.IsActive);
+        versions.Should().ContainSingle(item => item.Version == 2 && item.IsActive);
+
         var listResponse = await _client.GetAsync("/api/workflows");
         listResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -63,6 +76,72 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
 
         var getAfterDeleteResponse = await _client.GetAsync($"/api/workflows/{createdId}");
         getAfterDeleteResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task WorkflowVersionActivationEndpoint_ShouldSwitchActiveVersionWithoutDeletingHistory()
+    {
+        var createResponse = await _client.PostAsJsonAsync("/api/workflows", CreateWorkflowRequest("VersionedWorkflow"));
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        var createdId = ResolveWorkflowId(createResponse);
+
+        var updateResponse = await _client.PutAsJsonAsync(
+            $"/api/workflows/{createdId}",
+            CreateWorkflowRequest("VersionedWorkflowV2"));
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var activateResponse = await _client.PostAsync($"/api/workflows/{createdId}/versions/1/activate", null);
+        activateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var activated = await activateResponse.Content.ReadFromJsonAsync<WorkflowResponse>();
+        activated.Should().NotBeNull();
+        activated!.Version.Should().Be(1);
+        activated.IsActive.Should().BeTrue();
+
+        var versionsResponse = await _client.GetAsync($"/api/workflows/{createdId}/versions");
+        var versions = await versionsResponse.Content.ReadFromJsonAsync<List<WorkflowResponse>>();
+        versions.Should().NotBeNull();
+        versions!.Should().ContainSingle(item => item.Version == 1 && item.IsActive);
+        versions.Should().ContainSingle(item => item.Version == 2 && !item.IsActive);
+
+        var getByIdResponse = await _client.GetAsync($"/api/workflows/{createdId}");
+        var current = await getByIdResponse.Content.ReadFromJsonAsync<WorkflowResponse>();
+        current.Should().NotBeNull();
+        current!.Version.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task WorkflowVersionReadEndpoint_ShouldReturnRequestedRevision()
+    {
+        var createResponse = await _client.PostAsJsonAsync("/api/workflows", CreateWorkflowRequest("VersionReadWorkflow"));
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        var createdId = ResolveWorkflowId(createResponse);
+
+        var updateResponse = await _client.PutAsJsonAsync(
+            $"/api/workflows/{createdId}",
+            CreateWorkflowRequest("VersionReadWorkflowV2"));
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var versionOneResponse = await _client.GetAsync($"/api/workflows/{createdId}/versions/1");
+        versionOneResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var versionOne = await versionOneResponse.Content.ReadFromJsonAsync<WorkflowResponse>();
+
+        versionOne.Should().NotBeNull();
+        versionOne!.Version.Should().Be(1);
+        versionOne.IsActive.Should().BeFalse();
+        versionOne.Workflow.WorkflowName.Should().Be("VersionReadWorkflow");
+
+        var versionTwoResponse = await _client.GetAsync($"/api/workflows/{createdId}/versions/2");
+        versionTwoResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var versionTwo = await versionTwoResponse.Content.ReadFromJsonAsync<WorkflowResponse>();
+
+        versionTwo.Should().NotBeNull();
+        versionTwo!.Version.Should().Be(2);
+        versionTwo.IsActive.Should().BeTrue();
+        versionTwo.Workflow.WorkflowName.Should().Be("VersionReadWorkflowV2");
+
+        var missingResponse = await _client.GetAsync($"/api/workflows/{createdId}/versions/99");
+        missingResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     [Fact]

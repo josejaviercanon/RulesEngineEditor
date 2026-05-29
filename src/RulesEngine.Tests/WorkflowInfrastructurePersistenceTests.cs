@@ -30,6 +30,8 @@ public sealed class WorkflowInfrastructurePersistenceTests
         loaded!.Name.Should().Be("infra-persist-workflow");
         loaded.Expression.Should().Be("1 == 1");
         loaded.RuleJson.Should().Be("{}");
+        loaded.Version.Should().Be(1);
+        loaded.IsActive.Should().BeTrue();
     }
 
     [Fact]

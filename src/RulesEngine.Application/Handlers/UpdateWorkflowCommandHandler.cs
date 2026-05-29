@@ -29,8 +29,6 @@ public sealed class UpdateWorkflowCommandHandler(
             Name = request.Workflow.WorkflowName,
             Expression = string.Empty,
             RuleJson = JsonSerializer.Serialize(request.Workflow),
-            Version = request.Workflow.Version,
-            IsActive = request.Workflow.IsActive,
             EffectiveFromUtc = request.Workflow.EffectiveFromUtc,
             EffectiveToUtc = request.Workflow.EffectiveToUtc
         }, cancellationToken);
@@ -50,8 +48,8 @@ public sealed class UpdateWorkflowCommandHandler(
             GlobalParams = request.Workflow.GlobalParams,
             Rules = request.Workflow.Rules,
             WorkflowsToInject = request.Workflow.WorkflowsToInject,
-            Version = request.Workflow.Version,
-            IsActive = request.Workflow.IsActive,
+            Version = updated.Version,
+            IsActive = updated.IsActive,
             EffectiveFromUtc = request.Workflow.EffectiveFromUtc,
             EffectiveToUtc = request.Workflow.EffectiveToUtc
         };

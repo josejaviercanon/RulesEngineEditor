@@ -9,6 +9,10 @@ Editor for Microsoft Rules Engine - Blazor UI library intended for integration i
 
 Rules Engine Editor is a library/NuGet package for use with [Microsoft Rules Engine](https://github.com/microsoft/RulesEngine) which itself is a package for abstracting business logic/rules/policies out of a system.
 
+## Agentic Development
+
+For agent-assisted development workflow conventions (including how migrations must read the development DB connection and derive the database name), see [AGENTIC_DEVELOPMENT.md](AGENTIC_DEVELOPMENT.md).
+
 ## Installation
 
 To install this library, download the latest version of [NuGet Package](https://www.nuget.org/packages/RulesEngineEditor/) from [nuget.org](https://www.nuget.org/).  

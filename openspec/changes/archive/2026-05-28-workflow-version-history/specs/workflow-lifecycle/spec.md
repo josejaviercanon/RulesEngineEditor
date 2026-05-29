@@ -1,8 +1,7 @@
 # workflow-lifecycle Specification
 
-## Purpose
-Define workflow lifecycle behavior for create, read, update, delete, validation gates, execution modes, and persistence preconditions.
-## Requirements
+## MODIFIED Requirements
+
 ### Requirement: Workflow Create Operation
 The system SHALL support creating new workflows through a POST operation that persists a first workflow revision using the full typed `WorkflowDto` model (not a raw JSON string), validates schema compatibility, assigns version 1 for a new workflow identity, marks the created revision active, and returns the created resource identity with persisted lifecycle metadata.
 
@@ -73,4 +72,3 @@ The system SHALL return the active workflow revision for each workflow identity 
 #### Scenario: List workflows returns active revision per identity
 - **WHEN** the client submits GET /api/workflows
 - **THEN** each workflow entry in the response includes the active revision for that identity with its full `WorkflowDto` structure and version metadata
-

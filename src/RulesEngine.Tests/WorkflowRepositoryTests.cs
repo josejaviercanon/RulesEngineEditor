@@ -22,11 +22,12 @@ public sealed class WorkflowRepositoryTests
         loaded!.Name.Should().Be(expected.Name);
         loaded.Expression.Should().Be(expected.Expression);
         loaded.RuleJson.Should().Be(expected.RuleJson);
-        loaded.Version.Should().Be(expected.Version);
+        loaded.Version.Should().Be(1);
+        loaded.IsActive.Should().BeTrue();
     }
 
     [Fact]
-    public async Task UpdateAsync_WhenWorkflowExists_UpdatesPersistedValues()
+    public async Task UpdateAsync_WhenWorkflowExists_CreatesNewActiveVersionAndKeepsHistory()
     {
         await using var dbContext = CreateDbContext();
         var repository = new WorkflowRepository(dbContext);
@@ -47,7 +48,41 @@ public sealed class WorkflowRepositoryTests
         updated.Should().NotBeNull();
         updated!.Name.Should().Be("Updated");
         updated.Version.Should().Be(2);
-        updated.IsActive.Should().BeFalse();
+
+        var versions = await repository.ListVersionsAsync(created.Id, CancellationToken.None);
+        versions.Should().HaveCount(2);
+        versions.Should().ContainSingle(version => version.Version == 1 && !version.IsActive);
+        versions.Should().ContainSingle(version => version.Version == 2 && version.IsActive);
+    }
+
+    [Fact]
+    public async Task ActivateVersionAsync_WhenOlderVersionExists_MakesItTheOnlyActiveVersion()
+    {
+        await using var dbContext = CreateDbContext();
+        var repository = new WorkflowRepository(dbContext);
+        var created = await repository.CreateAsync(CreateSampleWorkflow(), CancellationToken.None);
+
+        await repository.UpdateAsync(
+            created.Id,
+            new WorkflowRecord
+            {
+                Name = "Updated",
+                Expression = "1 == 1",
+                RuleJson = "{\"WorkflowName\":\"Updated\",\"Rules\":[]}",
+                Version = 2,
+                IsActive = true
+            },
+            CancellationToken.None);
+
+        var activated = await repository.ActivateVersionAsync(created.Id, 1, CancellationToken.None);
+
+        activated.Should().NotBeNull();
+        activated!.Version.Should().Be(1);
+        activated.IsActive.Should().BeTrue();
+
+        var versions = await repository.ListVersionsAsync(created.Id, CancellationToken.None);
+        versions.Should().ContainSingle(version => version.Version == 1 && version.IsActive);
+        versions.Should().ContainSingle(version => version.Version == 2 && !version.IsActive);
     }
 
     [Fact]
@@ -75,6 +110,7 @@ public sealed class WorkflowRepositoryTests
 
     private static WorkflowRecord CreateSampleWorkflow() => new()
     {
+        Id = Guid.NewGuid(),
         Name = "Sample",
         Expression = "input1.value > 0",
         RuleJson = "{\"WorkflowName\":\"Sample\",\"Rules\":[]}",

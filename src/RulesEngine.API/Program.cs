@@ -8,6 +8,7 @@ using RulesEngine.Application.Dtos;
 using Scalar.AspNetCore;
 using RulesEngine.Application.DependencyInjection;
 using RulesEngine.Infrastructure.DependencyInjection;
+using RulesEngine.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 var backendUrl = builder.Configuration["BackendUrl"] ?? "https://localhost:7086";
@@ -39,6 +40,15 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddOpenApi("v1");
 
 var app = builder.Build();
+
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<RulesEngineEditorDbContext>();
+    if (dbContext.Database.IsRelational())
+    {
+        await dbContext.Database.MigrateAsync();
+    }
+}
 
 // Seed the database
 //await using var scope = app.Services.CreateAsyncScope();
@@ -93,6 +103,45 @@ workflows.MapGet("/{id:guid}", async (Guid id, IMediator mediator, CancellationT
         return Results.Ok(item.ToResponse());
     })
     .WithName("GetWorkflowById");
+
+workflows.MapGet("/{id:guid}/versions", async (Guid id, IMediator mediator, CancellationToken cancellationToken) =>
+    {
+        var items = await mediator.Send(new ListWorkflowVersionsQuery(id), cancellationToken);
+        var response = items.Select(item => item.ToResponse());
+
+        return Results.Ok(response);
+    })
+    .WithName("ListWorkflowVersions");
+
+workflows.MapGet("/{id:guid}/versions/{version:int}", async (Guid id, int version, IMediator mediator, CancellationToken cancellationToken) =>
+    {
+        var item = await mediator.Send(new GetWorkflowVersionQuery(id, version), cancellationToken);
+
+        if (item is null)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Ok(item.ToResponse());
+    })
+    .WithName("GetWorkflowVersion");
+
+workflows.MapPost("/{id:guid}/versions/{version:int}/activate", async (
+        Guid id,
+        int version,
+        IMediator mediator,
+        CancellationToken cancellationToken) =>
+    {
+        var activated = await mediator.Send(new ActivateWorkflowVersionCommand(id, version), cancellationToken);
+
+        if (activated is null)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Ok(activated.ToResponse());
+    })
+    .WithName("ActivateWorkflowVersion");
 
 workflows.MapPost("/", async (
         WorkflowRequest request,
