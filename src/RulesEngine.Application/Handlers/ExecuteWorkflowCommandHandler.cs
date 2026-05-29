@@ -44,6 +44,26 @@ public sealed class ExecuteWorkflowCommandHandler(
             };
         }
 
+        var activeRules = await workflowRepository.ListWorkflowRulesAsync(
+            workflowRecord.Id,
+            workflowRecord.Version,
+            WorkflowRuleQueryMode.ActiveOnly,
+            cancellationToken);
+
+        workflowDto = new WorkflowDto
+        {
+            Id = workflowRecord.Id,
+            WorkflowName = workflowDto.WorkflowName,
+            RuleExpressionType = workflowDto.RuleExpressionType,
+            GlobalParams = workflowDto.GlobalParams,
+            Rules = activeRules.Select(WorkflowDtoProjection.MapRule).ToArray(),
+            WorkflowsToInject = workflowDto.WorkflowsToInject,
+            Version = workflowRecord.Version,
+            IsActive = workflowRecord.IsActive,
+            EffectiveFromUtc = workflowRecord.EffectiveFromUtc,
+            EffectiveToUtc = workflowRecord.EffectiveToUtc
+        };
+
         RuleParameter[] ruleParameters;
         try
         {

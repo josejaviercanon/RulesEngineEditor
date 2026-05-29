@@ -8,6 +8,7 @@ public sealed class RulesEngineEditorDbContext(DbContextOptions<RulesEngineEdito
 {
     public DbSet<RuleRecord> Rules => Set<RuleRecord>();
     public DbSet<WorkflowEntity> Workflows => Set<WorkflowEntity>();
+    public DbSet<WorkflowRuleCollectionEntity> WorkflowRules => Set<WorkflowRuleCollectionEntity>();
     public DbSet<ExecutionStateRecord> ExecutionStates => Set<ExecutionStateRecord>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,6 +27,10 @@ public sealed class RulesEngineEditorDbContext(DbContextOptions<RulesEngineEdito
                 .HasColumnName("Name")
                 .HasColumnType("character varying(256)")
                 .UseCollation("pg_catalog.\"default\"")
+                .IsRequired();
+
+            entity.Property(rule => rule.RuleGuidId)
+                .HasColumnName("RuleGuidId")
                 .IsRequired();
 
             entity.Property(rule => rule.Expression)
@@ -55,6 +60,54 @@ public sealed class RulesEngineEditorDbContext(DbContextOptions<RulesEngineEdito
             entity.Property(rule => rule.EffectiveToUtc)
                 .HasColumnName("EffectiveToUtc")
                 .HasColumnType("timestamp with time zone");
+
+            entity.HasIndex(rule => new { rule.RuleGuidId, rule.Version })
+                .IsUnique()
+                .HasDatabaseName("UX_rules_RuleGuidId_Version");
+
+            entity.HasIndex(rule => rule.RuleGuidId)
+                .IsUnique()
+                .HasFilter("\"IsActive\"")
+                .HasDatabaseName("UX_rules_RuleGuidId_Active");
+
+            entity.HasIndex(rule => new { rule.RuleGuidId, rule.IsActive, rule.Version })
+                .HasDatabaseName("IX_rules_RuleGuidId_IsActive_Version");
+        });
+
+        modelBuilder.Entity<WorkflowRuleCollectionEntity>(entity =>
+        {
+            entity.ToTable("workflow_rules");
+
+            entity.HasKey(rule => new { rule.WorkflowId, rule.WorkflowVersion, rule.RuleGuidId })
+                .HasName("PK_workflow_rules");
+
+            entity.Property(rule => rule.WorkflowId)
+                .HasColumnName("WorkflowId")
+                .IsRequired();
+
+            entity.Property(rule => rule.WorkflowVersion)
+                .HasColumnName("WorkflowVersion")
+                .IsRequired();
+
+            entity.Property(rule => rule.RuleGuidId)
+                .HasColumnName("RuleGuidId")
+                .IsRequired();
+
+            entity.Property(rule => rule.RuleVersion)
+                .HasColumnName("RuleVersion")
+                .IsRequired();
+
+            entity.HasOne<WorkflowEntity>()
+                .WithMany()
+                .HasForeignKey(rule => new { rule.WorkflowId, rule.WorkflowVersion })
+                .HasPrincipalKey(workflow => new { workflow.Id, workflow.Version })
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(rule => new { rule.WorkflowId, rule.WorkflowVersion })
+                .HasDatabaseName("IX_workflow_rules_Workflow");
+
+            entity.HasIndex(rule => new { rule.WorkflowId, rule.RuleGuidId, rule.RuleVersion })
+                .HasDatabaseName("IX_workflow_rules_Workflow_RuleGuidId_RuleVersion");
         });
 
         modelBuilder.Entity<ExecutionStateRecord>(entity =>

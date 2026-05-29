@@ -1,4 +1,3 @@
-using System.Text.Json;
 using MediatR;
 using RulesEngine.Application.Commands;
 using RulesEngine.Application.Dtos;
@@ -13,31 +12,14 @@ public sealed class ListWorkflowVersionsQueryHandler(IWorkflowRepository workflo
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var records = await workflowRepository.ListVersionsAsync(request.Id, cancellationToken);
-        return records
-            .Select(record => JsonSerializer.Deserialize<WorkflowDto>(record.RuleJson) is { } workflow
-                ? new WorkflowDto
-                {
-                    WorkflowName = workflow.WorkflowName,
-                    RuleExpressionType = workflow.RuleExpressionType,
-                    GlobalParams = workflow.GlobalParams,
-                    Rules = workflow.Rules,
-                    WorkflowsToInject = workflow.WorkflowsToInject,
-                    Id = record.Id,
-                    Version = record.Version,
-                    IsActive = record.IsActive,
-                    EffectiveFromUtc = record.EffectiveFromUtc,
-                    EffectiveToUtc = record.EffectiveToUtc
-                }
-                : new WorkflowDto
-                {
-                    Id = record.Id,
-                    WorkflowName = record.Name,
-                    Version = record.Version,
-                    IsActive = record.IsActive,
-                    EffectiveFromUtc = record.EffectiveFromUtc,
-                    EffectiveToUtc = record.EffectiveToUtc
-                })
+        var records = await workflowRepository.ListVersionsAsync(request.Id, cancellationToken, request.Mode);
+        var projected = new List<WorkflowDto>(records.Count);
+        foreach (var record in records)
+        {
+            projected.Add(await WorkflowDtoProjection.BuildAsync(record, workflowRepository, request.Mode, cancellationToken));
+        }
+
+        return projected
             .OrderBy(workflow => workflow.Version)
             .ToArray();
     }

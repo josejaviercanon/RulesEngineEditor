@@ -27,7 +27,11 @@ public sealed class WorkflowMappingProfile : Profile
 
         CreateMap<RuleActions, RuleActionsDto>().ReverseMap();
 
-        CreateMap<Rule, RuleDto>().ReverseMap();
+        CreateMap<Rule, RuleDto>()
+            .ForMember(dest => dest.RuleGuidId, opt => opt.Ignore())
+            .ForMember(dest => dest.Version, opt => opt.Ignore())
+            .ForMember(dest => dest.IsActive, opt => opt.Ignore())
+            .ReverseMap();
 
         CreateMap<Workflow, WorkflowDto>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())

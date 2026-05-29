@@ -4,6 +4,8 @@ public sealed class RuleRecord
 {
     public Guid Id { get; set; }
 
+    public Guid RuleGuidId { get; set; }
+
     public string Name { get; set; } = string.Empty;
 
     public string Expression { get; set; } = string.Empty;

@@ -1,4 +1,3 @@
-using System.Text.Json;
 using MediatR;
 using RulesEngine.Application.Commands;
 using RulesEngine.Application.Dtos;
@@ -13,30 +12,12 @@ public sealed class GetWorkflowByIdQueryHandler(IWorkflowRepository workflowRepo
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var record = await workflowRepository.GetByIdAsync(request.Id, cancellationToken);
+        var record = await workflowRepository.GetByIdAsync(request.Id, cancellationToken, request.Mode);
         if (record is null)
         {
             return null;
         }
 
-        var workflow = JsonSerializer.Deserialize<WorkflowDto>(record.RuleJson);
-        if (workflow is null)
-        {
-            return null;
-        }
-
-        return new WorkflowDto
-        {
-            WorkflowName = workflow.WorkflowName,
-            RuleExpressionType = workflow.RuleExpressionType,
-            GlobalParams = workflow.GlobalParams,
-            Rules = workflow.Rules,
-            WorkflowsToInject = workflow.WorkflowsToInject,
-            Id = record.Id,
-            Version = record.Version,
-            IsActive = record.IsActive,
-            EffectiveFromUtc = record.EffectiveFromUtc,
-            EffectiveToUtc = record.EffectiveToUtc
-        };
+        return await WorkflowDtoProjection.BuildAsync(record, workflowRepository, request.Mode, cancellationToken);
     }
 }

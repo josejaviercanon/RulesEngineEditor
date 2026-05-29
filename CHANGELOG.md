@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Backend rule-level versioning with stable `RuleGuidId`, monotonic integer `Version`, and `IsActive` switching support.
+- Workflow rule collection persistence (`workflow_rules`) to bind workflow revisions to rule identities.
+- API query modes for workflow reads: `ActiveOnly`, `LatestPerRule`, and `IncludeHistory`.
+- Rule version endpoints under workflows:
+	- `GET /api/workflows/{id}/rules/{ruleGuidId}/versions`
+	- `POST /api/workflows/{id}/rules/{ruleGuidId}/versions/{version}/activate`
+
+### Changed
+- Workflow query/execute projections now resolve rule payloads from persisted rule revisions instead of only raw stored workflow JSON.
+- EF Core schema includes rule identity/active-version constraints and migration backfill logic for existing workflows.
+
+### Operational Notes
+- Migration `20260529003823_RuleVersioningWorkflowCollections` was validated against development database `GamificationFlow_DEV`.
+
 ## [1.2.0] - 6-27-2022
 - UI Makeover + bugfixes
 

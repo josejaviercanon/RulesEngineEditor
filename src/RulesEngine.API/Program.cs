@@ -9,6 +9,7 @@ using Scalar.AspNetCore;
 using RulesEngine.Application.DependencyInjection;
 using RulesEngine.Infrastructure.DependencyInjection;
 using RulesEngine.Infrastructure.Persistence;
+using RulesEngine.Core.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var backendUrl = builder.Configuration["BackendUrl"] ?? "https://localhost:7086";
@@ -82,18 +83,25 @@ app.MapGet("/", () => "RulesEngine Editor Web API!");
 var workflows = app.MapGroup("/api/workflows")
     .WithTags("Workflows");
 
-workflows.MapGet("/", async (IMediator mediator, CancellationToken cancellationToken) =>
+workflows.MapGet("/", async (
+        IMediator mediator,
+    CancellationToken cancellationToken,
+    WorkflowRuleQueryMode mode = WorkflowRuleQueryMode.ActiveOnly) =>
     {
-        var items = await mediator.Send(new ListWorkflowsQuery(), cancellationToken);
+        var items = await mediator.Send(new ListWorkflowsQuery(mode), cancellationToken);
         var response = items.Select(item => item.ToResponse());
 
         return Results.Ok(response);
     })
     .WithName("ListWorkflows");
 
-workflows.MapGet("/{id:guid}", async (Guid id, IMediator mediator, CancellationToken cancellationToken) =>
+workflows.MapGet("/{id:guid}", async (
+        Guid id,
+        IMediator mediator,
+    CancellationToken cancellationToken,
+    WorkflowRuleQueryMode mode = WorkflowRuleQueryMode.ActiveOnly) =>
     {
-        var item = await mediator.Send(new GetWorkflowByIdQuery(id), cancellationToken);
+        var item = await mediator.Send(new GetWorkflowByIdQuery(id, mode), cancellationToken);
 
         if (item is null)
         {
@@ -104,18 +112,27 @@ workflows.MapGet("/{id:guid}", async (Guid id, IMediator mediator, CancellationT
     })
     .WithName("GetWorkflowById");
 
-workflows.MapGet("/{id:guid}/versions", async (Guid id, IMediator mediator, CancellationToken cancellationToken) =>
+workflows.MapGet("/{id:guid}/versions", async (
+        Guid id,
+        IMediator mediator,
+    CancellationToken cancellationToken,
+    WorkflowRuleQueryMode mode = WorkflowRuleQueryMode.ActiveOnly) =>
     {
-        var items = await mediator.Send(new ListWorkflowVersionsQuery(id), cancellationToken);
+        var items = await mediator.Send(new ListWorkflowVersionsQuery(id, mode), cancellationToken);
         var response = items.Select(item => item.ToResponse());
 
         return Results.Ok(response);
     })
     .WithName("ListWorkflowVersions");
 
-workflows.MapGet("/{id:guid}/versions/{version:int}", async (Guid id, int version, IMediator mediator, CancellationToken cancellationToken) =>
+workflows.MapGet("/{id:guid}/versions/{version:int}", async (
+        Guid id,
+        int version,
+        IMediator mediator,
+    CancellationToken cancellationToken,
+    WorkflowRuleQueryMode mode = WorkflowRuleQueryMode.ActiveOnly) =>
     {
-        var item = await mediator.Send(new GetWorkflowVersionQuery(id, version), cancellationToken);
+        var item = await mediator.Send(new GetWorkflowVersionQuery(id, version, mode), cancellationToken);
 
         if (item is null)
         {
@@ -125,6 +142,34 @@ workflows.MapGet("/{id:guid}/versions/{version:int}", async (Guid id, int versio
         return Results.Ok(item.ToResponse());
     })
     .WithName("GetWorkflowVersion");
+
+workflows.MapGet("/{id:guid}/rules/{ruleGuidId:guid}/versions", async (
+        Guid id,
+        Guid ruleGuidId,
+        IMediator mediator,
+        CancellationToken cancellationToken) =>
+    {
+        var items = await mediator.Send(new ListRuleVersionsQuery(id, ruleGuidId), cancellationToken);
+        return Results.Ok(items);
+    })
+    .WithName("ListRuleVersions");
+
+workflows.MapPost("/{id:guid}/rules/{ruleGuidId:guid}/versions/{version:int}/activate", async (
+        Guid id,
+        Guid ruleGuidId,
+        int version,
+        IMediator mediator,
+        CancellationToken cancellationToken) =>
+    {
+        var activated = await mediator.Send(new ActivateRuleVersionCommand(id, ruleGuidId, version), cancellationToken);
+        if (activated is null)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Ok(activated);
+    })
+    .WithName("ActivateRuleVersion");
 
 workflows.MapPost("/{id:guid}/versions/{version:int}/activate", async (
         Guid id,

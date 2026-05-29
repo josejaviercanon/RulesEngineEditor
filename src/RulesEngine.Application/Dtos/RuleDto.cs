@@ -5,6 +5,15 @@ namespace RulesEngine.Application.Dtos;
 
 public sealed class RuleDto
 {
+    [JsonPropertyName("RuleGuidId")]
+    public Guid RuleGuidId { get; init; }
+
+    [JsonPropertyName("Version")]
+    public int Version { get; init; }
+
+    [JsonPropertyName("IsActive")]
+    public bool IsActive { get; init; }
+
     [JsonPropertyName("RuleName")]
     public string RuleName { get; init; } = string.Empty;
 

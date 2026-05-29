@@ -1,8 +1,10 @@
 namespace RulesEngine.Core.Models;
 
-public sealed class WorkflowRecord
+public sealed class RuleVersionRecord
 {
     public Guid Id { get; set; }
+
+    public Guid RuleGuidId { get; set; }
 
     public string Name { get; set; } = string.Empty;
 
@@ -17,6 +19,4 @@ public sealed class WorkflowRecord
     public DateTimeOffset? EffectiveFromUtc { get; set; }
 
     public DateTimeOffset? EffectiveToUtc { get; set; }
-
-    public WorkflowRuleQueryMode RuleQueryMode { get; set; } = WorkflowRuleQueryMode.ActiveOnly;
 }

@@ -40,19 +40,11 @@ public sealed class UpdateWorkflowCommandHandler(
 
         rulesEngineWorkflowService.RefreshWorkflow(updated.Id, workflowDefinition);
 
-        return new WorkflowDto
-        {
-            Id = updated.Id,
-            WorkflowName = request.Workflow.WorkflowName,
-            RuleExpressionType = request.Workflow.RuleExpressionType,
-            GlobalParams = request.Workflow.GlobalParams,
-            Rules = request.Workflow.Rules,
-            WorkflowsToInject = request.Workflow.WorkflowsToInject,
-            Version = updated.Version,
-            IsActive = updated.IsActive,
-            EffectiveFromUtc = request.Workflow.EffectiveFromUtc,
-            EffectiveToUtc = request.Workflow.EffectiveToUtc
-        };
+        return await WorkflowDtoProjection.BuildAsync(
+            updated,
+            workflowRepository,
+            WorkflowRuleQueryMode.ActiveOnly,
+            cancellationToken);
     }
 
     private static void EnsureWorkflowIsStructurallyValid(Workflow workflow)

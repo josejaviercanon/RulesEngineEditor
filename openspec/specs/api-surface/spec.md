@@ -27,17 +27,21 @@ The system SHALL expose HTTP endpoints for workflow lifecycle operations and SHA
 - **THEN** the API returns a structured validation result with IsValid and Errors and does not write to the persistence store
 
 ### Requirement: Workflow version management endpoints
-The system SHALL expose HTTP endpoints to list workflow revisions for a workflow identity, retrieve a specific retained revision, and activate a specific version while preserving the full revision history.
+The system SHALL expose HTTP endpoints to manage both workflow revisions and rule revisions within a workflow context. The API MUST allow listing rule versions for a `RuleGuidId`, activating a specific retained rule version, and querying workflow rules in active-only, latest-per-rule, or history-inclusive modes while preserving retained revision history.
 
-#### Scenario: List workflow revisions
-- **WHEN** the client submits GET /api/workflows/{id}/versions
-- **THEN** the API returns all retained revisions for that workflow identity in version order and includes which revision is active
+#### Scenario: List rule revisions for a rule identity
+- **WHEN** the client submits a request to list versions for a `RuleGuidId`
+- **THEN** the API returns all retained versions in version order and identifies which version is active
 
-#### Scenario: Read a specific retained workflow revision
-- **WHEN** the client submits GET /api/workflows/{id}/versions/{version}
-- **THEN** the API returns the requested retained revision with its version metadata, or returns not-found when the revision does not exist for that workflow identity
+#### Scenario: Activate specific rule revision
+- **WHEN** the client submits a request to activate version 8 for a `RuleGuidId` that currently has version 10 active
+- **THEN** the API marks version 8 active, marks other versions inactive for that `RuleGuidId`, and returns updated active-version metadata
 
-#### Scenario: Activate a specific workflow revision
-- **WHEN** the client submits POST /api/workflows/{id}/versions/{version}/activate
-- **THEN** the API marks the requested revision active, deactivates the other retained revisions for that workflow identity, and returns the updated active revision metadata
+#### Scenario: Query workflow rules in active-only mode
+- **WHEN** the client requests workflow rules with active-only mode
+- **THEN** the API returns one active rule revision per `RuleGuidId` and does not return duplicate logical rules
+
+#### Scenario: Query workflow rules in latest-per-rule mode
+- **WHEN** the client requests workflow rules with latest-per-rule mode
+- **THEN** the API returns one highest-version rule revision per `RuleGuidId` regardless of active flag
 

@@ -4,15 +4,19 @@
 TBD - created by archiving change workflow-model-backend-dtos. Update Purpose after archive.
 ## Requirements
 ### Requirement: WorkflowDto represents the full RulesEngine workflow model
-The system SHALL define a `WorkflowDto` in `RulesEngine.Application.Dtos` that fully mirrors the `RulesEngine.Models.Workflow` class, embedding typed collections for global parameters and rules rather than a raw JSON string.
+The system SHALL define workflow and rule DTO contracts that represent rule identity/version metadata required for historical retrieval and activation workflows. The DTO model MUST support `RuleGuidId`, integer `Version`, and `IsActive` rule-state fields in addition to existing rule expression fields.
 
-#### Scenario: WorkflowDto carries all top-level workflow fields
-- **WHEN** a `WorkflowDto` instance is constructed
-- **THEN** it exposes `Id` (Guid, persistence identity), `WorkflowName` (string), `RuleExpressionType` (enum), `GlobalParams` (IReadOnlyList\<ScopedParamDto\>), `Rules` (IReadOnlyList\<RuleDto\>), and `WorkflowsToInject` (IReadOnlyList\<string\>)
+#### Scenario: RuleDto exposes version identity metadata
+- **WHEN** a `RuleDto` is materialized for workflow management responses
+- **THEN** it includes `RuleGuidId` (Guid), `Version` (int), and `IsActive` (bool) with values matching persisted rule revision state
 
-#### Scenario: RuleDto carries all rule fields including nested rules
-- **WHEN** a `RuleDto` instance is constructed
-- **THEN** it exposes `RuleName`, `Operator`, `ErrorMessage`, `Enabled`, `RuleExpressionType`, `Expression`, `SuccessEvent`, `LocalParams` (IReadOnlyList\<ScopedParamDto\>), `Rules` (IReadOnlyList\<RuleDto\>), `Actions` (RuleActionsDto), `WorkflowsToInject` (IReadOnlyList\<string\>), and `Properties` (Dictionary\<string, string\>)
+#### Scenario: WorkflowDto retrieval avoids duplicate logical rules by mode
+- **WHEN** a workflow is returned in active-only or latest-per-rule mode
+- **THEN** the `Rules` collection includes at most one entry per `RuleGuidId` according to the selected retrieval mode
+
+#### Scenario: WorkflowDto retrieval can include full history
+- **WHEN** a workflow is returned in history-inclusive mode
+- **THEN** the response can represent all retained revisions for each `RuleGuidId` while preserving each rule revision's `Version` and `IsActive` state
 
 #### Scenario: ScopedParamDto carries name and expression
 - **WHEN** a `ScopedParamDto` is constructed

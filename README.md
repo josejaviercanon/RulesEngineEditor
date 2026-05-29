@@ -13,6 +13,50 @@ Rules Engine Editor is a library/NuGet package for use with [Microsoft Rules Eng
 
 For agent-assisted development workflow conventions (including how migrations must read the development DB connection and derive the database name), see [AGENTIC_DEVELOPMENT.md](AGENTIC_DEVELOPMENT.md).
 
+## Backend Rule Versioning (Workflow API)
+
+The backend now supports rule revision history per logical rule identity.
+
+- Every logical rule has a stable `RuleGuidId`.
+- Each new revision increments `Version` (`1, 2, 3, ...`) scoped to that `RuleGuidId`.
+- Only one revision can be active at a time (`IsActive = true`) for a `RuleGuidId`.
+- Activating an older revision (for example activating `8` while `10` is active) only switches flags and does not create a new revision.
+
+### Workflow Rule Retrieval Modes
+
+Workflow endpoints accept an optional `mode` query parameter:
+
+- `ActiveOnly` (default): one active rule revision per `RuleGuidId`
+- `LatestPerRule`: highest version per `RuleGuidId` (active or inactive)
+- `IncludeHistory`: all revisions per `RuleGuidId`
+
+Examples:
+
+- `GET /api/workflows?mode=ActiveOnly`
+- `GET /api/workflows/{id}?mode=LatestPerRule`
+- `GET /api/workflows/{id}/versions?mode=IncludeHistory`
+
+### Rule Version Endpoints
+
+- List revisions for a rule in a workflow:
+  - `GET /api/workflows/{id}/rules/{ruleGuidId}/versions`
+- Activate a specific retained rule version:
+  - `POST /api/workflows/{id}/rules/{ruleGuidId}/versions/{version}/activate`
+
+### Rollout / Rollback Runbook
+
+Rollout:
+
+1. Apply migration `20260529003823_RuleVersioningWorkflowCollections`.
+2. Verify API health and run workflow/rule version endpoints.
+3. Validate active-rule execution results for representative workflows.
+
+Rollback:
+
+1. Roll back application binaries first if behavior regression is detected.
+2. Keep additive schema in place unless a hard rollback is required.
+3. If schema rollback is required, run `dotnet ef database update 20260528234936_InitialVersionedSchema` after confirming no required data depends on new tables/columns.
+
 ## Installation
 
 To install this library, download the latest version of [NuGet Package](https://www.nuget.org/packages/RulesEngineEditor/) from [nuget.org](https://www.nuget.org/).  

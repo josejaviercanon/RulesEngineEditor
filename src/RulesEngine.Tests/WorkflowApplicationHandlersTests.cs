@@ -7,6 +7,7 @@ using RulesEngine.Application.Mapping;
 using RulesEngine.Core.Execution;
 using RulesEngine.Core.Models;
 using RulesEngine.Core.Repositories;
+using System.Text.Json;
 
 namespace RulesEngine.Tests;
 
@@ -208,26 +209,38 @@ public sealed class WorkflowApplicationHandlersTests
     {
         public List<WorkflowRecord> Store { get; } = new();
 
-        public Task<IReadOnlyCollection<WorkflowRecord>> ListAsync(CancellationToken cancellationToken)
+        public Task<IReadOnlyCollection<WorkflowRecord>> ListAsync(
+            CancellationToken cancellationToken,
+            WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly)
             => Task.FromResult<IReadOnlyCollection<WorkflowRecord>>(Store
                 .GroupBy(item => item.Id)
                 .Select(group => group.OrderByDescending(item => item.IsActive).ThenByDescending(item => item.Version).First())
                 .ToArray());
 
-        public Task<IReadOnlyCollection<WorkflowRecord>> ListVersionsAsync(Guid id, CancellationToken cancellationToken)
+        public Task<IReadOnlyCollection<WorkflowRecord>> ListVersionsAsync(
+            Guid id,
+            CancellationToken cancellationToken,
+            WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly)
             => Task.FromResult<IReadOnlyCollection<WorkflowRecord>>(Store
                 .Where(item => item.Id == id)
                 .OrderBy(item => item.Version)
                 .ToArray());
 
-        public Task<WorkflowRecord?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        public Task<WorkflowRecord?> GetByIdAsync(
+            Guid id,
+            CancellationToken cancellationToken,
+            WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly)
             => Task.FromResult(Store
                 .Where(item => item.Id == id)
                 .OrderByDescending(item => item.IsActive)
                 .ThenByDescending(item => item.Version)
                 .FirstOrDefault());
 
-        public Task<WorkflowRecord?> GetVersionAsync(Guid id, int version, CancellationToken cancellationToken)
+        public Task<WorkflowRecord?> GetVersionAsync(
+            Guid id,
+            int version,
+            CancellationToken cancellationToken,
+            WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly)
             => Task.FromResult(Store.FirstOrDefault(item => item.Id == id && item.Version == version));
 
         public Task<WorkflowRecord?> ActivateVersionAsync(Guid id, int version, CancellationToken cancellationToken)
@@ -245,6 +258,44 @@ public sealed class WorkflowApplicationHandlersTests
             }
 
             return Task.FromResult<WorkflowRecord?>(target);
+        }
+
+        public Task<IReadOnlyCollection<RuleVersionRecord>> ListRuleVersionsAsync(Guid workflowId, Guid ruleGuidId, CancellationToken cancellationToken)
+            => Task.FromResult<IReadOnlyCollection<RuleVersionRecord>>([]);
+
+        public Task<RuleVersionRecord?> ActivateRuleVersionAsync(Guid workflowId, Guid ruleGuidId, int version, CancellationToken cancellationToken)
+            => Task.FromResult<RuleVersionRecord?>(null);
+
+        public Task<IReadOnlyCollection<RuleVersionRecord>> ListWorkflowRulesAsync(
+            Guid workflowId,
+            int workflowVersion,
+            WorkflowRuleQueryMode mode,
+            CancellationToken cancellationToken)
+        {
+            var workflow = Store.FirstOrDefault(item => item.Id == workflowId && item.Version == workflowVersion);
+            if (workflow is null)
+            {
+                return Task.FromResult<IReadOnlyCollection<RuleVersionRecord>>([]);
+            }
+
+            var dto = JsonSerializer.Deserialize<WorkflowDto>(workflow.RuleJson);
+            if (dto is null)
+            {
+                return Task.FromResult<IReadOnlyCollection<RuleVersionRecord>>([]);
+            }
+
+            var rules = dto.Rules.Select(rule => new RuleVersionRecord
+            {
+                Id = Guid.NewGuid(),
+                RuleGuidId = rule.RuleGuidId == Guid.Empty ? Guid.NewGuid() : rule.RuleGuidId,
+                Name = rule.RuleName,
+                Expression = rule.Expression,
+                RuleJson = JsonSerializer.Serialize(rule),
+                Version = rule.Version == 0 ? 1 : rule.Version,
+                IsActive = true
+            }).ToArray();
+
+            return Task.FromResult<IReadOnlyCollection<RuleVersionRecord>>(rules);
         }
 
         public Task<WorkflowRecord> CreateAsync(WorkflowRecord workflow, CancellationToken cancellationToken)
