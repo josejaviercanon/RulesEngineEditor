@@ -11,13 +11,20 @@ All notable changes to this project will be documented in this file.
 - Rule version endpoints under workflows:
 	- `GET /api/workflows/{id}/rules/{ruleGuidId}/versions`
 	- `POST /api/workflows/{id}/rules/{ruleGuidId}/versions/{version}/activate`
+- Workflow version enablement controls:
+	- `POST /api/workflows/{id}/versions/{version}/enable`
+	- `POST /api/workflows/{id}/versions/{version}/disable`
+- Workflow metadata fields: `IsEnabled` and `Comments` (max 4000 chars).
 
 ### Changed
 - Workflow query/execute projections now resolve rule payloads from persisted rule revisions instead of only raw stored workflow JSON.
 - EF Core schema includes rule identity/active-version constraints and migration backfill logic for existing workflows.
+- Workflow list/read endpoints support nullable `isEnabled` filtering (`true`, `false`, omitted/null).
+- Workflow response payloads include lifecycle enablement metadata (`IsEnabled`) and comment text.
 
 ### Operational Notes
 - Migration `20260529003823_RuleVersioningWorkflowCollections` was validated against development database `GamificationFlow_DEV`.
+- Migration `20260529013414_WorkflowEnablementAndComments` adds `workflows.IsEnabled`, `workflows.Comments`, backfills enablement from `IsActive`, and adds active+enabled uniqueness index `UX_workflows_Id_ActiveEnabled`.
 
 ## [1.2.0] - 6-27-2022
 - UI Makeover + bugfixes

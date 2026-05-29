@@ -11,6 +11,7 @@ public sealed record WorkflowResponse(
     WorkflowDto Workflow,
     int Version,
     bool IsActive,
+    bool IsEnabled,
     DateTimeOffset? EffectiveFromUtc,
     DateTimeOffset? EffectiveToUtc);
 

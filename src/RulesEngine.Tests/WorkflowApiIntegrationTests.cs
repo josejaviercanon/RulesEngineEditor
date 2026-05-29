@@ -42,6 +42,7 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         var loaded = await getByIdResponse.Content.ReadFromJsonAsync<WorkflowResponse>();
         loaded.Should().NotBeNull();
         loaded!.Workflow.WorkflowName.Should().Be(workflowName);
+        loaded.IsEnabled.Should().BeTrue();
 
         var updateRequest = CreateWorkflowRequest("CrudWorkflowUpdated") with
         {
@@ -55,6 +56,7 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         updated.Should().NotBeNull();
         updated!.Version.Should().Be(2);
         updated.IsActive.Should().BeTrue();
+        updated.IsEnabled.Should().BeTrue();
 
         var versionsResponse = await _client.GetAsync($"/api/workflows/{createdId}/versions");
         versionsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -63,6 +65,7 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         versions!.Should().HaveCount(2);
         versions.Should().ContainSingle(item => item.Version == 1 && !item.IsActive);
         versions.Should().ContainSingle(item => item.Version == 2 && item.IsActive);
+        versions.Should().ContainSingle(item => item.Version == 2 && item.IsEnabled);
 
         var listResponse = await _client.GetAsync("/api/workflows");
         listResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -97,6 +100,7 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         activated.Should().NotBeNull();
         activated!.Version.Should().Be(1);
         activated.IsActive.Should().BeTrue();
+        activated.IsEnabled.Should().BeTrue();
 
         var versionsResponse = await _client.GetAsync($"/api/workflows/{createdId}/versions");
         var versions = await versionsResponse.Content.ReadFromJsonAsync<List<WorkflowResponse>>();
@@ -108,6 +112,91 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         var current = await getByIdResponse.Content.ReadFromJsonAsync<WorkflowResponse>();
         current.Should().NotBeNull();
         current!.Version.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task WorkflowEnableDisableEndpoints_ShouldToggleOnlyActiveVersion()
+    {
+        var createResponse = await _client.PostAsJsonAsync("/api/workflows", CreateWorkflowRequest("EnableDisableWorkflow"));
+        createResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        var createdId = ResolveWorkflowId(createResponse);
+
+        var updateResponse = await _client.PutAsJsonAsync(
+            $"/api/workflows/{createdId}",
+            CreateWorkflowRequest("EnableDisableWorkflowV2"));
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var disableOldResponse = await _client.PostAsync($"/api/workflows/{createdId}/versions/1/disable", null);
+        disableOldResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        var disableActiveResponse = await _client.PostAsync($"/api/workflows/{createdId}/versions/2/disable", null);
+        disableActiveResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var disabled = await disableActiveResponse.Content.ReadFromJsonAsync<WorkflowResponse>();
+        disabled.Should().NotBeNull();
+        disabled!.Version.Should().Be(2);
+        disabled.IsEnabled.Should().BeFalse();
+
+        var enableActiveResponse = await _client.PostAsync($"/api/workflows/{createdId}/versions/2/enable", null);
+        enableActiveResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var enabled = await enableActiveResponse.Content.ReadFromJsonAsync<WorkflowResponse>();
+        enabled.Should().NotBeNull();
+        enabled!.Version.Should().Be(2);
+        enabled.IsEnabled.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task WorkflowListEndpoints_ShouldFilterByIsEnabledQueryParameter()
+    {
+        var enabledCreate = await _client.PostAsJsonAsync("/api/workflows", CreateWorkflowRequest("EnabledFilterWorkflow"));
+        enabledCreate.StatusCode.Should().Be(HttpStatusCode.Created);
+        var enabledId = ResolveWorkflowId(enabledCreate);
+
+        var disabledCreate = await _client.PostAsJsonAsync(
+            "/api/workflows",
+            new WorkflowRequest(
+                Workflow: new WorkflowDto
+                {
+                    WorkflowName = "DisabledFilterWorkflow",
+                    Rules =
+                    [
+                        new RuleDto
+                        {
+                            RuleName = "AlwaysTrue",
+                            Enabled = true,
+                            Expression = "1 == 1"
+                        }
+                    ],
+                    Version = 1,
+                    IsActive = true,
+                    IsEnabled = false,
+                    Comments = "workflow comment"
+                },
+                SchemaVersion: 1));
+        disabledCreate.StatusCode.Should().Be(HttpStatusCode.Created);
+        var disabledId = ResolveWorkflowId(disabledCreate);
+
+        var enabledResponse = await _client.GetAsync("/api/workflows?isEnabled=true");
+        enabledResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var enabledList = await enabledResponse.Content.ReadFromJsonAsync<List<WorkflowResponse>>();
+        enabledList.Should().NotBeNull();
+        enabledList!.Should().Contain(item => item.Id == enabledId);
+        enabledList.Should().NotContain(item => item.Id == disabledId);
+
+        var disabledResponse = await _client.GetAsync("/api/workflows?isEnabled=false");
+        disabledResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var disabledList = await disabledResponse.Content.ReadFromJsonAsync<List<WorkflowResponse>>();
+        disabledList.Should().NotBeNull();
+        disabledList!.Should().Contain(item => item.Id == disabledId);
+        disabledList.Should().NotContain(item => item.Id == enabledId);
+
+        var allResponse = await _client.GetAsync("/api/workflows");
+        allResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var allList = await allResponse.Content.ReadFromJsonAsync<List<WorkflowResponse>>();
+        allList.Should().NotBeNull();
+        allList!.Should().Contain(item => item.Id == enabledId);
+        allList.Should().Contain(item => item.Id == disabledId);
     }
 
     [Fact]
@@ -365,6 +454,8 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
             }
         ],
         Version = 1,
-        IsActive = true
+        IsActive = true,
+        IsEnabled = true,
+        Comments = "workflow comment"
     };
 }

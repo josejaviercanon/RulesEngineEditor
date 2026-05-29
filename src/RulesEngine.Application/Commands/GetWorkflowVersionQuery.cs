@@ -7,4 +7,5 @@ namespace RulesEngine.Application.Commands;
 public sealed record GetWorkflowVersionQuery(
 	Guid Id,
 	int Version,
-	WorkflowRuleQueryMode Mode = WorkflowRuleQueryMode.ActiveOnly) : IRequest<WorkflowDto?>;
+	WorkflowRuleQueryMode Mode = WorkflowRuleQueryMode.ActiveOnly,
+	bool? IsEnabled = null) : IRequest<WorkflowDto?>;

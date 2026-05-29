@@ -25,6 +25,8 @@ internal static class WorkflowDtoProjection
                 WorkflowName = record.Name,
                 Version = record.Version,
                 IsActive = record.IsActive,
+                IsEnabled = record.IsEnabled,
+                Comments = record.Comments,
                 EffectiveFromUtc = record.EffectiveFromUtc,
                 EffectiveToUtc = record.EffectiveToUtc,
                 Rules = rules
@@ -41,6 +43,8 @@ internal static class WorkflowDtoProjection
             WorkflowsToInject = workflow.WorkflowsToInject,
             Version = record.Version,
             IsActive = record.IsActive,
+            IsEnabled = record.IsEnabled,
+            Comments = record.Comments,
             EffectiveFromUtc = record.EffectiveFromUtc,
             EffectiveToUtc = record.EffectiveToUtc
         };

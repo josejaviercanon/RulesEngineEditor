@@ -11,7 +11,8 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
 {
     public async Task<IReadOnlyCollection<WorkflowRecord>> ListAsync(
         CancellationToken cancellationToken,
-        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly)
+        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly,
+        bool? isEnabled = null)
     {
         var records = await LoadRecordsAsync(cancellationToken);
         return records
@@ -20,6 +21,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                 .OrderByDescending(record => record.IsActive)
                 .ThenByDescending(record => record.Version)
                 .First())
+            .Where(record => !isEnabled.HasValue || record.IsEnabled == isEnabled.Value)
             .Select(record =>
             {
                 record.RuleQueryMode = ruleQueryMode;
@@ -33,8 +35,9 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
     public async Task<IReadOnlyCollection<WorkflowRecord>> ListVersionsAsync(
         Guid id,
         CancellationToken cancellationToken,
-        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly)
-        => (await LoadRecordsAsync(cancellationToken, id))
+        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly,
+        bool? isEnabled = null)
+        => (await LoadRecordsAsync(cancellationToken, id, isEnabled))
             .Select(record =>
             {
                 record.RuleQueryMode = ruleQueryMode;
@@ -46,13 +49,19 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
     public async Task<WorkflowRecord?> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken,
-        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly)
+        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly,
+        bool? isEnabled = null)
     {
         var records = await LoadRecordsAsync(cancellationToken, id);
         var record = records
             .OrderByDescending(record => record.IsActive)
             .ThenByDescending(record => record.Version)
             .FirstOrDefault();
+
+        if (record is not null && isEnabled.HasValue && record.IsEnabled != isEnabled.Value)
+        {
+            return null;
+        }
 
         if (record is not null)
         {
@@ -66,10 +75,16 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         Guid id,
         int version,
         CancellationToken cancellationToken,
-        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly)
+        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly,
+        bool? isEnabled = null)
     {
         var record = (await LoadRecordsAsync(cancellationToken, id))
             .FirstOrDefault(workflow => workflow.Version == version);
+
+        if (record is not null && isEnabled.HasValue && record.IsEnabled != isEnabled.Value)
+        {
+            return null;
+        }
 
         if (record is not null)
         {
@@ -105,6 +120,37 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         return MapToCore(target);
     }
 
+    public async Task<WorkflowRecord?> SetVersionEnabledAsync(Guid id, int version, bool isEnabled, CancellationToken cancellationToken)
+    {
+        var entities = await dbContext.Workflows
+            .Where(workflow => workflow.Id == id)
+            .ToListAsync(cancellationToken);
+
+        if (entities.Count == 0)
+        {
+            return null;
+        }
+
+        var target = entities.FirstOrDefault(entity => entity.Version == version);
+        if (target is null)
+        {
+            return null;
+        }
+
+        target.IsEnabled = isEnabled;
+
+        if (isEnabled)
+        {
+            foreach (var entity in entities.Where(entity => entity.Version != version && entity.IsActive))
+            {
+                entity.IsEnabled = false;
+            }
+        }
+
+        await SaveChangesAsync(cancellationToken);
+        return MapToCore(target);
+    }
+
     public async Task<WorkflowRecord> CreateAsync(WorkflowRecord workflow, CancellationToken cancellationToken)
     {
         var workflowId = workflow.Id == Guid.Empty ? Guid.NewGuid() : workflow.Id;
@@ -118,6 +164,8 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
             Name = workflow.Name,
             Version = nextVersion,
             IsActive = true,
+            IsEnabled = workflow.IsEnabled,
+            Comments = workflow.Comments,
             EffectiveFromUtc = workflow.EffectiveFromUtc,
             EffectiveToUtc = workflow.EffectiveToUtc,
             Definition = new WorkflowDefinitionEntity
@@ -158,6 +206,8 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
             Name = workflow.Name,
             Version = nextVersion,
             IsActive = true,
+            IsEnabled = workflow.IsEnabled,
+            Comments = workflow.Comments,
             EffectiveFromUtc = workflow.EffectiveFromUtc,
             EffectiveToUtc = workflow.EffectiveToUtc,
             Definition = new WorkflowDefinitionEntity
@@ -527,12 +577,17 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         return new Guid(bytes);
     }
 
-    private async Task<List<WorkflowRecord>> LoadRecordsAsync(CancellationToken cancellationToken, Guid? workflowId = null)
+    private async Task<List<WorkflowRecord>> LoadRecordsAsync(CancellationToken cancellationToken, Guid? workflowId = null, bool? isEnabled = null)
     {
         var query = dbContext.Workflows.AsNoTracking().AsQueryable();
         if (workflowId.HasValue)
         {
             query = query.Where(workflow => workflow.Id == workflowId.Value);
+        }
+
+        if (isEnabled.HasValue)
+        {
+            query = query.Where(workflow => workflow.IsEnabled == isEnabled.Value);
         }
 
         var entities = await query.ToListAsync(cancellationToken);
@@ -547,6 +602,8 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         RuleJson = entity.Definition.RuleJson,
         Version = entity.Version,
         IsActive = entity.IsActive,
+        IsEnabled = entity.IsEnabled,
+        Comments = entity.Comments,
         EffectiveFromUtc = entity.EffectiveFromUtc,
         EffectiveToUtc = entity.EffectiveToUtc
     };

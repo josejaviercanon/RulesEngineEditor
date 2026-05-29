@@ -24,6 +24,8 @@ public sealed class WorkflowRepositoryTests
         loaded.RuleJson.Should().Be(expected.RuleJson);
         loaded.Version.Should().Be(1);
         loaded.IsActive.Should().BeTrue();
+        loaded.IsEnabled.Should().BeTrue();
+        loaded.Comments.Should().Be("initial");
     }
 
     [Fact]
@@ -53,6 +55,7 @@ public sealed class WorkflowRepositoryTests
         versions.Should().HaveCount(2);
         versions.Should().ContainSingle(version => version.Version == 1 && !version.IsActive);
         versions.Should().ContainSingle(version => version.Version == 2 && version.IsActive);
+        versions.Should().ContainSingle(version => version.Version == 2 && version.IsEnabled);
     }
 
     [Fact]
@@ -86,6 +89,50 @@ public sealed class WorkflowRepositoryTests
     }
 
     [Fact]
+    public async Task SetVersionEnabledAsync_WhenVersionIsActive_UpdatesEnablement()
+    {
+        await using var dbContext = CreateDbContext();
+        var repository = new WorkflowRepository(dbContext);
+        var created = await repository.CreateAsync(CreateSampleWorkflow(), CancellationToken.None);
+
+        var disabled = await repository.SetVersionEnabledAsync(created.Id, created.Version, false, CancellationToken.None);
+        disabled.Should().NotBeNull();
+        disabled!.IsEnabled.Should().BeFalse();
+
+        var loaded = await repository.GetByIdAsync(created.Id, CancellationToken.None);
+        loaded.Should().NotBeNull();
+        loaded!.IsEnabled.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task ListAsync_WhenFilteredByEnablement_ReturnsExpectedItems()
+    {
+        await using var dbContext = CreateDbContext();
+        var repository = new WorkflowRepository(dbContext);
+
+        var enabled = await repository.CreateAsync(CreateSampleWorkflow(), CancellationToken.None);
+        var disabled = await repository.CreateAsync(new WorkflowRecord
+        {
+            Id = Guid.NewGuid(),
+            Name = "DisabledSample",
+            Expression = "input1.value > 10",
+            RuleJson = "{\"WorkflowName\":\"DisabledSample\",\"Rules\":[]}",
+            Version = 1,
+            IsActive = true,
+            IsEnabled = false,
+            Comments = "disabled"
+        }, CancellationToken.None);
+
+        var onlyEnabled = await repository.ListAsync(CancellationToken.None, WorkflowRuleQueryMode.ActiveOnly, true);
+        onlyEnabled.Should().ContainSingle(item => item.Id == enabled.Id);
+        onlyEnabled.Should().NotContain(item => item.Id == disabled.Id);
+
+        var onlyDisabled = await repository.ListAsync(CancellationToken.None, WorkflowRuleQueryMode.ActiveOnly, false);
+        onlyDisabled.Should().ContainSingle(item => item.Id == disabled.Id);
+        onlyDisabled.Should().NotContain(item => item.Id == enabled.Id);
+    }
+
+    [Fact]
     public async Task DeleteAsync_WhenWorkflowExists_RemovesWorkflow()
     {
         await using var dbContext = CreateDbContext();
@@ -115,6 +162,8 @@ public sealed class WorkflowRepositoryTests
         Expression = "input1.value > 0",
         RuleJson = "{\"WorkflowName\":\"Sample\",\"Rules\":[]}",
         Version = 1,
-        IsActive = true
+        IsActive = true,
+        IsEnabled = true,
+        Comments = "initial"
     };
 }

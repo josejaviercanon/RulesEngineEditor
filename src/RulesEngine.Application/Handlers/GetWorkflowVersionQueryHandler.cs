@@ -12,7 +12,7 @@ public sealed class GetWorkflowVersionQueryHandler(IWorkflowRepository workflowR
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var record = await workflowRepository.GetVersionAsync(request.Id, request.Version, cancellationToken, request.Mode);
+        var record = await workflowRepository.GetVersionAsync(request.Id, request.Version, cancellationToken, request.Mode, request.IsEnabled);
         if (record is null)
         {
             return null;

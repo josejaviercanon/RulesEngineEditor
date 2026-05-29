@@ -6,4 +6,5 @@ namespace RulesEngine.Application.Commands;
 
 public sealed record GetWorkflowByIdQuery(
 	Guid Id,
-	WorkflowRuleQueryMode Mode = WorkflowRuleQueryMode.ActiveOnly) : IRequest<WorkflowDto?>;
+	WorkflowRuleQueryMode Mode = WorkflowRuleQueryMode.ActiveOnly,
+	bool? IsEnabled = null) : IRequest<WorkflowDto?>;

@@ -21,7 +21,9 @@ public sealed class WorkflowInfrastructurePersistenceTests
             Expression = "1 == 1",
             RuleJson = "{}",
             Version = 1,
-            IsActive = true
+            IsActive = true,
+            IsEnabled = false,
+            Comments = "infra test"
         }, CancellationToken.None);
 
         var loaded = await repository.GetByIdAsync(created.Id, CancellationToken.None);
@@ -32,6 +34,33 @@ public sealed class WorkflowInfrastructurePersistenceTests
         loaded.RuleJson.Should().Be("{}");
         loaded.Version.Should().Be(1);
         loaded.IsActive.Should().BeTrue();
+        loaded.IsEnabled.Should().BeFalse();
+        loaded.Comments.Should().Be("infra test");
+    }
+
+    [Fact]
+    public async Task WorkflowRepository_ShouldRoundTripCommentsAt4000CharacterBoundary()
+    {
+        await using var dbContext = CreateDbContext();
+        var repository = new WorkflowRepository(dbContext);
+        var comments = new string('c', 4000);
+
+        var created = await repository.CreateAsync(new WorkflowRecord
+        {
+            Id = Guid.NewGuid(),
+            Name = "infra-comment-boundary",
+            Expression = "1 == 1",
+            RuleJson = "{}",
+            Version = 1,
+            IsActive = true,
+            IsEnabled = true,
+            Comments = comments
+        }, CancellationToken.None);
+
+        var loaded = await repository.GetByIdAsync(created.Id, CancellationToken.None);
+
+        loaded.Should().NotBeNull();
+        loaded!.Comments.Should().Be(comments);
     }
 
     [Fact]

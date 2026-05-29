@@ -11,6 +11,7 @@ public static class WorkflowMapping
             workflow,
             workflow.Version,
             workflow.IsActive,
+            workflow.IsEnabled,
             workflow.EffectiveFromUtc,
             workflow.EffectiveToUtc);
 }

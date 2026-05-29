@@ -10,6 +10,10 @@ public sealed class WorkflowEntity
 
     public bool IsActive { get; set; }
 
+    public bool IsEnabled { get; set; } = true;
+
+    public string? Comments { get; set; }
+
     public DateTimeOffset? EffectiveFromUtc { get; set; }
 
     public DateTimeOffset? EffectiveToUtc { get; set; }

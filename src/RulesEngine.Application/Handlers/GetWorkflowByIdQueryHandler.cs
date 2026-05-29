@@ -12,7 +12,7 @@ public sealed class GetWorkflowByIdQueryHandler(IWorkflowRepository workflowRepo
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var record = await workflowRepository.GetByIdAsync(request.Id, cancellationToken, request.Mode);
+        var record = await workflowRepository.GetByIdAsync(request.Id, cancellationToken, request.Mode, request.IsEnabled);
         if (record is null)
         {
             return null;

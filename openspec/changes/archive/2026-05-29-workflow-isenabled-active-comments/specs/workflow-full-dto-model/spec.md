@@ -1,8 +1,5 @@
-# workflow-full-dto-model Specification
+## MODIFIED Requirements
 
-## Purpose
-TBD - created by archiving change workflow-model-backend-dtos. Update Purpose after archive.
-## Requirements
 ### Requirement: WorkflowDto represents the full RulesEngine workflow model
 The system SHALL define workflow and rule DTO contracts that represent workflow and rule identity/version metadata required for historical retrieval, activation workflows, and operational enablement controls. The DTO model MUST support workflow-level `IsEnabled` (bool) and `Comments` (string, max length 4000), and rule-level `RuleGuidId`, integer `Version`, and `IsActive` fields in addition to existing fields.
 
@@ -44,18 +41,3 @@ The system SHALL provide AutoMapper mapping profiles that convert `WorkflowDto` 
 #### Scenario: Mapping Workflow to WorkflowDto preserves all workflow and rule fields
 - **WHEN** AutoMapper maps a `RulesEngine.Models.Workflow` with nested `Rule` objects to `WorkflowDto`
 - **THEN** the resulting DTO preserves `IsEnabled`, `Comments`, and all supported nested rule fields with equivalent values
-
-### Requirement: RuleResultDto represents per-rule execution output
-The system SHALL define a `RuleResultDto` that carries the execution outcome for a single rule, including nested child results for rules with sub-rules.
-
-#### Scenario: RuleResultDto carries rule outcome fields
-- **WHEN** a `RuleResultDto` is constructed from a `RuleResultTree`
-- **THEN** it exposes `RuleName` (string), `IsSuccess` (bool), `ExceptionMessage` (string, nullable), `SuccessEvent` (string, nullable), `ActionOutput` (string, nullable, serialized), and `ChildResults` (IReadOnlyList\<RuleResultDto\>)
-
-### Requirement: RuleParameterDto represents a named test input
-The system SHALL define a `RuleParameterDto` that carries a named input for workflow test execution.
-
-#### Scenario: RuleParameterDto carries name and JSON value
-- **WHEN** a `RuleParameterDto` is constructed
-- **THEN** it exposes `Name` (string, required) and `ValueJson` (string, required — a JSON-serialized value to be deserialized as a dynamic object for the RulesEngine)
-

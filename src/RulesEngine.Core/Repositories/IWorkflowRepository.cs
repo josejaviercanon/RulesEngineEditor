@@ -6,25 +6,31 @@ public interface IWorkflowRepository
 {
     Task<IReadOnlyCollection<WorkflowRecord>> ListAsync(
         CancellationToken cancellationToken,
-        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly);
+        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly,
+        bool? isEnabled = null);
 
     Task<IReadOnlyCollection<WorkflowRecord>> ListVersionsAsync(
         Guid id,
         CancellationToken cancellationToken,
-        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly);
+        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly,
+        bool? isEnabled = null);
 
     Task<WorkflowRecord?> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken,
-        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly);
+        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly,
+        bool? isEnabled = null);
 
     Task<WorkflowRecord?> GetVersionAsync(
         Guid id,
         int version,
         CancellationToken cancellationToken,
-        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly);
+        WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly,
+        bool? isEnabled = null);
 
     Task<WorkflowRecord?> ActivateVersionAsync(Guid id, int version, CancellationToken cancellationToken);
+
+    Task<WorkflowRecord?> SetVersionEnabledAsync(Guid id, int version, bool isEnabled, CancellationToken cancellationToken);
 
     Task<WorkflowRecord> CreateAsync(WorkflowRecord workflow, CancellationToken cancellationToken);
 

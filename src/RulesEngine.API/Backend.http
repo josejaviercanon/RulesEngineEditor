@@ -1,2 +1,17 @@
 ﻿@Backend_HostAddress = https://localhost:7086
 
+### List all workflows
+GET {{Backend_HostAddress}}/api/workflows
+
+### List only enabled workflows
+GET {{Backend_HostAddress}}/api/workflows?isEnabled=true
+
+### List only disabled workflows
+GET {{Backend_HostAddress}}/api/workflows?isEnabled=false
+
+### Enable workflow version
+POST {{Backend_HostAddress}}/api/workflows/{{workflowId}}/versions/{{version}}/enable
+
+### Disable workflow version
+POST {{Backend_HostAddress}}/api/workflows/{{workflowId}}/versions/{{version}}/disable
+

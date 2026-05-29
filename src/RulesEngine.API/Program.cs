@@ -86,9 +86,10 @@ var workflows = app.MapGroup("/api/workflows")
 workflows.MapGet("/", async (
         IMediator mediator,
     CancellationToken cancellationToken,
-    WorkflowRuleQueryMode mode = WorkflowRuleQueryMode.ActiveOnly) =>
+    WorkflowRuleQueryMode mode = WorkflowRuleQueryMode.ActiveOnly,
+    bool? isEnabled = null) =>
     {
-        var items = await mediator.Send(new ListWorkflowsQuery(mode), cancellationToken);
+        var items = await mediator.Send(new ListWorkflowsQuery(mode, isEnabled), cancellationToken);
         var response = items.Select(item => item.ToResponse());
 
         return Results.Ok(response);
@@ -99,9 +100,10 @@ workflows.MapGet("/{id:guid}", async (
         Guid id,
         IMediator mediator,
     CancellationToken cancellationToken,
-    WorkflowRuleQueryMode mode = WorkflowRuleQueryMode.ActiveOnly) =>
+    WorkflowRuleQueryMode mode = WorkflowRuleQueryMode.ActiveOnly,
+    bool? isEnabled = null) =>
     {
-        var item = await mediator.Send(new GetWorkflowByIdQuery(id, mode), cancellationToken);
+        var item = await mediator.Send(new GetWorkflowByIdQuery(id, mode, isEnabled), cancellationToken);
 
         if (item is null)
         {
@@ -116,9 +118,10 @@ workflows.MapGet("/{id:guid}/versions", async (
         Guid id,
         IMediator mediator,
     CancellationToken cancellationToken,
-    WorkflowRuleQueryMode mode = WorkflowRuleQueryMode.ActiveOnly) =>
+    WorkflowRuleQueryMode mode = WorkflowRuleQueryMode.ActiveOnly,
+    bool? isEnabled = null) =>
     {
-        var items = await mediator.Send(new ListWorkflowVersionsQuery(id, mode), cancellationToken);
+        var items = await mediator.Send(new ListWorkflowVersionsQuery(id, mode, isEnabled), cancellationToken);
         var response = items.Select(item => item.ToResponse());
 
         return Results.Ok(response);
@@ -130,9 +133,10 @@ workflows.MapGet("/{id:guid}/versions/{version:int}", async (
         int version,
         IMediator mediator,
     CancellationToken cancellationToken,
-    WorkflowRuleQueryMode mode = WorkflowRuleQueryMode.ActiveOnly) =>
+    WorkflowRuleQueryMode mode = WorkflowRuleQueryMode.ActiveOnly,
+    bool? isEnabled = null) =>
     {
-        var item = await mediator.Send(new GetWorkflowVersionQuery(id, version, mode), cancellationToken);
+        var item = await mediator.Send(new GetWorkflowVersionQuery(id, version, mode, isEnabled), cancellationToken);
 
         if (item is null)
         {
@@ -187,6 +191,56 @@ workflows.MapPost("/{id:guid}/versions/{version:int}/activate", async (
         return Results.Ok(activated.ToResponse());
     })
     .WithName("ActivateWorkflowVersion");
+
+workflows.MapPost("/{id:guid}/versions/{version:int}/enable", async (
+        Guid id,
+        int version,
+        IMediator mediator,
+        CancellationToken cancellationToken) =>
+    {
+        WorkflowDto? updated;
+        try
+        {
+            updated = await mediator.Send(new SetWorkflowVersionEnabledCommand(id, version, true), cancellationToken);
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Results.BadRequest(new ValidationErrorResponse(1, [exception.Message]));
+        }
+
+        if (updated is null)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Ok(updated.ToResponse());
+    })
+    .WithName("EnableWorkflowVersion");
+
+workflows.MapPost("/{id:guid}/versions/{version:int}/disable", async (
+        Guid id,
+        int version,
+        IMediator mediator,
+        CancellationToken cancellationToken) =>
+    {
+        WorkflowDto? updated;
+        try
+        {
+            updated = await mediator.Send(new SetWorkflowVersionEnabledCommand(id, version, false), cancellationToken);
+        }
+        catch (InvalidOperationException exception)
+        {
+            return Results.BadRequest(new ValidationErrorResponse(1, [exception.Message]));
+        }
+
+        if (updated is null)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Ok(updated.ToResponse());
+    })
+    .WithName("DisableWorkflowVersion");
 
 workflows.MapPost("/", async (
         WorkflowRequest request,

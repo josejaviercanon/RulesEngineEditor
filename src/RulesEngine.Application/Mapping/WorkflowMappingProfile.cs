@@ -37,6 +37,8 @@ public sealed class WorkflowMappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Version, opt => opt.Ignore())
             .ForMember(dest => dest.IsActive, opt => opt.Ignore())
+            .ForMember(dest => dest.IsEnabled, opt => opt.Ignore())
+            .ForMember(dest => dest.Comments, opt => opt.Ignore())
             .ForMember(dest => dest.EffectiveFromUtc, opt => opt.Ignore())
             .ForMember(dest => dest.EffectiveToUtc, opt => opt.Ignore())
             .ReverseMap();

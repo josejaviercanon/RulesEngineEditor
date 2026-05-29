@@ -170,6 +170,15 @@ public sealed class RulesEngineEditorDbContext(DbContextOptions<RulesEngineEdito
                 .HasColumnName("IsActive")
                 .IsRequired();
 
+            entity.Property(workflow => workflow.IsEnabled)
+                .HasColumnName("IsEnabled")
+                .HasDefaultValue(true)
+                .IsRequired();
+
+            entity.Property(workflow => workflow.Comments)
+                .HasColumnName("Comments")
+                .HasColumnType("character varying(4000)");
+
             entity.Property(workflow => workflow.EffectiveFromUtc)
                 .HasColumnName("EffectiveFromUtc")
                 .HasColumnType("timestamp with time zone");
@@ -193,6 +202,11 @@ public sealed class RulesEngineEditorDbContext(DbContextOptions<RulesEngineEdito
                 .IsUnique()
                 .HasFilter("\"IsActive\"")
                 .HasDatabaseName("UX_workflows_Id_Active");
+
+            entity.HasIndex(workflow => new { workflow.Id, workflow.IsEnabled })
+                .IsUnique()
+                .HasFilter("\"IsActive\"")
+                .HasDatabaseName("UX_workflows_Id_ActiveEnabled");
         });
     }
 }

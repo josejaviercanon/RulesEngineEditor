@@ -84,6 +84,56 @@ public sealed class WorkflowApplicationHandlersTests
     }
 
     [Fact]
+    public async Task SetWorkflowVersionEnabledHandler_ShouldRejectNonActiveVersion()
+    {
+        var repository = new InMemoryWorkflowRepository();
+        var rulesService = new RulesEngineWorkflowService();
+        var createHandler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper);
+        var updateHandler = new UpdateWorkflowCommandHandler(repository, rulesService, Mapper);
+        var setEnabledHandler = new SetWorkflowVersionEnabledCommandHandler(repository);
+
+        var created = await createHandler.Handle(new CreateWorkflowCommand(BuildWorkflowDto("workflow-v1"), null), CancellationToken.None);
+        await updateHandler.Handle(new UpdateWorkflowCommand(created.Id, BuildWorkflowDto("workflow-v2"), null), CancellationToken.None);
+
+        var action = async () => await setEnabledHandler.Handle(
+            new SetWorkflowVersionEnabledCommand(created.Id, 1, false),
+            CancellationToken.None);
+
+        await action.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("Only the active workflow version can be enabled or disabled.*");
+    }
+
+    [Fact]
+    public async Task CreateWorkflowHandler_ShouldRejectCommentsLongerThan4000()
+    {
+        var repository = new InMemoryWorkflowRepository();
+        var rulesService = new RulesEngineWorkflowService();
+        var handler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper);
+
+        var workflow = BuildWorkflowDto("comment-length");
+        workflow = new WorkflowDto
+        {
+            Id = workflow.Id,
+            WorkflowName = workflow.WorkflowName,
+            RuleExpressionType = workflow.RuleExpressionType,
+            GlobalParams = workflow.GlobalParams,
+            Rules = workflow.Rules,
+            WorkflowsToInject = workflow.WorkflowsToInject,
+            Version = workflow.Version,
+            IsActive = workflow.IsActive,
+            IsEnabled = workflow.IsEnabled,
+            Comments = new string('x', 4001)
+        };
+
+        var action = async () => await handler.Handle(
+            new CreateWorkflowCommand(workflow, null),
+            CancellationToken.None);
+
+        await action.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("Comments cannot exceed 4000 characters.");
+    }
+
+    [Fact]
     public async Task GetWorkflowVersionHandler_ShouldReturnRequestedVersion()
     {
         var repository = new InMemoryWorkflowRepository();
@@ -199,7 +249,9 @@ public sealed class WorkflowApplicationHandlersTests
             }
         ],
         Version = 1,
-        IsActive = true
+        IsActive = true,
+        IsEnabled = true,
+        Comments = "handler test"
     };
 
     private static string SerializeWorkflowDto(WorkflowDto workflow)
@@ -211,37 +263,46 @@ public sealed class WorkflowApplicationHandlersTests
 
         public Task<IReadOnlyCollection<WorkflowRecord>> ListAsync(
             CancellationToken cancellationToken,
-            WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly)
+            WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly,
+            bool? isEnabled = null)
             => Task.FromResult<IReadOnlyCollection<WorkflowRecord>>(Store
                 .GroupBy(item => item.Id)
                 .Select(group => group.OrderByDescending(item => item.IsActive).ThenByDescending(item => item.Version).First())
+                .Where(item => !isEnabled.HasValue || item.IsEnabled == isEnabled.Value)
                 .ToArray());
 
         public Task<IReadOnlyCollection<WorkflowRecord>> ListVersionsAsync(
             Guid id,
             CancellationToken cancellationToken,
-            WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly)
+            WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly,
+            bool? isEnabled = null)
             => Task.FromResult<IReadOnlyCollection<WorkflowRecord>>(Store
                 .Where(item => item.Id == id)
+                .Where(item => !isEnabled.HasValue || item.IsEnabled == isEnabled.Value)
                 .OrderBy(item => item.Version)
                 .ToArray());
 
         public Task<WorkflowRecord?> GetByIdAsync(
             Guid id,
             CancellationToken cancellationToken,
-            WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly)
+            WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly,
+            bool? isEnabled = null)
             => Task.FromResult(Store
                 .Where(item => item.Id == id)
                 .OrderByDescending(item => item.IsActive)
                 .ThenByDescending(item => item.Version)
-                .FirstOrDefault());
+                .FirstOrDefault(item => !isEnabled.HasValue || item.IsEnabled == isEnabled.Value));
 
         public Task<WorkflowRecord?> GetVersionAsync(
             Guid id,
             int version,
             CancellationToken cancellationToken,
-            WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly)
-            => Task.FromResult(Store.FirstOrDefault(item => item.Id == id && item.Version == version));
+            WorkflowRuleQueryMode ruleQueryMode = WorkflowRuleQueryMode.ActiveOnly,
+            bool? isEnabled = null)
+            => Task.FromResult(Store.FirstOrDefault(item =>
+                item.Id == id &&
+                item.Version == version &&
+                (!isEnabled.HasValue || item.IsEnabled == isEnabled.Value)));
 
         public Task<WorkflowRecord?> ActivateVersionAsync(Guid id, int version, CancellationToken cancellationToken)
         {
@@ -255,6 +316,27 @@ public sealed class WorkflowApplicationHandlersTests
             foreach (var item in items)
             {
                 item.IsActive = item.Version == version;
+            }
+
+            return Task.FromResult<WorkflowRecord?>(target);
+        }
+
+        public Task<WorkflowRecord?> SetVersionEnabledAsync(Guid id, int version, bool isEnabled, CancellationToken cancellationToken)
+        {
+            var items = Store.Where(item => item.Id == id).ToList();
+            var target = items.FirstOrDefault(item => item.Version == version);
+            if (target is null)
+            {
+                return Task.FromResult<WorkflowRecord?>(null);
+            }
+
+            target.IsEnabled = isEnabled;
+            if (isEnabled)
+            {
+                foreach (var item in items.Where(item => item.Version != version && item.IsActive))
+                {
+                    item.IsEnabled = false;
+                }
             }
 
             return Task.FromResult<WorkflowRecord?>(target);
@@ -316,6 +398,8 @@ public sealed class WorkflowApplicationHandlersTests
                 RuleJson = workflow.RuleJson,
                 Version = version,
                 IsActive = true,
+                IsEnabled = workflow.IsEnabled,
+                Comments = workflow.Comments,
                 EffectiveFromUtc = workflow.EffectiveFromUtc,
                 EffectiveToUtc = workflow.EffectiveToUtc
             };
@@ -345,6 +429,8 @@ public sealed class WorkflowApplicationHandlersTests
                 RuleJson = workflow.RuleJson,
                 Version = items.Max(item => item.Version) + 1,
                 IsActive = true,
+                IsEnabled = workflow.IsEnabled,
+                Comments = workflow.Comments,
                 EffectiveFromUtc = workflow.EffectiveFromUtc,
                 EffectiveToUtc = workflow.EffectiveToUtc
             };

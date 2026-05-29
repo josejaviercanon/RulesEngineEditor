@@ -12,7 +12,7 @@ public sealed class ListWorkflowVersionsQueryHandler(IWorkflowRepository workflo
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var records = await workflowRepository.ListVersionsAsync(request.Id, cancellationToken, request.Mode);
+        var records = await workflowRepository.ListVersionsAsync(request.Id, cancellationToken, request.Mode, request.IsEnabled);
         var projected = new List<WorkflowDto>(records.Count);
         foreach (var record in records)
         {

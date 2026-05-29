@@ -20,6 +20,7 @@ public sealed class CreateWorkflowCommandHandler(
     public async Task<WorkflowDto> Handle(CreateWorkflowCommand request, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        ValidateWorkflowMetadata(request.Workflow);
 
         var workflowDefinition = mapper.Map<Workflow>(request.Workflow);
         EnsureWorkflowIsStructurallyValid(workflowDefinition);
@@ -30,6 +31,8 @@ public sealed class CreateWorkflowCommandHandler(
             Name = request.Workflow.WorkflowName,
             Expression = string.Empty,
             RuleJson = JsonSerializer.Serialize(request.Workflow),
+            IsEnabled = request.Workflow.IsEnabled,
+            Comments = request.Workflow.Comments,
             EffectiveFromUtc = request.Workflow.EffectiveFromUtc,
             EffectiveToUtc = request.Workflow.EffectiveToUtc
         };
@@ -57,6 +60,14 @@ public sealed class CreateWorkflowCommandHandler(
             throw new InvalidOperationException(
                 string.Join("; ", ex.Errors.Select(error => error.ErrorMessage)),
                 ex);
+        }
+    }
+
+    private static void ValidateWorkflowMetadata(WorkflowDto workflow)
+    {
+        if (workflow.Comments is not null && workflow.Comments.Length > 4000)
+        {
+            throw new InvalidOperationException("Comments cannot exceed 4000 characters.");
         }
     }
 }

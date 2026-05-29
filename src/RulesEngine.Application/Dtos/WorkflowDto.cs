@@ -27,6 +27,10 @@ public sealed class WorkflowDto
 
     public bool IsActive { get; init; }
 
+    public bool IsEnabled { get; init; } = true;
+
+    public string? Comments { get; init; }
+
     public DateTimeOffset? EffectiveFromUtc { get; init; }
 
     public DateTimeOffset? EffectiveToUtc { get; init; }
