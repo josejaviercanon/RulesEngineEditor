@@ -112,12 +112,38 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
             return null;
         }
 
-        foreach (var entity in entities)
+        if (target.IsActive)
         {
-            entity.IsActive = entity.Version == version;
+            return MapToCore(target);
         }
 
-        await SaveChangesAsync(cancellationToken);
+        if (dbContext.Database.IsRelational())
+        {
+            await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
+
+            foreach (var entity in entities.Where(entity => entity.IsActive && entity.Version != version))
+            {
+                entity.IsActive = false;
+            }
+
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            target.IsActive = true;
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            await transaction.CommitAsync(cancellationToken);
+            return MapToCore(target);
+        }
+
+        foreach (var entity in entities.Where(entity => entity.IsActive && entity.Version != version))
+        {
+            entity.IsActive = false;
+        }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+        target.IsActive = true;
+        await dbContext.SaveChangesAsync(cancellationToken);
+
         return MapToCore(target);
     }
 
@@ -281,12 +307,38 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
             return null;
         }
 
-        foreach (var entity in entities)
+        if (target.IsActive)
         {
-            entity.IsActive = entity.Version == version;
+            return MapRuleToCore(target);
         }
 
-        await SaveChangesAsync(cancellationToken);
+        if (dbContext.Database.IsRelational())
+        {
+            await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
+
+            foreach (var entity in entities.Where(rule => rule.IsActive && rule.Version != version))
+            {
+                entity.IsActive = false;
+            }
+
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            target.IsActive = true;
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            await transaction.CommitAsync(cancellationToken);
+            return MapRuleToCore(target);
+        }
+
+        foreach (var entity in entities.Where(rule => rule.IsActive && rule.Version != version))
+        {
+            entity.IsActive = false;
+        }
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+        target.IsActive = true;
+        await dbContext.SaveChangesAsync(cancellationToken);
+
         return MapRuleToCore(target);
     }
 

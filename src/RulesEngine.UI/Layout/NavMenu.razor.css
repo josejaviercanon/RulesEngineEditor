@@ -70,7 +70,7 @@
         display: none;
     }
 
-    .collapse {
+    .nav-menu-collapsed {
         /* Never collapse the sidebar for wide screens */
         display: block;
     }

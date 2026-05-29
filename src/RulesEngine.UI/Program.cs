@@ -5,6 +5,7 @@ using RulesEngine.UI.Services;
 using Blazorise;
 using Blazorise.Tailwind;
 using Blazorise.Icons.Lucide;
+using Blazorise.Components;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -22,6 +23,9 @@ builder.Services.AddScoped<WorkflowManagementService>();
 builder.Services
     .AddBlazorise()
     .AddTailwindProviders()
-    .AddLucideIcons();
+    .AddLucideIcons()
+    .AddTailwindComponents()
+    .AddBlazoriseRouterTabs();
+    
 
 await builder.Build().RunAsync();

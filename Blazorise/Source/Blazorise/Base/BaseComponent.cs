@@ -150,10 +150,10 @@ public abstract class BaseComponent : BaseAfterRenderComponent
     {
         if ( firstRender )
         {
-            if ( LicenseChecker.ShouldPrint() )
-            {
-                await JSUtilitiesModule.Log( LicenseChecker.ShowBanner(), $"%c{LicenseChecker.GetPrintMessage()}", "color: #3B82F6; padding: 0;" );
-            }
+            //if ( LicenseChecker.ShouldPrint() )
+            //{
+            //    await JSUtilitiesModule.Log( LicenseChecker.ShowBanner(), $"%c{LicenseChecker.GetPrintMessage()}", "color: #3B82F6; padding: 0;" );
+            //}
         }
 
         await base.OnAfterRenderAsync( firstRender );
@@ -576,7 +576,7 @@ public abstract class BaseComponent : BaseAfterRenderComponent
     /// <summary>
     /// Specifies the license checker for the user session.
     /// </summary>
-    [Inject] internal BlazoriseLicenseChecker LicenseChecker { get; set; }
+    //[Inject] internal BlazoriseLicenseChecker LicenseChecker { get; set; }
 
     /// <summary>
     /// Custom CSS class name to apply to the component.

@@ -64,14 +64,44 @@
 
         var response = await Http.PostAsJsonAsync("api/workflows/validate", new
         {
-            model.Name,
-            model.Expression,
-            model.RuleJson,
-            model.Version,
-            model.IsActive,
-            model.EffectiveFromUtc,
-            model.EffectiveToUtc,
-            model.SchemaVersion
+            workflow = new
+            {
+                id = Guid.Empty,
+                workflowName = model.Name,
+                ruleExpressionType = "LambdaExpression",
+                globalParams = Array.Empty<object>(),
+                rules = new[]
+                {
+                    new
+                    {
+                        ruleGuidId = Guid.NewGuid(),
+                        version = model.Version,
+                        isActive = model.IsActive,
+                        status = "draft",
+                        ruleName = model.Name,
+                        @operator = (string?)null,
+                        errorMessage = string.Empty,
+                        enabled = true,
+                        ruleExpressionType = "LambdaExpression",
+                        expression = model.Expression,
+                        ruleJson = model.RuleJson,
+                        successEvent = string.Empty,
+                        localParams = Array.Empty<object>(),
+                        rules = Array.Empty<object>(),
+                        actions = (object?)null,
+                        workflowsToInject = Array.Empty<string>(),
+                        properties = new Dictionary<string, string>()
+                    }
+                },
+                workflowsToInject = Array.Empty<string>(),
+                workflowJson = model.RuleJson,
+                version = model.Version,
+                isActive = model.IsActive,
+                isEnabled = true,
+                comments = (string?)null,
+                effectiveFromUtc = model.EffectiveFromUtc,
+                effectiveToUtc = model.EffectiveToUtc
+            }
         });
 
         if (response.IsSuccessStatusCode)

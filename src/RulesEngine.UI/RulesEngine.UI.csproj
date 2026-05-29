@@ -5,7 +5,14 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
-        <!--<BlazorEnableCompression>false</BlazorEnableCompression>-->
+    </PropertyGroup>
+
+    <!-- Debug Configuration Specific Settings -->
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <BlazorEnableCompression>false</BlazorEnableCompression>
+        <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
+        <RunAOTCompilation>false</RunAOTCompilation>
+        <BlazorWebAssemblyDebug>true</BlazorWebAssemblyDebug>
     </PropertyGroup>
 
     <ItemGroup>
@@ -33,12 +40,7 @@
       <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.DataGrid\Blazorise.DataGrid.csproj" />
       <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.FluentValidation\Blazorise.FluentValidation.csproj" />
       <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Gantt\Blazorise.Gantt.csproj" />
-      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.AntDesign\Blazorise.Icons.AntDesign.csproj" />
-      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.Bootstrap\Blazorise.Icons.Bootstrap.csproj" />
-      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.FluentUI\Blazorise.Icons.FluentUI.csproj" />
-      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.FontAwesome\Blazorise.Icons.FontAwesome.csproj" />
       <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.Lucide\Blazorise.Icons.Lucide.csproj" />
-      <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Icons.Material\Blazorise.Icons.Material.csproj" />
       <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.LoadingIndicator\Blazorise.LoadingIndicator.csproj" />
       <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.LottieAnimation\Blazorise.LottieAnimation.csproj" />
       <ProjectReference Include="..\..\Blazorise\Source\Extensions\Blazorise.Maps\Blazorise.Maps.csproj" />
