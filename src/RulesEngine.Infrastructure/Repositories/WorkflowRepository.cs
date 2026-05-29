@@ -282,7 +282,16 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
             .OrderBy(rule => rule.Version)
             .ToListAsync(cancellationToken);
 
-        return versions.Select(MapRuleToCore).ToArray();
+        var activeVersion = versions.FirstOrDefault(rule => rule.IsActive)?.Version ?? 0;
+        var lastVersion = versions.Count == 0 ? 0 : versions.Max(rule => rule.Version);
+
+        return versions.Select(record =>
+        {
+            var mapped = MapRuleToCore(record);
+            mapped.ActiveVersion = activeVersion;
+            mapped.LastVersion = lastVersion;
+            return mapped;
+        }).ToArray();
     }
 
     public async Task<RuleVersionRecord?> ActivateRuleVersionAsync(
@@ -316,7 +325,10 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
 
         if (target.IsActive)
         {
-            return MapRuleToCore(target);
+            var mappedTarget = MapRuleToCore(target);
+            mappedTarget.ActiveVersion = target.Version;
+            mappedTarget.LastVersion = entities.Max(item => item.Version);
+            return mappedTarget;
         }
 
         if (dbContext.Database.IsRelational())
@@ -334,7 +346,10 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
             await dbContext.SaveChangesAsync(cancellationToken);
 
             await transaction.CommitAsync(cancellationToken);
-            return MapRuleToCore(target);
+            var mappedTarget = MapRuleToCore(target);
+            mappedTarget.ActiveVersion = target.Version;
+            mappedTarget.LastVersion = entities.Max(item => item.Version);
+            return mappedTarget;
         }
 
         foreach (var entity in entities.Where(rule => rule.IsActive && rule.Version != version))
@@ -346,7 +361,10 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         target.IsActive = true;
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return MapRuleToCore(target);
+        var mapped = MapRuleToCore(target);
+        mapped.ActiveVersion = target.Version;
+        mapped.LastVersion = entities.Max(item => item.Version);
+        return mapped;
     }
 
     public async Task<IReadOnlyCollection<RuleVersionRecord>> ListWorkflowRulesAsync(
@@ -384,6 +402,8 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                     Expression = item.Expression,
                     RuleJson = item.RawRuleJson,
                     Version = 1,
+                    ActiveVersion = 1,
+                    LastVersion = 1,
                     IsActive = true,
                     Status = item.Status
                 })
@@ -393,6 +413,16 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         var query = dbContext.Rules
             .AsNoTracking()
             .Where(rule => ruleGuids.Contains(rule.RuleGuidId));
+
+        var ruleVersionSummary = await query
+            .GroupBy(rule => rule.RuleGuidId)
+            .Select(group => new
+            {
+                RuleGuidId = group.Key,
+                ActiveVersion = group.Where(item => item.IsActive).Select(item => item.Version).FirstOrDefault(),
+                LastVersion = group.Max(item => item.Version)
+            })
+            .ToDictionaryAsync(item => item.RuleGuidId, cancellationToken);
 
         List<RuleRecord> entities;
         switch (mode)
@@ -423,7 +453,17 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                 break;
         }
 
-        return entities.Select(MapRuleToCore).ToArray();
+        return entities.Select(record =>
+        {
+            var mapped = MapRuleToCore(record);
+            if (ruleVersionSummary.TryGetValue(record.RuleGuidId, out var summary))
+            {
+                mapped.ActiveVersion = summary.ActiveVersion;
+                mapped.LastVersion = summary.LastVersion;
+            }
+
+            return mapped;
+        }).ToArray();
     }
 
     public async Task ApplyRuleStatusUpdatesAsync(
@@ -864,6 +904,8 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         Expression = record.Expression,
         RuleJson = record.RuleJson,
         Version = record.Version,
+        ActiveVersion = record.IsActive ? record.Version : 0,
+        LastVersion = record.Version,
         IsActive = record.IsActive,
         Status = record.Status,
         EffectiveFromUtc = record.EffectiveFromUtc,

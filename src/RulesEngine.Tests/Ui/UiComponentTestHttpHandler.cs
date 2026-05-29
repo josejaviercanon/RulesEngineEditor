@@ -49,6 +49,8 @@ internal sealed class UiComponentTestHttpHandler : HttpMessageHandler
                 {
                     RuleGuidId = RuleGuidId,
                     Version = 1,
+                    ActiveVersion = 1,
+                    LastVersion = 2,
                     IsActive = true,
                     Status = "draft",
                     RuleName = "Sample Rule",
@@ -67,6 +69,37 @@ internal sealed class UiComponentTestHttpHandler : HttpMessageHandler
                 true,
                 null,
                 null)));
+        }
+
+        if (request.Method == HttpMethod.Get && path == $"/api/workflows/{WorkflowId}/rules/{RuleGuidId}/versions")
+        {
+            return Task.FromResult(Json(HttpStatusCode.OK, new[]
+            {
+                new RulePayload
+                {
+                    RuleGuidId = RuleGuidId,
+                    Version = 1,
+                    ActiveVersion = 1,
+                    LastVersion = 2,
+                    IsActive = true,
+                    Status = "draft",
+                    RuleName = "Sample Rule",
+                    Enabled = true,
+                    Expression = "1 == 1"
+                },
+                new RulePayload
+                {
+                    RuleGuidId = RuleGuidId,
+                    Version = 2,
+                    ActiveVersion = 1,
+                    LastVersion = 2,
+                    IsActive = false,
+                    Status = "draft",
+                    RuleName = "Sample Rule v2",
+                    Enabled = true,
+                    Expression = "2 == 2"
+                }
+            }));
         }
 
         if (request.Method == HttpMethod.Post && path == "/api/workflows")
@@ -94,6 +127,8 @@ internal sealed class UiComponentTestHttpHandler : HttpMessageHandler
             {
                 RuleGuidId = RuleGuidId,
                 Version = 1,
+                ActiveVersion = 1,
+                LastVersion = 2,
                 IsActive = true,
                 RuleName = "Sample Rule",
                 Enabled = true,
@@ -144,6 +179,8 @@ internal sealed class UiComponentTestHttpHandler : HttpMessageHandler
                 {
                     RuleGuidId = RuleGuidId,
                     Version = 1,
+                    ActiveVersion = 1,
+                    LastVersion = 1,
                     IsActive = true,
                     Status = "draft",
                     RuleName = "Sample Rule",

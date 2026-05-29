@@ -11,6 +11,12 @@ public sealed class RuleDto
     [JsonPropertyName("Version")]
     public int Version { get; init; }
 
+    [JsonPropertyName("ActiveVersion")]
+    public int ActiveVersion { get; init; }
+
+    [JsonPropertyName("LastVersion")]
+    public int LastVersion { get; init; }
+
     [JsonPropertyName("IsActive")]
     public bool IsActive { get; init; }
 

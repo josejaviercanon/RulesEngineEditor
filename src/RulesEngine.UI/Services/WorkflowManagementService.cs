@@ -43,6 +43,8 @@ public sealed class WorkflowManagementService(WorkflowApiClient apiClient)
             .Select(rule => new RuleGridRow(
                 rule.RuleGuidId,
                 rule.Version,
+                rule.ActiveVersion,
+                rule.LastVersion,
                 rule.RuleName,
                 rule.Expression,
                 rule.Status,

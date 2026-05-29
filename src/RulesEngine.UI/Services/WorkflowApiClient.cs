@@ -66,6 +66,14 @@ public sealed class WorkflowApiClient(HttpClient httpClient)
         return await ReadWorkflowResponseAsync(response, cancellationToken);
     }
 
+    public async Task<IReadOnlyList<RulePayload>> ListRuleVersionsAsync(
+        Guid workflowId,
+        Guid ruleGuidId,
+        CancellationToken cancellationToken = default)
+        => await httpClient.GetFromJsonAsync<List<RulePayload>>(
+            $"api/workflows/{workflowId}/rules/{ruleGuidId}/versions",
+            cancellationToken) ?? [];
+
     public async Task<RulePayload> ActivateRuleVersionAsync(
         Guid workflowId,
         Guid ruleGuidId,
@@ -219,6 +227,10 @@ public sealed class RulePayload
     public Guid RuleGuidId { get; set; }
 
     public int Version { get; set; }
+
+    public int ActiveVersion { get; set; }
+
+    public int LastVersion { get; set; }
 
     public bool IsActive { get; set; }
 

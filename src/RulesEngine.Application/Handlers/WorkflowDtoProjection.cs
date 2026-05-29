@@ -66,6 +66,8 @@ internal static class WorkflowDtoProjection
             {
                 RuleGuidId = record.RuleGuidId,
                 Version = record.Version,
+                ActiveVersion = record.ActiveVersion,
+                LastVersion = record.LastVersion,
                 IsActive = record.IsActive,
                 Status = RuleStatusParser.ToValue(record.Status),
                 RuleName = record.Name,
@@ -79,6 +81,8 @@ internal static class WorkflowDtoProjection
         {
             RuleGuidId = record.RuleGuidId,
             Version = record.Version,
+            ActiveVersion = record.ActiveVersion,
+            LastVersion = record.LastVersion,
             IsActive = record.IsActive,
             Status = string.IsNullOrWhiteSpace(parsed.Status)
                 ? RuleStatusParser.ToValue(record.Status)

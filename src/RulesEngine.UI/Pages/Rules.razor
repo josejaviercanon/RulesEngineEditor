@@ -25,6 +25,7 @@
                     <TableHeaderCell></TableHeaderCell>
                     <TableHeaderCell>Actions</TableHeaderCell>
                     <TableHeaderCell>Guid ID</TableHeaderCell>
+                    <TableHeaderCell>Active Version</TableHeaderCell>
                     <TableHeaderCell>Last Version</TableHeaderCell>
                     <TableHeaderCell>Workflow Name</TableHeaderCell>
                     <TableHeaderCell>Is Enabled</TableHeaderCell>
@@ -50,6 +51,7 @@
                             </Button>
                         </TableRowCell>
                         <TableRowCell>@workflow.Id</TableRowCell>
+                        <TableRowCell>@workflow.ActiveVersion</TableRowCell>
                         <TableRowCell>@workflow.LastVersion</TableRowCell>
                         <TableRowCell>@workflow.WorkflowName</TableRowCell>
                         <TableRowCell>
@@ -66,14 +68,15 @@
                             : [];
 
                         <TableRow>
-                            <TableRowCell ColSpan="6">
+                            <TableRowCell ColSpan="7">
                                 <Table Striped Bordered FullWidth>
                                     <TableHeader>
                                         <TableRow>
                                             <TableHeaderCell>Actions</TableHeaderCell>
                                             <TableHeaderCell>Guid ID</TableHeaderCell>
                                             <TableHeaderCell>Name</TableHeaderCell>
-                                            <TableHeaderCell>Version</TableHeaderCell>
+                                            <TableHeaderCell>Active Version</TableHeaderCell>
+                                            <TableHeaderCell>Last Version</TableHeaderCell>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -95,7 +98,8 @@
                                                 </TableRowCell>
                                                 <TableRowCell>@rule.RuleGuidId</TableRowCell>
                                                 <TableRowCell>@rule.RuleName</TableRowCell>
-                                                <TableRowCell>@rule.Version</TableRowCell>
+                                                <TableRowCell>@rule.ActiveVersion</TableRowCell>
+                                                <TableRowCell>@rule.LastVersion</TableRowCell>
                                             </TableRow>
                                         }
                                     </TableBody>
@@ -116,6 +120,27 @@
             <CloseButton Clicked="CloseRuleModal" />
         </ModalHeader>
         <ModalBody>
+            @if (!isCreateRuleMode)
+            {
+                <Field>
+                    <FieldLabel>Rule Version</FieldLabel>
+                    <Select TValue="int" Value="selectedRuleVersion" ValueChanged="OnSelectedRuleVersionChangedAsync">
+                        @foreach (var item in ruleVersionPayloads)
+                        {
+                            <SelectItem Value="@item.Version">
+                                Version @item.Version @(item.IsActive ? "(Active)" : string.Empty)
+                            </SelectItem>
+                        }
+                    </Select>
+                </Field>
+
+                <Field>
+                    <Switch @bind-Value="ruleForm.IsActive">
+                        Active Version
+                    </Switch>
+                </Field>
+            }
+
             <Field>
                 <FieldLabel>Rule Name</FieldLabel>
                 <TextInput @bind-Value="ruleForm.RuleName" Placeholder="Enter rule name" />
@@ -154,6 +179,7 @@
 @code {
     private readonly List<WorkflowGridRow> workflowRows = [];
     private readonly Dictionary<Guid, IReadOnlyList<RuleGridRow>> rulesByWorkflow = new();
+    private readonly List<RulePayload> ruleVersionPayloads = [];
     private readonly List<string> ruleValidationErrors = [];
     private readonly HashSet<Guid> expandedWorkflowIds = [];
     private Modal ruleModalRef = default!;
@@ -191,7 +217,7 @@
 
     private async Task LoadRulesForWorkflowAsync(Guid workflowId)
     {
-        var workflow = await WorkflowApiClient.GetWorkflowByIdAsync(workflowId, "IncludeHistory");
+        var workflow = await WorkflowApiClient.GetWorkflowByIdAsync(workflowId, "ActiveOnly");
         if (workflow is null)
         {
             rulesByWorkflow[workflowId] = [];
@@ -207,8 +233,9 @@
         selectedRuleGuidId = Guid.Empty;
         selectedRuleVersion = 0;
         isCreateRuleMode = true;
+        ruleVersionPayloads.Clear();
         ruleValidationErrors.Clear();
-        ruleForm = new RuleFormModel();
+        ruleForm = new RuleFormModel { IsActive = true };
         await ruleModalRef.Show();
     }
 
@@ -219,13 +246,48 @@
         selectedRuleVersion = rule.Version;
         isCreateRuleMode = false;
         ruleValidationErrors.Clear();
-        ruleForm = new RuleFormModel
-        {
-            RuleName = rule.RuleName,
-            Expression = rule.Expression
-        };
+
+        await ReloadRuleVersionsAsync(workflowId, rule.RuleGuidId, rule.Version);
+        ApplySelectedRuleVersionToForm();
 
         await ruleModalRef.Show();
+    }
+
+    private async Task ReloadRuleVersionsAsync(Guid workflowId, Guid ruleGuidId, int preferredVersion)
+    {
+        ruleVersionPayloads.Clear();
+        ruleVersionPayloads.AddRange(await WorkflowApiClient.ListRuleVersionsAsync(workflowId, ruleGuidId));
+
+        selectedRuleVersion = ruleVersionPayloads.Any(item => item.Version == preferredVersion)
+            ? preferredVersion
+            : ruleVersionPayloads.FirstOrDefault(item => item.IsActive)?.Version
+                ?? ruleVersionPayloads.LastOrDefault()?.Version
+                ?? 0;
+    }
+
+    private Task OnSelectedRuleVersionChangedAsync(int version)
+    {
+        selectedRuleVersion = version;
+        ApplySelectedRuleVersionToForm();
+        return Task.CompletedTask;
+    }
+
+    private void ApplySelectedRuleVersionToForm()
+    {
+        var selectedPayload = ruleVersionPayloads.FirstOrDefault(item => item.Version == selectedRuleVersion);
+
+        if (selectedPayload is null)
+        {
+            ruleForm = new RuleFormModel();
+            return;
+        }
+
+        ruleForm = new RuleFormModel
+        {
+            RuleName = selectedPayload.RuleName,
+            Expression = selectedPayload.Expression,
+            IsActive = selectedPayload.IsActive
+        };
     }
 
     private Task CloseRuleModal() => ruleModalRef.Hide();
@@ -247,7 +309,29 @@
 
         try
         {
-            var workflow = await WorkflowApiClient.GetWorkflowByIdAsync(selectedWorkflowId, "ActiveOnly");
+            if (!isCreateRuleMode)
+            {
+                var selectedPayload = ruleVersionPayloads.FirstOrDefault(item => item.Version == selectedRuleVersion);
+                if (selectedPayload is null)
+                {
+                    SetStatus("Rule version was not found.", Color.Warning);
+                    return;
+                }
+
+                if (!ruleForm.IsActive && selectedPayload.IsActive)
+                {
+                    ruleValidationErrors.Add("Select another version and set it active before deactivating the current active version.");
+                    return;
+                }
+
+                if (ruleForm.IsActive && !selectedPayload.IsActive)
+                {
+                    await WorkflowApiClient.ActivateRuleVersionAsync(selectedWorkflowId, selectedRuleGuidId, selectedRuleVersion);
+                    await ReloadRuleVersionsAsync(selectedWorkflowId, selectedRuleGuidId, selectedRuleVersion);
+                }
+            }
+
+            var workflow = await WorkflowApiClient.GetWorkflowByIdAsync(selectedWorkflowId, "IncludeHistory");
 
             if (workflow is null)
             {
@@ -289,6 +373,7 @@
 
                 existingRule.RuleName = ruleForm.RuleName.Trim();
                 existingRule.Expression = ruleForm.Expression.Trim();
+                existingRule.IsActive = ruleForm.IsActive;
             }
 
             updatedWorkflow.Rules = rules;
@@ -499,6 +584,8 @@
         {
             RuleGuidId = rule.RuleGuidId,
             Version = rule.Version,
+            ActiveVersion = rule.ActiveVersion,
+            LastVersion = rule.LastVersion,
             IsActive = rule.IsActive,
             Status = rule.Status,
             RuleName = rule.RuleName,
@@ -527,5 +614,7 @@
         public string RuleName { get; set; } = string.Empty;
 
         public string Expression { get; set; } = string.Empty;
+
+        public bool IsActive { get; set; }
     }
 }

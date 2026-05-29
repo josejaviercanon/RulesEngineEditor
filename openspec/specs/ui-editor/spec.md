@@ -64,11 +64,20 @@ The UI SHALL open to the Home page by default and SHALL present a workflow grid 
 - **AND** the user can activate a selected version and set enablement according to lifecycle constraints
 
 ### Requirement: Rules page supports expandable workflow-to-rules management
-The UI SHALL provide a Rules page that reuses workflow grid context, includes row expansion for workflow rules, and supports rule create/edit/delete/validate operations through modal dialogs and row actions.
+The UI SHALL provide a Rules page that reuses workflow grid context, includes row expansion for workflow rules, and supports rule create/edit/delete/validate operations through modal dialogs and row actions. The Rules page workflow main grid SHALL show `Active Version` independently from `Last Version`, and the nested rules grid SHALL show active-only rows per rule identity.
 
-#### Scenario: Rules page workflow row expansion shows nested rules grid
+#### Scenario: Rules page workflow main grid shows required version columns
+- **WHEN** the user opens the Rules page workflow grid
+- **THEN** each workflow row shows columns including Actions, Guid ID, Active Version, Last Version, Name, and enablement state
+- **AND** Active Version appears immediately after Guid ID
+- **AND** Last Version continues to represent total retained workflow versions
+
+#### Scenario: Rules page workflow row expansion shows active-only nested rules grid
 - **WHEN** the user opens Rules and expands a workflow row
-- **THEN** a detail grid is shown for that workflow with columns Actions, Guid ID, Name, and Version
+- **THEN** a detail grid is shown with columns Actions, Guid ID, Name, Active Version, and Last Version
+- **AND** Active Version appears immediately before Last Version
+- **AND** the grid includes only active rule revisions for the selected workflow context
+- **AND** the grid includes at most one row per `RuleGuidId`
 
 #### Scenario: Create rule for selected workflow
 - **WHEN** the user clicks create-rule action for a workflow and saves valid rule data
@@ -80,10 +89,21 @@ The UI SHALL provide a Rules page that reuses workflow grid context, includes ro
 - **THEN** the UI shows validation information returned by the system
 - **AND** the modal remains open with user-entered values for correction
 
-#### Scenario: Edit rule saves selected version unless new-version action is confirmed
-- **WHEN** the user opens Edit for a rule version from the nested rules grid
-- **THEN** clicking Save updates only the selected rule version
-- **AND** clicking Create New Version opens a yes/no confirmation dialog before creating a new rule version
+#### Scenario: Edit rule modal supports version list and active toggle parity
+- **WHEN** the user opens Edit for a rule from the nested rules grid
+- **THEN** the modal shows a versions list for the selected `RuleGuidId`
+- **AND** the modal shows an active-version toggle for the selected version
+- **AND** clicking Save updates only the currently selected version unless create-new-version is explicitly requested
+
+#### Scenario: Changing selected rule version reloads full modal model
+- **WHEN** the user selects a different version in the modal versions list
+- **THEN** the modal reloads expression and all editable rule properties for that selected persisted version
+- **AND** the active-version toggle state updates to match the selected version
+
+#### Scenario: Saving active-version change leaves exactly one active version
+- **WHEN** the user changes active-version state and clicks Save
+- **THEN** the selected version becomes active only when requested
+- **AND** any previously active version for the same `RuleGuidId` is no longer active after save
 
 #### Scenario: Rule row actions include delete and validate
 - **WHEN** the nested rules grid is rendered

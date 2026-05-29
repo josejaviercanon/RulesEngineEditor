@@ -20,6 +20,8 @@ public sealed record WorkflowVersionItem(
 public sealed record RuleGridRow(
     Guid RuleGuidId,
     int Version,
+    int ActiveVersion,
+    int LastVersion,
     string RuleName,
     string Expression,
     string Status,

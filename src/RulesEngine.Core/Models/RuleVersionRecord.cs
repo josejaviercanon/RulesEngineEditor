@@ -14,6 +14,10 @@ public sealed class RuleVersionRecord
 
     public int Version { get; set; }
 
+    public int ActiveVersion { get; set; }
+
+    public int LastVersion { get; set; }
+
     public bool IsActive { get; set; }
 
     public RuleStatus Status { get; set; } = RuleStatus.Draft;
