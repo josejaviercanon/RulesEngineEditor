@@ -57,8 +57,7 @@ public sealed class HomePageComponentTests : Bunit.TestContext
 
         cut.WaitForAssertion(() => cut.Markup.Should().Contain("Sample Workflow"));
 
-        var editButton = cut.FindAll("button")
-            .First(button => button.TextContent.Contains("Edit", StringComparison.Ordinal));
+        var editButton = cut.Find("tbody button");
 
         editButton.Click();
 

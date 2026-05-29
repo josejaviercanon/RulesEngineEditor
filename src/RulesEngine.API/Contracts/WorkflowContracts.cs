@@ -4,12 +4,15 @@ namespace RulesEngine.API.Contracts;
 
 public sealed record WorkflowRequest(
     WorkflowDto Workflow,
-    int? SchemaVersion);
+    int? SchemaVersion,
+    bool CreateNewVersion = false);
 
 public sealed record WorkflowResponse(
     Guid Id,
     WorkflowDto Workflow,
     int Version,
+    int ActiveVersion,
+    int LastVersion,
     bool IsActive,
     bool IsEnabled,
     DateTimeOffset? EffectiveFromUtc,

@@ -2,7 +2,8 @@ namespace RulesEngine.UI.Models;
 
 public sealed record WorkflowGridRow(
     Guid Id,
-    int Version,
+    int LastVersion,
+    int ActiveVersion,
     string WorkflowName,
     bool IsEnabled,
     bool IsActive);

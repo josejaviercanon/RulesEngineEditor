@@ -32,6 +32,11 @@ public sealed class UpdateWorkflowCommandHandler(
                 .ToDictionary(rule => rule.RuleGuidId, rule => rule.Status);
 
         var normalized = NormalizeRuleStatuses(request.Workflow, previousStatuses);
+        if (request.CreateNewVersion)
+        {
+            normalized = BuildDefaultRuleWorkflowVersion(normalized);
+        }
+
         var workflowDefinition = mapper.Map<Workflow>(normalized);
         var validationsPassed = TryValidateWorkflow(workflowDefinition, out var validationErrors);
 
@@ -42,17 +47,37 @@ public sealed class UpdateWorkflowCommandHandler(
 
         normalized = AddJsonPayloads(normalized);
 
-        var updated = await workflowRepository.UpdateAsync(request.Id, new WorkflowRecord
+        WorkflowRecord? updated;
+        if (request.CreateNewVersion)
         {
-            Name = normalized.WorkflowName,
-            Expression = string.Empty,
-            WorkflowJson = normalized.WorkflowJson,
-            RuleJson = normalized.WorkflowJson,
-            IsEnabled = normalized.IsEnabled,
-            Comments = normalized.Comments,
-            EffectiveFromUtc = normalized.EffectiveFromUtc,
-            EffectiveToUtc = normalized.EffectiveToUtc
-        }, cancellationToken);
+            updated = await workflowRepository.CreateAsync(new WorkflowRecord
+            {
+                Id = request.Id,
+                Name = normalized.WorkflowName,
+                Expression = string.Empty,
+                WorkflowJson = normalized.WorkflowJson,
+                RuleJson = normalized.WorkflowJson,
+                IsEnabled = normalized.IsEnabled,
+                Comments = normalized.Comments,
+                EffectiveFromUtc = normalized.EffectiveFromUtc,
+                EffectiveToUtc = normalized.EffectiveToUtc
+            }, cancellationToken);
+        }
+        else
+        {
+            updated = await workflowRepository.UpdateAsync(request.Id, new WorkflowRecord
+            {
+                Name = normalized.WorkflowName,
+                Expression = string.Empty,
+                WorkflowJson = normalized.WorkflowJson,
+                RuleJson = normalized.WorkflowJson,
+                Version = normalized.Version,
+                IsEnabled = normalized.IsEnabled,
+                Comments = normalized.Comments,
+                EffectiveFromUtc = normalized.EffectiveFromUtc,
+                EffectiveToUtc = normalized.EffectiveToUtc
+            }, cancellationToken);
+        }
 
         if (updated is null)
         {
@@ -66,6 +91,41 @@ public sealed class UpdateWorkflowCommandHandler(
             workflowRepository,
             WorkflowRuleQueryMode.ActiveOnly,
             cancellationToken);
+    }
+
+    private static WorkflowDto BuildDefaultRuleWorkflowVersion(WorkflowDto workflow)
+    {
+        var now = DateTimeOffset.UtcNow;
+        return new WorkflowDto
+        {
+            Id = workflow.Id,
+            WorkflowName = workflow.WorkflowName,
+            RuleExpressionType = workflow.RuleExpressionType,
+            GlobalParams = workflow.GlobalParams,
+            Rules =
+            [
+                new RuleDto
+                {
+                    RuleGuidId = Guid.NewGuid(),
+                    Version = 1,
+                    IsActive = true,
+                    Status = "draft",
+                    RuleName = "Default Rule",
+                    Enabled = true,
+                    Expression = "1 == 1"
+                }
+            ],
+            WorkflowsToInject = workflow.WorkflowsToInject,
+            WorkflowJson = workflow.WorkflowJson,
+            Version = workflow.Version,
+            ActiveVersion = workflow.ActiveVersion,
+            LastVersion = workflow.LastVersion,
+            IsActive = workflow.IsActive,
+            IsEnabled = workflow.IsEnabled,
+            Comments = workflow.Comments,
+            EffectiveFromUtc = workflow.EffectiveFromUtc ?? now,
+            EffectiveToUtc = workflow.EffectiveToUtc
+        };
     }
 
     private static bool TryValidateWorkflow(Workflow workflow, out IReadOnlyList<string> errors)

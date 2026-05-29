@@ -10,6 +10,8 @@ public static class WorkflowMapping
             workflow.Id,
             workflow,
             workflow.Version,
+            workflow.ActiveVersion,
+            workflow.LastVersion,
             workflow.IsActive,
             workflow.IsEnabled,
             workflow.EffectiveFromUtc,

@@ -2,7 +2,6 @@
 
 ## Purpose
 Define workflow-level persistence and retrieval behavior for logical rule memberships and versioned rule projections.
-
 ## Requirements
 ### Requirement: Workflow stores a collection of rule Guid identities
 The system SHALL persist workflow membership as a collection of logical rule identities (`RuleGuidId`) so workflow rule retrieval is resolved from an authoritative membership set.
@@ -31,3 +30,20 @@ The system SHALL return all revisions for all workflow rule identities only when
 #### Scenario: Query workflow full history
 - **WHEN** the client requests workflow rules with history mode enabled
 - **THEN** the response includes all versions for each `RuleGuidId` in that workflow and identifies active revision state
+
+### Requirement: New workflow version initializes with exactly one default rule
+The system MUST initialize every newly created workflow version with exactly one rule named `Default Rule` and MUST NOT create additional implicit rules.
+
+#### Scenario: Create new workflow version seeds one default rule
+- **WHEN** a new workflow version is created
+- **THEN** the workflow version contains exactly one seeded rule named `Default Rule`
+- **AND** no additional auto-generated rules are created
+
+### Requirement: Workflow rule collections support explicit rule deletion
+The system SHALL allow deleting a selected rule from a workflow rule collection through an explicit delete operation.
+
+#### Scenario: Confirmed delete removes selected rule
+- **WHEN** the client confirms deletion for a selected rule in a workflow context
+- **THEN** the selected rule is removed from that workflow rule collection
+- **AND** subsequent workflow rule list queries do not return the deleted rule
+

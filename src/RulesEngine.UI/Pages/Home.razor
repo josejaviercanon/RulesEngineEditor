@@ -1,6 +1,7 @@
 ﻿@page "/"
 @inject WorkflowApiClient WorkflowApiClient
 @inject WorkflowManagementService WorkflowManagementService
+@inject IJSRuntime JS
 
 <PageTitle>Home</PageTitle>
 
@@ -28,6 +29,7 @@
 				<TableRow>
 					<TableHeaderCell>Actions</TableHeaderCell>
 					<TableHeaderCell>Guid ID</TableHeaderCell>
+					<TableHeaderCell>Active Version</TableHeaderCell>
 					<TableHeaderCell>Last Version</TableHeaderCell>
 					<TableHeaderCell>Workflow Name</TableHeaderCell>
 					<TableHeaderCell>Is Enabled</TableHeaderCell>
@@ -43,7 +45,8 @@
 							</Button>
 						</TableRowCell>
 						<TableRowCell>@row.Id</TableRowCell>
-						<TableRowCell>@row.Version</TableRowCell>
+						<TableRowCell>@row.ActiveVersion</TableRowCell>
+						<TableRowCell>@row.LastVersion</TableRowCell>
 						<TableRowCell>@row.WorkflowName</TableRowCell>
 						<TableRowCell>
 							<Badge Color="@(row.IsEnabled ? Color.Success : Color.Warning)">
@@ -140,6 +143,7 @@
 		</ModalBody>
 		<ModalFooter>
 			<Button Color="Color.Secondary" Clicked="CloseEditModal">Cancel</Button>
+			<Button Color="Color.Warning" Clicked="CreateNewVersionAsync">Create New Version</Button>
 			<Button Color="Color.Primary" Clicked="SaveEditAsync">Save</Button>
 		</ModalFooter>
 	</ModalContent>
@@ -179,7 +183,7 @@
 	private async Task OpenEditModalAsync(WorkflowGridRow row)
 	{
 		editingWorkflowId = row.Id;
-		await ReloadWorkflowVersionsAsync(editingWorkflowId, row.Version);
+		await ReloadWorkflowVersionsAsync(editingWorkflowId, row.ActiveVersion > 0 ? row.ActiveVersion : row.LastVersion);
 		await editModalRef.Show();
 	}
 
@@ -209,7 +213,7 @@
 
 	private Task OpenCreateModal()
 	{
-		createForm = new WorkflowCreateFormModel();
+		createForm = new WorkflowCreateFormModel { IsEnabled = false };
 		return createModalRef.Show();
 	}
 
@@ -261,16 +265,11 @@
 			return;
 		}
 
-		if (!selectedPayload.IsActive)
-		{
-			SetStatus("Activate the selected version before saving metadata changes.", Color.Warning);
-			return;
-		}
-
 		var updatedWorkflow = CloneWorkflow(selectedPayload.Workflow);
 		updatedWorkflow.WorkflowName = editForm.WorkflowName.Trim();
 		updatedWorkflow.Comments = string.IsNullOrWhiteSpace(editForm.Comments) ? null : editForm.Comments.Trim();
 		updatedWorkflow.IsEnabled = editForm.IsEnabled;
+		updatedWorkflow.Version = selectedWorkflowVersion;
 
 		try
 		{
@@ -279,6 +278,45 @@
 			await ReloadWorkflowVersionsAsync(editingWorkflowId, selectedWorkflowVersion);
 			SetStatus("Workflow updated successfully.", Color.Success);
 			await CloseEditModal();
+		}
+		catch (WorkflowApiException exception)
+		{
+			SetStatus(string.Join(" ", exception.Errors), Color.Danger);
+		}
+	}
+
+	private async Task CreateNewVersionAsync()
+	{
+		if (editingWorkflowId == Guid.Empty)
+		{
+			return;
+		}
+
+		if (!await JS.InvokeAsync<bool>("confirm", "Create a new workflow version?"))
+		{
+			return;
+		}
+
+		var selectedPayload = workflowVersionPayloads.FirstOrDefault(item => item.Version == selectedWorkflowVersion);
+        if (selectedPayload is null)
+        {
+            SetStatus("Unable to find selected workflow version.", Color.Warning);
+            return;
+        }
+
+		var workflow = CloneWorkflow(selectedPayload.Workflow);
+		workflow.WorkflowName = string.IsNullOrWhiteSpace(editForm.WorkflowName)
+			? workflow.WorkflowName
+			: editForm.WorkflowName.Trim();
+		workflow.Comments = string.IsNullOrWhiteSpace(editForm.Comments) ? null : editForm.Comments.Trim();
+		workflow.IsEnabled = editForm.IsEnabled;
+
+		try
+		{
+			var created = await WorkflowApiClient.CreateWorkflowVersionAsync(editingWorkflowId, workflow);
+			await ReloadWorkflowRowsAsync();
+			await ReloadWorkflowVersionsAsync(editingWorkflowId, created.Version);
+			SetStatus($"Workflow version {created.Version} created.", Color.Success);
 		}
 		catch (WorkflowApiException exception)
 		{
@@ -368,7 +406,7 @@
 					Version = 1,
 					IsActive = true,
 					Status = "draft",
-					RuleName = "DefaultRule",
+					RuleName = "Default Rule",
 					Enabled = true,
 					Expression = "1 == 1"
 				}
@@ -427,7 +465,7 @@
 
 		public string? Comments { get; set; }
 
-		public bool IsEnabled { get; set; } = true;
+		public bool IsEnabled { get; set; } = false;
 	}
 
 	private sealed class WorkflowEditFormModel

@@ -2,18 +2,23 @@
 
 ## Purpose
 Define rule-level revision history, activation behavior, and invariants for stable rule identities.
-
 ## Requirements
 ### Requirement: Rule revisions are retained per rule Guid identity
-The system SHALL persist every rule revision under a stable `RuleGuidId` and SHALL assign each revision an auto-incrementing integer `Version` value scoped to that `RuleGuidId`.
+The system SHALL persist rule revisions under a stable `RuleGuidId`, SHALL assign each new revision an auto-incrementing integer `Version` scoped to that `RuleGuidId`, and MUST create a new revision only for explicit create-version operations.
 
 #### Scenario: Create first rule revision
 - **WHEN** a new rule Guid identity is created with no prior revisions
 - **THEN** the system stores revision version 1 for that `RuleGuidId` and marks it active
 
-#### Scenario: Create later rule revision
-- **WHEN** the same `RuleGuidId` is updated with a new rule definition
-- **THEN** the system stores a new revision with `Version = previous max + 1` and retains all earlier revisions
+#### Scenario: Create later rule revision from explicit new-version action
+- **WHEN** the client submits an explicit create-new-version operation for an existing `RuleGuidId`
+- **THEN** the system stores a new revision with `Version = previous max + 1`
+- **AND** earlier revisions are retained
+
+#### Scenario: Edit-save updates selected version in place
+- **WHEN** the client submits a standard edit-save operation for a selected rule version
+- **THEN** the system updates only that selected persisted version
+- **AND** no additional rule revision is created
 
 ### Requirement: Exactly one rule revision is active per rule Guid identity
 The system SHALL allow only one active revision for a given `RuleGuidId` at any time and MUST enforce this invariant in persistence and service operations.
@@ -52,3 +57,15 @@ The system SHALL provide rule list responses for a workflow context that include
 #### Scenario: Nested rules grid can render required columns
 - **WHEN** the UI requests rules for a selected workflow in details view
 - **THEN** each returned rule row includes Guid identity, name, and version metadata used by the grid
+
+### Requirement: Rule edit and rule version-create are separate API intents
+The system MUST expose distinct backend intents for updating an existing selected rule version and for creating a new rule version.
+
+#### Scenario: Update endpoint does not create version
+- **WHEN** a rule update intent is executed
+- **THEN** version count for the target `RuleGuidId` remains unchanged
+
+#### Scenario: Create-version endpoint always creates version
+- **WHEN** a rule create-version intent is executed with valid data
+- **THEN** version count for the target `RuleGuidId` increases by exactly one
+

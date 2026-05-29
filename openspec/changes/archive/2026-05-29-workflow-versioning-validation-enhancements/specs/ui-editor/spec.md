@@ -1,40 +1,4 @@
-# ui-editor Specification
-
-## Purpose
-Define Blazor WebAssembly editor behavior, user interaction flows, and JS interop contracts for visual workflow authoring.
-## Requirements
-### Requirement: Visual Workflow Editing
-The system SHALL provide a Blazor WebAssembly SPA with a visual workflow editor and MUST document the local LogicFlow runtime/documentation lookup paths used by `RulesEngine.UI`.
-
-#### Scenario: Render editor canvas
-- GIVEN a user authenticated in the Blazor SPA
-- WHEN the user navigates to /editor
-- THEN the LogicFlow.js canvas renders with a default node palette
-
-#### Scenario: Interop data exchange
-- GIVEN the user has drawn a workflow on the canvas
-- WHEN the user clicks "Validate"
-- THEN the SPA extracts the graph JSON via JS interop
-- AND sends it to the Minimal API validation endpoint
-
-#### Scenario: Document Blazor WASM LogicFlow distribution paths
-- GIVEN maintainers or agents update workflow editor guidance for RulesEngine.UI
-- WHEN documentation is updated
-- THEN it identifies ./src/RulesEngine.UI/wwwroot/js/logicflow-2.2.3/ as the compiled runtime asset location
-- AND it names index.css and index.min.js as the shipped UI bundle artifacts
-- AND it identifies /src/RulesEngine.UI/wwwroot/js/logicflow-2.2.3/docs as the local markdown documentation root
-
-#### Scenario: Enforce local-doc-first capability discovery
-- GIVEN an agent or contributor plans a LogicFlow feature for the workflow UI editor
-- WHEN they evaluate available capabilities
-- THEN they check local LogicFlow docs first (wwwroot docs and local node docs) to find built-in, extension, or layout capabilities
-- AND they prefer official documented capabilities over custom reimplementation when a match exists
-
-#### Scenario: Enforce Blazorise UI composition
-- GIVEN a contributor or agent implements or updates RulesEngine.UI pages
-- WHEN selecting components for forms, data grids, dialogs, and action controls
-- THEN they use Blazorise components and configured providers (`Blazorise`, `Blazorise.Tailwind`, `Blazorise.Icons.Lucide`)
-- AND they do not introduce an alternate UI component library for app-level UI composition
+## MODIFIED Requirements
 
 ### Requirement: Home page is the default workflow management entry point
 The UI SHALL open to the Home page by default and SHALL present a workflow grid with one row per workflow identity showing active revision metadata and operator actions.
@@ -95,4 +59,3 @@ The UI SHALL provide a Rules page that reuses workflow grid context, includes ro
 - **WHEN** the workflow grid is rendered on the Rules page
 - **THEN** the Actions column includes a Validate action after the New Rule action
 - **AND** Validate runs full workflow validation and shows whether the workflow is valid or includes validation errors
-

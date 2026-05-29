@@ -48,7 +48,7 @@ public sealed class WorkflowApplicationHandlersTests
     }
 
     [Fact]
-    public async Task UpdateWorkflowHandler_ShouldCreateNewVersionInsteadOfOverwritingHistory()
+    public async Task UpdateWorkflowHandler_ShouldUpdateSelectedVersionInPlace()
     {
         var repository = new InMemoryWorkflowRepository();
         var rulesService = new RulesEngineWorkflowService();
@@ -62,8 +62,28 @@ public sealed class WorkflowApplicationHandlersTests
             CancellationToken.None);
 
         updated.Should().NotBeNull();
-        updated!.Version.Should().Be(2);
+        updated!.Version.Should().Be(1);
         updated.IsActive.Should().BeTrue();
+        repository.Store.Should().HaveCount(1);
+        repository.Store.Should().ContainSingle(item => item.Version == 1 && item.IsActive && item.Name == "workflow-v2");
+    }
+
+    [Fact]
+    public async Task UpdateWorkflowHandler_ShouldCreateNewVersion_WhenCreateVersionIntentIsTrue()
+    {
+        var repository = new InMemoryWorkflowRepository();
+        var rulesService = new RulesEngineWorkflowService();
+        var createHandler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
+        var updateHandler = new UpdateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
+
+        var created = await createHandler.Handle(new CreateWorkflowCommand(BuildWorkflowDto("workflow-v1"), null), CancellationToken.None);
+
+        var updated = await updateHandler.Handle(
+            new UpdateWorkflowCommand(created.Id, BuildWorkflowDto("workflow-v2"), null, CreateNewVersion: true),
+            CancellationToken.None);
+
+        updated.Should().NotBeNull();
+        updated!.Version.Should().Be(2);
         repository.Store.Should().HaveCount(2);
         repository.Store.Should().ContainSingle(item => item.Version == 1 && !item.IsActive);
         repository.Store.Should().ContainSingle(item => item.Version == 2 && item.IsActive);
@@ -79,7 +99,7 @@ public sealed class WorkflowApplicationHandlersTests
         var activateHandler = new ActivateWorkflowVersionCommandHandler(repository, rulesService, Mapper);
 
         var created = await createHandler.Handle(new CreateWorkflowCommand(BuildWorkflowDto("workflow-v1"), null), CancellationToken.None);
-        await updateHandler.Handle(new UpdateWorkflowCommand(created.Id, BuildWorkflowDto("workflow-v2"), null), CancellationToken.None);
+        await updateHandler.Handle(new UpdateWorkflowCommand(created.Id, BuildWorkflowDto("workflow-v2"), null, CreateNewVersion: true), CancellationToken.None);
 
         var activated = await activateHandler.Handle(new ActivateWorkflowVersionCommand(created.Id, 1), CancellationToken.None);
 
@@ -100,7 +120,7 @@ public sealed class WorkflowApplicationHandlersTests
         var setEnabledHandler = new SetWorkflowVersionEnabledCommandHandler(repository);
 
         var created = await createHandler.Handle(new CreateWorkflowCommand(BuildWorkflowDto("workflow-v1"), null), CancellationToken.None);
-        await updateHandler.Handle(new UpdateWorkflowCommand(created.Id, BuildWorkflowDto("workflow-v2"), null), CancellationToken.None);
+        await updateHandler.Handle(new UpdateWorkflowCommand(created.Id, BuildWorkflowDto("workflow-v2"), null, CreateNewVersion: true), CancellationToken.None);
 
         var action = async () => await setEnabledHandler.Handle(
             new SetWorkflowVersionEnabledCommand(created.Id, 1, false),
@@ -150,7 +170,7 @@ public sealed class WorkflowApplicationHandlersTests
         var getVersionHandler = new GetWorkflowVersionQueryHandler(repository);
 
         var created = await createHandler.Handle(new CreateWorkflowCommand(BuildWorkflowDto("workflow-v1"), null), CancellationToken.None);
-        await updateHandler.Handle(new UpdateWorkflowCommand(created.Id, BuildWorkflowDto("workflow-v2"), null), CancellationToken.None);
+        await updateHandler.Handle(new UpdateWorkflowCommand(created.Id, BuildWorkflowDto("workflow-v2"), null, CreateNewVersion: true), CancellationToken.None);
 
         var versionOne = await getVersionHandler.Handle(new GetWorkflowVersionQuery(created.Id, 1), CancellationToken.None);
         var versionTwo = await getVersionHandler.Handle(new GetWorkflowVersionQuery(created.Id, 2), CancellationToken.None);
@@ -432,28 +452,25 @@ public sealed class WorkflowApplicationHandlersTests
                 return Task.FromResult<WorkflowRecord?>(null);
             }
 
-            foreach (var item in items.Where(item => item.IsActive))
+            var target = workflow.Version > 0
+                ? items.FirstOrDefault(item => item.Version == workflow.Version)
+                : items.FirstOrDefault(item => item.IsActive);
+
+            if (target is null)
             {
-                item.IsActive = false;
+                return Task.FromResult<WorkflowRecord?>(null);
             }
 
-            var updated = new WorkflowRecord
-            {
-                Id = id,
-                Name = workflow.Name,
-                Expression = workflow.Expression,
-                WorkflowJson = string.IsNullOrWhiteSpace(workflow.WorkflowJson) ? workflow.RuleJson : workflow.WorkflowJson,
-                RuleJson = string.IsNullOrWhiteSpace(workflow.WorkflowJson) ? workflow.RuleJson : workflow.WorkflowJson,
-                Version = items.Max(item => item.Version) + 1,
-                IsActive = true,
-                IsEnabled = workflow.IsEnabled,
-                Comments = workflow.Comments,
-                EffectiveFromUtc = workflow.EffectiveFromUtc,
-                EffectiveToUtc = workflow.EffectiveToUtc
-            };
+            target.Name = workflow.Name;
+            target.Expression = workflow.Expression;
+            target.WorkflowJson = string.IsNullOrWhiteSpace(workflow.WorkflowJson) ? workflow.RuleJson : workflow.WorkflowJson;
+            target.RuleJson = target.WorkflowJson;
+            target.IsEnabled = workflow.IsEnabled;
+            target.Comments = workflow.Comments;
+            target.EffectiveFromUtc = workflow.EffectiveFromUtc;
+            target.EffectiveToUtc = workflow.EffectiveToUtc;
 
-            Store.Add(updated);
-            return Task.FromResult<WorkflowRecord?>(updated);
+            return Task.FromResult<WorkflowRecord?>(target);
         }
 
         public Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)

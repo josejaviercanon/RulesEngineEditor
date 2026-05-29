@@ -30,7 +30,7 @@ public sealed class WorkflowRepositoryTests
     }
 
     [Fact]
-    public async Task UpdateAsync_WhenWorkflowExists_CreatesNewActiveVersionAndKeepsHistory()
+    public async Task UpdateAsync_WhenWorkflowExists_UpdatesSelectedVersionInPlace()
     {
         await using var dbContext = CreateDbContext();
         var repository = new WorkflowRepository(dbContext);
@@ -43,21 +43,20 @@ public sealed class WorkflowRepositoryTests
                 Name = "Updated",
                 Expression = "1 == 1",
                 RuleJson = "{\"WorkflowName\":\"Updated\",\"Rules\":[]}",
-                Version = 2,
+                Version = 1,
                 IsActive = false
             },
             CancellationToken.None);
 
         updated.Should().NotBeNull();
         updated!.Name.Should().Be("Updated");
-        updated.Version.Should().Be(2);
+        updated.Version.Should().Be(1);
         updated.WorkflowJson.Should().Be("{\"WorkflowName\":\"Updated\",\"Rules\":[]}");
 
         var versions = await repository.ListVersionsAsync(created.Id, CancellationToken.None);
-        versions.Should().HaveCount(2);
-        versions.Should().ContainSingle(version => version.Version == 1 && !version.IsActive);
-        versions.Should().ContainSingle(version => version.Version == 2 && version.IsActive);
-        versions.Should().ContainSingle(version => version.Version == 2 && version.IsEnabled);
+        versions.Should().HaveCount(1);
+        versions.Should().ContainSingle(version => version.Version == 1 && version.IsActive);
+        versions.Should().ContainSingle(version => version.Version == 1 && version.IsEnabled);
     }
 
     [Fact]
@@ -74,10 +73,20 @@ public sealed class WorkflowRepositoryTests
                 Name = "Updated",
                 Expression = "1 == 1",
                 RuleJson = "{\"WorkflowName\":\"Updated\",\"Rules\":[]}",
-                Version = 2,
+                Version = 1,
                 IsActive = true
             },
             CancellationToken.None);
+
+        await repository.CreateAsync(new WorkflowRecord
+        {
+            Id = created.Id,
+            Name = "Updated-V2",
+            Expression = "1 == 1",
+            RuleJson = "{\"WorkflowName\":\"Updated-V2\",\"Rules\":[]}",
+            IsActive = true,
+            IsEnabled = true
+        }, CancellationToken.None);
 
         var activated = await repository.ActivateVersionAsync(created.Id, 1, CancellationToken.None);
 

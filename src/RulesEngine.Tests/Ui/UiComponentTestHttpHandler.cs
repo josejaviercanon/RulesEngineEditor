@@ -61,6 +61,8 @@ internal sealed class UiComponentTestHttpHandler : HttpMessageHandler
                 WorkflowId,
                 workflow,
                 1,
+                1,
+                1,
                 true,
                 true,
                 null,
@@ -120,6 +122,8 @@ internal sealed class UiComponentTestHttpHandler : HttpMessageHandler
         => new(
             WorkflowId,
             BuildWorkflowPayload(workflowName, version, isActive, isEnabled),
+            version,
+            isActive ? version : 1,
             version,
             isActive,
             isEnabled,

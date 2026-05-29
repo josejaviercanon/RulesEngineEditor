@@ -14,6 +14,10 @@ public sealed class WorkflowRecord
 
     public int Version { get; set; }
 
+    public int ActiveVersion { get; set; }
+
+    public int LastVersion { get; set; }
+
     public bool IsActive { get; set; }
 
     public bool IsEnabled { get; set; } = true;

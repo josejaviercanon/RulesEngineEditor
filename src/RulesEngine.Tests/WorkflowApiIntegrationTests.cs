@@ -57,7 +57,7 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
 
         var updated = await updateResponse.Content.ReadFromJsonAsync<WorkflowResponse>();
         updated.Should().NotBeNull();
-        updated!.Version.Should().Be(2);
+        updated!.Version.Should().Be(1);
         updated.IsActive.Should().BeTrue();
         updated.IsEnabled.Should().BeTrue();
         updated.Workflow.WorkflowJson.Should().Contain("\"WorkflowName\":\"CrudWorkflowUpdated\"");
@@ -66,10 +66,9 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         versionsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         var versions = await versionsResponse.Content.ReadFromJsonAsync<List<WorkflowResponse>>();
         versions.Should().NotBeNull();
-        versions!.Should().HaveCount(2);
-        versions.Should().ContainSingle(item => item.Version == 1 && !item.IsActive);
-        versions.Should().ContainSingle(item => item.Version == 2 && item.IsActive);
-        versions.Should().ContainSingle(item => item.Version == 2 && item.IsEnabled);
+        versions!.Should().HaveCount(1);
+        versions.Should().ContainSingle(item => item.Version == 1 && item.IsActive);
+        versions.Should().ContainSingle(item => item.Version == 1 && item.IsEnabled);
 
         var listResponse = await _client.GetAsync("/api/workflows");
         listResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -94,7 +93,7 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
 
         var updateResponse = await _client.PutAsJsonAsync(
             $"/api/workflows/{createdId}",
-            CreateWorkflowRequest("VersionedWorkflowV2"));
+            CreateWorkflowRequest("VersionedWorkflowV2", createNewVersion: true));
         updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var activateResponse = await _client.PostAsync($"/api/workflows/{createdId}/versions/1/activate", null);
@@ -127,7 +126,7 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
 
         var updateResponse = await _client.PutAsJsonAsync(
             $"/api/workflows/{createdId}",
-            CreateWorkflowRequest("EnableDisableWorkflowV2"));
+            CreateWorkflowRequest("EnableDisableWorkflowV2", createNewVersion: true));
         updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var disableOldResponse = await _client.PostAsync($"/api/workflows/{createdId}/versions/1/disable", null);
@@ -282,7 +281,7 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
 
         var updateResponse = await _client.PutAsJsonAsync(
             $"/api/workflows/{createdId}",
-            CreateWorkflowRequest("VersionReadWorkflowV2"));
+            CreateWorkflowRequest("VersionReadWorkflowV2", createNewVersion: true));
         updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var versionOneResponse = await _client.GetAsync($"/api/workflows/{createdId}/versions/1");
@@ -666,9 +665,10 @@ public sealed class WorkflowApiIntegrationTests : IClassFixture<WorkflowApiFacto
         return Guid.Parse(workflowIdSegment.TrimEnd('/'));
     }
 
-    private static WorkflowRequest CreateWorkflowRequest(string workflowName) => new(
+    private static WorkflowRequest CreateWorkflowRequest(string workflowName, bool createNewVersion = false) => new(
         Workflow: CreateWorkflowDto(workflowName),
-        SchemaVersion: 1);
+        SchemaVersion: 1,
+        CreateNewVersion: createNewVersion);
 
     private static WorkflowDto CreateWorkflowDto(string workflowName) => new()
     {

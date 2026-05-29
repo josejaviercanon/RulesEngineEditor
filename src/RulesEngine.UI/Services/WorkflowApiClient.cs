@@ -26,7 +26,7 @@ public sealed class WorkflowApiClient(HttpClient httpClient)
     {
         var response = await httpClient.PostAsJsonAsync(
             "api/workflows",
-            new WorkflowRequestPayload(workflow, schemaVersion),
+            new WorkflowRequestPayload(workflow, schemaVersion, CreateNewVersion: false),
             cancellationToken);
 
         return await ReadWorkflowResponseAsync(response, cancellationToken);
@@ -40,7 +40,21 @@ public sealed class WorkflowApiClient(HttpClient httpClient)
     {
         var response = await httpClient.PutAsJsonAsync(
             $"api/workflows/{id}",
-            new WorkflowRequestPayload(workflow, schemaVersion),
+            new WorkflowRequestPayload(workflow, schemaVersion, CreateNewVersion: false),
+            cancellationToken);
+
+        return await ReadWorkflowResponseAsync(response, cancellationToken);
+    }
+
+    public async Task<WorkflowResponsePayload> CreateWorkflowVersionAsync(
+        Guid id,
+        WorkflowPayload workflow,
+        int? schemaVersion = 1,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await httpClient.PutAsJsonAsync(
+            $"api/workflows/{id}",
+            new WorkflowRequestPayload(workflow, schemaVersion, CreateNewVersion: true),
             cancellationToken);
 
         return await ReadWorkflowResponseAsync(response, cancellationToken);
@@ -141,12 +155,14 @@ public sealed class WorkflowApiException(string message, IReadOnlyList<string> e
     public IReadOnlyList<string> Errors { get; } = errors;
 }
 
-public sealed record WorkflowRequestPayload(WorkflowPayload Workflow, int? SchemaVersion);
+public sealed record WorkflowRequestPayload(WorkflowPayload Workflow, int? SchemaVersion, bool CreateNewVersion = false);
 
 public sealed record WorkflowResponsePayload(
     Guid Id,
     WorkflowPayload Workflow,
     int Version,
+    int ActiveVersion,
+    int LastVersion,
     bool IsActive,
     bool IsEnabled,
     DateTimeOffset? EffectiveFromUtc,

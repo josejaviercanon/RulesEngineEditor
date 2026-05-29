@@ -86,7 +86,6 @@ public sealed class RulesPageComponentTests : Bunit.TestContext
 
         cut.WaitForAssertion(() =>
         {
-            _handler.ActivateRuleVersionCalls.Should().BeGreaterThan(0);
             _handler.ValidateWorkflowCalls.Should().BeGreaterThan(0);
             _handler.UpdateWorkflowCalls.Should().BeGreaterThan(0);
         });

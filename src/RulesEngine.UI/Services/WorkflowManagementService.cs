@@ -11,7 +11,8 @@ public sealed class WorkflowManagementService(WorkflowApiClient apiClient)
         return workflows
             .Select(workflow => new WorkflowGridRow(
                 workflow.Id,
-                workflow.Version,
+                workflow.LastVersion,
+                workflow.ActiveVersion,
                 workflow.Workflow.WorkflowName,
                 workflow.IsEnabled,
                 workflow.IsActive))

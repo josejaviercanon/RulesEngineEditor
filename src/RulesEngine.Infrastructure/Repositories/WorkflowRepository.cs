@@ -18,10 +18,17 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         var records = await LoadRecordsAsync(cancellationToken);
         return records
             .GroupBy(record => record.Id)
-            .Select(group => group
-                .OrderByDescending(record => record.IsActive)
-                .ThenByDescending(record => record.Version)
-                .First())
+            .Select(group =>
+            {
+                var representative = group
+                    .OrderByDescending(record => record.IsActive)
+                    .ThenByDescending(record => record.Version)
+                    .First();
+
+                representative.ActiveVersion = group.FirstOrDefault(item => item.IsActive)?.Version ?? representative.Version;
+                representative.LastVersion = group.Max(item => item.Version);
+                return representative;
+            })
             .Where(record => !isEnabled.HasValue || record.IsEnabled == isEnabled.Value)
             .Select(record =>
             {
@@ -208,7 +215,10 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         await UpsertWorkflowRulesAsync(workflowId, nextVersion, workflowJson, cancellationToken);
         await SaveChangesAsync(cancellationToken);
 
-        return MapToCore(entity);
+        var created = MapToCore(entity);
+        created.ActiveVersion = created.Version;
+        created.LastVersion = created.Version;
+        return created;
     }
 
     public async Task<WorkflowRecord?> UpdateAsync(Guid id, WorkflowRecord workflow, CancellationToken cancellationToken)
@@ -222,38 +232,35 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
             return null;
         }
 
-        var nextVersion = existing.Max(entity => entity.Version) + 1;
-        var workflowJson = JsonPayloadUtilities.ResolveWorkflowJson(workflow.WorkflowJson, workflow.RuleJson);
+        var target = workflow.Version > 0
+            ? existing.FirstOrDefault(entity => entity.Version == workflow.Version)
+            : existing.FirstOrDefault(entity => entity.IsActive);
 
-        foreach (var entity in existing.Where(entity => entity.IsActive))
+        if (target is null)
         {
-            entity.IsActive = false;
+            return null;
         }
 
-        var entityToAdd = new WorkflowEntity
-        {
-            Id = id,
-            Name = workflow.Name,
-            Version = nextVersion,
-            IsActive = true,
-            WorkflowJson = workflowJson,
-            IsEnabled = workflow.IsEnabled,
-            Comments = workflow.Comments,
-            EffectiveFromUtc = workflow.EffectiveFromUtc,
-            EffectiveToUtc = workflow.EffectiveToUtc,
-            Definition = new WorkflowDefinitionEntity
-            {
-                Expression = workflow.Expression,
-                RuleJson = workflowJson
-            }
-        };
+        var workflowJson = JsonPayloadUtilities.ResolveWorkflowJson(workflow.WorkflowJson, workflow.RuleJson);
 
-        dbContext.Workflows.Add(entityToAdd);
-        await UpsertWorkflowRulesAsync(id, nextVersion, workflowJson, cancellationToken);
+        target.Name = workflow.Name;
+        target.WorkflowJson = workflowJson;
+        target.IsEnabled = workflow.IsEnabled;
+        target.Comments = workflow.Comments;
+        target.EffectiveFromUtc = workflow.EffectiveFromUtc;
+        target.EffectiveToUtc = workflow.EffectiveToUtc;
+        target.Definition ??= new WorkflowDefinitionEntity();
+        target.Definition.Expression = workflow.Expression;
+        target.Definition.RuleJson = workflowJson;
+
+        await SyncWorkflowRulesAsync(id, target.Version, workflowJson, cancellationToken);
 
         await SaveChangesAsync(cancellationToken);
 
-        return MapToCore(entityToAdd);
+        var updated = MapToCore(target);
+        updated.ActiveVersion = existing.FirstOrDefault(entity => entity.IsActive)?.Version ?? target.Version;
+        updated.LastVersion = existing.Max(entity => entity.Version);
+        return updated;
     }
 
     public async Task<IReadOnlyCollection<RuleVersionRecord>> ListRuleVersionsAsync(
@@ -613,6 +620,104 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         }
     }
 
+    private async Task SyncWorkflowRulesAsync(
+        Guid workflowId,
+        int workflowVersion,
+        string workflowJson,
+        CancellationToken cancellationToken)
+    {
+        var rules = ParseTopLevelRules(workflowJson);
+
+        var existingLinks = await dbContext.WorkflowRules
+            .Where(link => link.WorkflowId == workflowId && link.WorkflowVersion == workflowVersion)
+            .ToListAsync(cancellationToken);
+
+        dbContext.WorkflowRules.RemoveRange(existingLinks);
+
+        if (rules.Count == 0)
+        {
+            return;
+        }
+
+        var activeByName = await LoadActiveRuleGuidsByNameAsync(workflowId, cancellationToken);
+
+        foreach (var rule in rules)
+        {
+            var ruleGuidId = rule.RuleGuidId;
+            if (ruleGuidId == Guid.Empty)
+            {
+                if (!activeByName.TryGetValue(rule.RuleName, out ruleGuidId))
+                {
+                    ruleGuidId = CreateDeterministicGuid(workflowId, rule.RuleName, rule.Expression);
+                }
+            }
+
+            var resolvedVersion = rule.Version > 0
+                ? rule.Version
+                : await GetNextRuleVersionAsync(ruleGuidId, cancellationToken);
+
+            var ruleRecord = await dbContext.Rules
+                .FirstOrDefaultAsync(item => item.RuleGuidId == ruleGuidId && item.Version == resolvedVersion, cancellationToken);
+
+            if (ruleRecord is null)
+            {
+                var currentlyActive = await dbContext.Rules
+                    .Where(item => item.RuleGuidId == ruleGuidId && item.IsActive)
+                    .ToListAsync(cancellationToken);
+
+                foreach (var active in currentlyActive)
+                {
+                    active.IsActive = false;
+                }
+
+                ruleRecord = new RuleRecord
+                {
+                    Id = Guid.NewGuid(),
+                    RuleGuidId = ruleGuidId,
+                    Name = rule.RuleName,
+                    Expression = rule.Expression,
+                    RuleJson = JsonPayloadUtilities.EnsureRuleJsonContainsExpression(rule.RawRuleJson, rule.Expression),
+                    Version = resolvedVersion,
+                    IsActive = true,
+                    Status = rule.Status,
+                    EffectiveFromUtc = null,
+                    EffectiveToUtc = null
+                };
+
+                dbContext.Rules.Add(ruleRecord);
+            }
+            else
+            {
+                ruleRecord.Name = rule.RuleName;
+                ruleRecord.Expression = rule.Expression;
+                ruleRecord.RuleJson = JsonPayloadUtilities.EnsureRuleJsonContainsExpression(rule.RawRuleJson, rule.Expression);
+                ruleRecord.Status = rule.Status;
+
+                if (rule.IsActive)
+                {
+                    var currentlyActive = await dbContext.Rules
+                        .Where(item => item.RuleGuidId == ruleGuidId && item.IsActive && item.Version != resolvedVersion)
+                        .ToListAsync(cancellationToken);
+
+                    foreach (var active in currentlyActive)
+                    {
+                        active.IsActive = false;
+                    }
+
+                    ruleRecord.IsActive = true;
+                }
+            }
+
+            dbContext.WorkflowRules.Add(new WorkflowRuleCollectionEntity
+            {
+                WorkflowId = workflowId,
+                WorkflowVersion = workflowVersion,
+                RuleGuidId = ruleGuidId,
+                RuleVersion = resolvedVersion
+            });
+        }
+    }
+
     private static List<ParsedRulePayload> ParseTopLevelRules(string workflowJson)
     {
         try
@@ -644,11 +749,26 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                     : string.Empty;
                 var ruleGuidId = Guid.Empty;
                 var status = RuleStatus.Draft;
+                var version = 1;
+                var isActive = true;
                 if (item.TryGetProperty("RuleGuidId", out var ruleGuidElement) &&
                     ruleGuidElement.ValueKind == JsonValueKind.String &&
                     Guid.TryParse(ruleGuidElement.GetString(), out var parsed))
                 {
                     ruleGuidId = parsed;
+                }
+
+                if (item.TryGetProperty("Version", out var versionElement) &&
+                    versionElement.ValueKind == JsonValueKind.Number &&
+                    versionElement.TryGetInt32(out var parsedVersion))
+                {
+                    version = parsedVersion;
+                }
+
+                if (item.TryGetProperty("IsActive", out var isActiveElement) &&
+                    (isActiveElement.ValueKind == JsonValueKind.True || isActiveElement.ValueKind == JsonValueKind.False))
+                {
+                    isActive = isActiveElement.GetBoolean();
                 }
 
                 if (item.TryGetProperty("Status", out var statusElement) &&
@@ -657,7 +777,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                     status = RuleStatusParser.ParseOrDefault(statusElement.GetString(), RuleStatus.Draft);
                 }
 
-                rules.Add(new ParsedRulePayload(ruleName, expression, item.GetRawText(), ruleGuidId, status));
+                rules.Add(new ParsedRulePayload(ruleName, expression, item.GetRawText(), ruleGuidId, status, version, isActive));
             }
 
             return rules;
@@ -700,6 +820,8 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         WorkflowJson = JsonPayloadUtilities.ResolveWorkflowJson(entity.WorkflowJson, entity.Definition.RuleJson),
         RuleJson = JsonPayloadUtilities.ResolveWorkflowJson(entity.WorkflowJson, entity.Definition.RuleJson),
         Version = entity.Version,
+        ActiveVersion = entity.IsActive ? entity.Version : 0,
+        LastVersion = entity.Version,
         IsActive = entity.IsActive,
         IsEnabled = entity.IsEnabled,
         Comments = entity.Comments,
@@ -745,5 +867,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         string Expression,
         string RawRuleJson,
         Guid RuleGuidId,
-        RuleStatus Status);
+        RuleStatus Status,
+        int Version,
+        bool IsActive);
 }

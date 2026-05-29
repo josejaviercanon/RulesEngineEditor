@@ -27,6 +27,10 @@ public sealed class WorkflowDto
 
     public int Version { get; init; }
 
+    public int ActiveVersion { get; init; }
+
+    public int LastVersion { get; init; }
+
     public bool IsActive { get; init; }
 
     public bool IsEnabled { get; init; } = true;

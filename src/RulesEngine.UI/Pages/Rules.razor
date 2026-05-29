@@ -1,6 +1,7 @@
 @page "/rules"
 @inject WorkflowApiClient WorkflowApiClient
 @inject WorkflowManagementService WorkflowManagementService
+@inject IJSRuntime JS
 
 <PageTitle>Rules</PageTitle>
 
@@ -43,9 +44,13 @@
                                 <Icon Name="IconName.Plus" />
                                 New Rule
                             </Button>
+                            <Button Color="Color.Info" Size="Size.Small" Margin="Margin.Is1.FromStart" Clicked="@(() => ValidateWorkflowAsync(workflow))">
+                                <Icon Name="IconName.CheckCircle" />
+                                Validate
+                            </Button>
                         </TableRowCell>
                         <TableRowCell>@workflow.Id</TableRowCell>
-                        <TableRowCell>@workflow.Version</TableRowCell>
+                        <TableRowCell>@workflow.LastVersion</TableRowCell>
                         <TableRowCell>@workflow.WorkflowName</TableRowCell>
                         <TableRowCell>
                             <Badge Color="@(workflow.IsEnabled ? Color.Success : Color.Warning)">
@@ -79,6 +84,13 @@
                                                     <Button Color="Color.Primary" Size="Size.Small" Clicked="@(() => OpenEditRuleModalAsync(workflow.Id, rule))">
                                                         <Icon Name="IconName.Pen" />
                                                         Edit
+                                                    </Button>
+                                                    <Button Color="Color.Danger" Size="Size.Small" Margin="Margin.Is1.FromStart" Clicked="@(() => DeleteRuleAsync(workflow.Id, rule))">
+                                                        Delete
+                                                    </Button>
+                                                    <Button Color="Color.Info" Size="Size.Small" Margin="Margin.Is1.FromStart" Clicked="@(() => ValidateRuleAsync(workflow.Id, rule))">
+                                                        <Icon Name="IconName.CheckCircle" />
+                                                        Validate
                                                     </Button>
                                                 </TableRowCell>
                                                 <TableRowCell>@rule.RuleGuidId</TableRowCell>
@@ -130,6 +142,10 @@
         </ModalBody>
         <ModalFooter>
             <Button Color="Color.Secondary" Clicked="CloseRuleModal">Cancel</Button>
+            @if (!isCreateRuleMode)
+            {
+                <Button Color="Color.Warning" Clicked="CreateRuleVersionAsync">Create New Version</Button>
+            }
             <Button Color="Color.Primary" Clicked="SaveRuleAsync">Save</Button>
         </ModalFooter>
     </ModalContent>
@@ -263,25 +279,11 @@
                     return;
                 }
 
-                if (selectedRuleVersion > 0)
-                {
-                    await WorkflowApiClient.ActivateRuleVersionAsync(selectedWorkflowId, selectedRuleGuidId, selectedRuleVersion);
-                    workflow = await WorkflowApiClient.GetWorkflowByIdAsync(selectedWorkflowId, "ActiveOnly");
-                    if (workflow is null)
-                    {
-                        SetStatus("Unable to load active workflow after activating rule version.", Color.Warning);
-                        return;
-                    }
-
-                    updatedWorkflow = CloneWorkflow(workflow.Workflow);
-                    rules = updatedWorkflow.Rules.ToList();
-                }
-
-                var existingRule = rules.FirstOrDefault(item => item.RuleGuidId == selectedRuleGuidId);
+                var existingRule = rules.FirstOrDefault(item => item.RuleGuidId == selectedRuleGuidId && item.Version == selectedRuleVersion);
 
                 if (existingRule is null)
                 {
-                    SetStatus("Rule was not found in active workflow state.", Color.Warning);
+                    SetStatus("Rule version was not found.", Color.Warning);
                     return;
                 }
 
@@ -309,6 +311,167 @@
         catch (WorkflowApiException exception)
         {
             ruleValidationErrors.AddRange(exception.Errors);
+            SetStatus(string.Join(" ", exception.Errors), Color.Danger);
+        }
+    }
+
+    private async Task CreateRuleVersionAsync()
+    {
+        ruleValidationErrors.Clear();
+
+        if (selectedWorkflowId == Guid.Empty || selectedRuleGuidId == Guid.Empty)
+        {
+            return;
+        }
+
+        if (!await JS.InvokeAsync<bool>("confirm", "Create a new rule version?"))
+        {
+            return;
+        }
+
+        try
+        {
+            var workflow = await WorkflowApiClient.GetWorkflowByIdAsync(selectedWorkflowId, "IncludeHistory");
+            if (workflow is null)
+            {
+                SetStatus("Workflow not found.", Color.Warning);
+                return;
+            }
+
+            var updatedWorkflow = CloneWorkflow(workflow.Workflow);
+            var rules = updatedWorkflow.Rules.ToList();
+
+            var sourceRule = rules.FirstOrDefault(item => item.RuleGuidId == selectedRuleGuidId && item.Version == selectedRuleVersion);
+            if (sourceRule is null)
+            {
+                SetStatus("Rule version was not found.", Color.Warning);
+                return;
+            }
+
+            rules.Add(new RulePayload
+            {
+                RuleGuidId = sourceRule.RuleGuidId,
+                Version = sourceRule.Version + 1,
+                IsActive = true,
+                Status = sourceRule.Status,
+                RuleName = string.IsNullOrWhiteSpace(ruleForm.RuleName) ? sourceRule.RuleName : ruleForm.RuleName.Trim(),
+                Enabled = sourceRule.Enabled,
+                Expression = string.IsNullOrWhiteSpace(ruleForm.Expression) ? sourceRule.Expression : ruleForm.Expression.Trim(),
+                Operator = sourceRule.Operator,
+                ErrorMessage = sourceRule.ErrorMessage,
+                RuleExpressionType = sourceRule.RuleExpressionType,
+                RuleJson = sourceRule.RuleJson,
+                SuccessEvent = sourceRule.SuccessEvent,
+                LocalParams = sourceRule.LocalParams,
+                Rules = sourceRule.Rules,
+                Actions = sourceRule.Actions,
+                WorkflowsToInject = sourceRule.WorkflowsToInject,
+                Properties = new Dictionary<string, string>(sourceRule.Properties)
+            });
+
+            updatedWorkflow.Rules = rules;
+
+            var validation = await WorkflowApiClient.ValidateWorkflowAsync(updatedWorkflow);
+            if (!validation.IsValid)
+            {
+                ruleValidationErrors.AddRange(validation.Errors);
+                return;
+            }
+
+            await WorkflowApiClient.UpdateWorkflowAsync(selectedWorkflowId, updatedWorkflow);
+            await ReloadWorkflowRowsAsync();
+            await LoadRulesForWorkflowAsync(selectedWorkflowId);
+            await CloseRuleModal();
+            SetStatus("Rule version created successfully.", Color.Success);
+        }
+        catch (WorkflowApiException exception)
+        {
+            ruleValidationErrors.AddRange(exception.Errors);
+            SetStatus(string.Join(" ", exception.Errors), Color.Danger);
+        }
+    }
+
+    private async Task DeleteRuleAsync(Guid workflowId, RuleGridRow rule)
+    {
+        if (!await JS.InvokeAsync<bool>("confirm", "Delete selected rule?"))
+        {
+            return;
+        }
+
+        try
+        {
+            var workflow = await WorkflowApiClient.GetWorkflowByIdAsync(workflowId, "IncludeHistory");
+            if (workflow is null)
+            {
+                SetStatus("Workflow not found.", Color.Warning);
+                return;
+            }
+
+            var updatedWorkflow = CloneWorkflow(workflow.Workflow);
+            updatedWorkflow.Rules = updatedWorkflow.Rules
+                .Where(item => !(item.RuleGuidId == rule.RuleGuidId && item.Version == rule.Version))
+                .ToArray();
+
+            await WorkflowApiClient.UpdateWorkflowAsync(workflowId, updatedWorkflow);
+            await ReloadWorkflowRowsAsync();
+            await LoadRulesForWorkflowAsync(workflowId);
+            SetStatus("Rule deleted successfully.", Color.Success);
+        }
+        catch (WorkflowApiException exception)
+        {
+            SetStatus(string.Join(" ", exception.Errors), Color.Danger);
+        }
+    }
+
+    private async Task ValidateRuleAsync(Guid workflowId, RuleGridRow rule)
+    {
+        try
+        {
+            var workflow = await WorkflowApiClient.GetWorkflowByIdAsync(workflowId, "IncludeHistory");
+            if (workflow is null)
+            {
+                SetStatus("Workflow not found.", Color.Warning);
+                return;
+            }
+
+            var updatedWorkflow = CloneWorkflow(workflow.Workflow);
+            updatedWorkflow.Rules = updatedWorkflow.Rules
+                .Where(item => item.RuleGuidId == rule.RuleGuidId && item.Version == rule.Version)
+                .ToArray();
+
+            var validation = await WorkflowApiClient.ValidateWorkflowAsync(updatedWorkflow);
+            SetStatus(
+                validation.IsValid
+                    ? $"Rule '{rule.RuleName}' expression is valid."
+                    : $"Rule '{rule.RuleName}' expression has errors: {string.Join(" | ", validation.Errors)}",
+                validation.IsValid ? Color.Success : Color.Warning);
+        }
+        catch (WorkflowApiException exception)
+        {
+            SetStatus(string.Join(" ", exception.Errors), Color.Danger);
+        }
+    }
+
+    private async Task ValidateWorkflowAsync(WorkflowGridRow workflow)
+    {
+        try
+        {
+            var response = await WorkflowApiClient.GetWorkflowByIdAsync(workflow.Id, "ActiveOnly");
+            if (response is null)
+            {
+                SetStatus("Workflow not found.", Color.Warning);
+                return;
+            }
+
+            var validation = await WorkflowApiClient.ValidateWorkflowAsync(response.Workflow);
+            SetStatus(
+                validation.IsValid
+                    ? $"Workflow '{workflow.WorkflowName}' is valid."
+                    : $"Workflow '{workflow.WorkflowName}' has errors: {string.Join(" | ", validation.Errors)}",
+                validation.IsValid ? Color.Success : Color.Warning);
+        }
+        catch (WorkflowApiException exception)
+        {
             SetStatus(string.Join(" ", exception.Errors), Color.Danger);
         }
     }

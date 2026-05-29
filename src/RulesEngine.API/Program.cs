@@ -283,7 +283,8 @@ workflows.MapPut("/{id:guid}", async (
             updated = await mediator.Send(new UpdateWorkflowCommand(
                 id,
                 request.Workflow,
-                request.SchemaVersion), cancellationToken);
+                request.SchemaVersion,
+                request.CreateNewVersion), cancellationToken);
         }
         catch (WorkflowValidationException exception)
         {
