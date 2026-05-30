@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;</TargetFrameworks>
+    <LangVersion>13.0</LangVersion>
+    <Version>6.0.0</Version>
+    <Copyright>Copyright (c) Microsoft Corporation.</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/microsoft/RulesEngine</PackageProjectUrl>
+    <Authors>Purunjay Bhal</Authors>
+    <Description>Rules Engine is a package for abstracting business logic/rules/policies out of the system. This works in a very simple way by giving you an ability to put your rules in a store outside the core logic of the system thus ensuring that any change in rules doesn't affect the core system.</Description>
+    <PackageReleaseNotes>https://github.com/microsoft/RulesEngine/blob/main/CHANGELOG.md</PackageReleaseNotes>
+    <PackageTags>BRE, Rules Engine, Abstraction</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Label="SourceLink">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\signing\RulesEngine-publicKey.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>True</DelaySign>
+    <Deterministic>true</Deterministic>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FastExpressionCompiler" Version="5.4.1" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.7.2" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.300" PrivateAssets="All" />
+  </ItemGroup>
+
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
+      <ItemGroup>
+        <PackageReference Include="System.Text.Json" Version="6.0.11" />
+      </ItemGroup>
+    </When>
+    <Otherwise />
+  </Choose>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+  </ItemGroup>
+
+</Project>
