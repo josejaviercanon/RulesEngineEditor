@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="rulesengineeditor.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+</Solution>

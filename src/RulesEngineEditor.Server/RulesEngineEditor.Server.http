@@ -1,0 +1,6 @@
+@RulesEngineEditor.Server_HostAddress = http://localhost:5064
+
+GET {{RulesEngineEditor.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
