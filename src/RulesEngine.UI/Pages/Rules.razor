@@ -2,6 +2,7 @@
 @inject WorkflowApiClient WorkflowApiClient
 @inject WorkflowManagementService WorkflowManagementService
 @inject IJSRuntime JS
+@inject NavigationManager NavigationManager
 
 <PageTitle>Rules</PageTitle>
 
@@ -49,6 +50,10 @@
                                 <Icon Name="IconName.CheckCircle" />
                                 Validate
                             </Button>
+                            <Button Color="Color.Secondary" Size="Size.Small" Margin="Margin.Is1.FromStart" Clicked="@(() => OpenVisualEditor(workflow))">
+                                <Icon Name="IconName.Pen" />
+                                Visual Editor
+                            </Button>
                         </TableRowCell>
                         <TableRowCell>@workflow.Id</TableRowCell>
                         <TableRowCell>@workflow.ActiveVersion</TableRowCell>
@@ -75,6 +80,7 @@
                                             <TableHeaderCell>Actions</TableHeaderCell>
                                             <TableHeaderCell>Guid ID</TableHeaderCell>
                                             <TableHeaderCell>Name</TableHeaderCell>
+                                            <TableHeaderCell>Execute Order</TableHeaderCell>
                                             <TableHeaderCell>Active Version</TableHeaderCell>
                                             <TableHeaderCell>Last Version</TableHeaderCell>
                                         </TableRow>
@@ -98,6 +104,7 @@
                                                 </TableRowCell>
                                                 <TableRowCell>@rule.RuleGuidId</TableRowCell>
                                                 <TableRowCell>@rule.RuleName</TableRowCell>
+                                                <TableRowCell>@rule.ExecuteOrder</TableRowCell>
                                                 <TableRowCell>@rule.ActiveVersion</TableRowCell>
                                                 <TableRowCell>@rule.LastVersion</TableRowCell>
                                             </TableRow>
@@ -113,68 +120,20 @@
     </CardBody>
 </Card>
 
-<Modal @ref="ruleModalRef" Centered Size="ModalSize.Large">
-    <ModalContent>
-        <ModalHeader>
-            <ModalTitle>@(isCreateRuleMode ? "New Rule" : "Edit Rule")</ModalTitle>
-            <CloseButton Clicked="CloseRuleModal" />
-        </ModalHeader>
-        <ModalBody>
-            @if (!isCreateRuleMode)
-            {
-                <Field>
-                    <FieldLabel>Rule Version</FieldLabel>
-                    <Select TValue="int" Value="selectedRuleVersion" ValueChanged="OnSelectedRuleVersionChangedAsync">
-                        @foreach (var item in ruleVersionPayloads)
-                        {
-                            <SelectItem Value="@item.Version">
-                                Version @item.Version @(item.IsActive ? "(Active)" : string.Empty)
-                            </SelectItem>
-                        }
-                    </Select>
-                </Field>
-
-                <Field>
-                    <Switch @bind-Value="ruleForm.IsActive">
-                        Active Version
-                    </Switch>
-                </Field>
-            }
-
-            <Field>
-                <FieldLabel>Rule Name</FieldLabel>
-                <TextInput @bind-Value="ruleForm.RuleName" Placeholder="Enter rule name" />
-            </Field>
-            <Field>
-                <FieldLabel>Expression</FieldLabel>
-                <MemoInput @bind-Value="ruleForm.Expression" Rows="6" Placeholder="Enter rule expression" />
-            </Field>
-
-            @if (ruleValidationErrors.Count > 0)
-            {
-                <Alert Color="Color.Danger" Visible>
-                    <AlertMessage>Rule validation failed</AlertMessage>
-                    <AlertDescription>
-                        <UnorderedList>
-                            @foreach (var item in ruleValidationErrors)
-                            {
-                                <UnorderedListItem>@item</UnorderedListItem>
-                            }
-                        </UnorderedList>
-                    </AlertDescription>
-                </Alert>
-            }
-        </ModalBody>
-        <ModalFooter>
-            <Button Color="Color.Secondary" Clicked="CloseRuleModal">Cancel</Button>
-            @if (!isCreateRuleMode)
-            {
-                <Button Color="Color.Warning" Clicked="CreateRuleVersionAsync">Create New Version</Button>
-            }
-            <Button Color="Color.Primary" Clicked="SaveRuleAsync">Save</Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
+<RuleEditorModal
+    @ref="ruleEditorModalRef"
+    Title="@(isCreateRuleMode ? "New Rule" : "Edit Rule")"
+    FormModel="ruleForm"
+    ShowVersionSelector="@(!isCreateRuleMode)"
+    VersionOptions="@(ruleVersionPayloads.Select(item => new RuleEditorModal.RuleVersionOption(item.Version, item.IsActive)).ToArray())"
+    SelectedVersion="selectedRuleVersion"
+    SelectedVersionChanged="OnSelectedRuleVersionChangedAsync"
+    ShowActiveToggle="@(!isCreateRuleMode)"
+    ValidationErrors="ruleValidationErrors"
+    ShowCreateVersionButton="@(!isCreateRuleMode)"
+    OnCreateVersion="CreateRuleVersionAsync"
+    OnSave="SaveRuleAsync"
+    OnCancel="CloseRuleModal" />
 
 @code {
     private readonly List<WorkflowGridRow> workflowRows = [];
@@ -182,12 +141,12 @@
     private readonly List<RulePayload> ruleVersionPayloads = [];
     private readonly List<string> ruleValidationErrors = [];
     private readonly HashSet<Guid> expandedWorkflowIds = [];
-    private Modal ruleModalRef = default!;
+    private RuleEditorModal ruleEditorModalRef = default!;
     private Guid selectedWorkflowId;
     private Guid selectedRuleGuidId;
     private int selectedRuleVersion;
     private bool isCreateRuleMode;
-    private RuleFormModel ruleForm = new();
+    private RuleEditorFormModel ruleForm = new();
     private string statusMessage = string.Empty;
     private Color statusColor = Color.Info;
 
@@ -235,8 +194,16 @@
         isCreateRuleMode = true;
         ruleVersionPayloads.Clear();
         ruleValidationErrors.Clear();
-        ruleForm = new RuleFormModel { IsActive = true };
-        await ruleModalRef.Show();
+        var nextExecuteOrder = rulesByWorkflow.TryGetValue(workflow.Id, out var rules) && rules.Count > 0
+            ? rules.Max(item => item.ExecuteOrder) + 1
+            : 1;
+
+        ruleForm = new RuleEditorFormModel
+        {
+            IsActive = true,
+            ExecuteOrder = nextExecuteOrder
+        };
+        await ruleEditorModalRef.ShowAsync();
     }
 
     private async Task OpenEditRuleModalAsync(Guid workflowId, RuleGridRow rule)
@@ -250,7 +217,7 @@
         await ReloadRuleVersionsAsync(workflowId, rule.RuleGuidId, rule.Version);
         ApplySelectedRuleVersionToForm();
 
-        await ruleModalRef.Show();
+        await ruleEditorModalRef.ShowAsync();
     }
 
     private async Task ReloadRuleVersionsAsync(Guid workflowId, Guid ruleGuidId, int preferredVersion)
@@ -278,19 +245,20 @@
 
         if (selectedPayload is null)
         {
-            ruleForm = new RuleFormModel();
+            ruleForm = new RuleEditorFormModel();
             return;
         }
 
-        ruleForm = new RuleFormModel
+        ruleForm = new RuleEditorFormModel
         {
             RuleName = selectedPayload.RuleName,
             Expression = selectedPayload.Expression,
-            IsActive = selectedPayload.IsActive
+            IsActive = selectedPayload.IsActive,
+            ExecuteOrder = selectedPayload.ExecuteOrder
         };
     }
 
-    private Task CloseRuleModal() => ruleModalRef.Hide();
+    private Task CloseRuleModal() => ruleEditorModalRef.HideAsync();
 
     private async Task SaveRuleAsync()
     {
@@ -352,7 +320,8 @@
                     Status = "draft",
                     RuleName = ruleForm.RuleName.Trim(),
                     Enabled = true,
-                    Expression = ruleForm.Expression.Trim()
+                    Expression = ruleForm.Expression.Trim(),
+                    ExecuteOrder = Math.Max(1, ruleForm.ExecuteOrder)
                 });
             }
             else
@@ -374,6 +343,7 @@
                 existingRule.RuleName = ruleForm.RuleName.Trim();
                 existingRule.Expression = ruleForm.Expression.Trim();
                 existingRule.IsActive = ruleForm.IsActive;
+                existingRule.ExecuteOrder = Math.Max(1, ruleForm.ExecuteOrder);
             }
 
             updatedWorkflow.Rules = rules;
@@ -382,6 +352,17 @@
             if (!validation.IsValid)
             {
                 ruleValidationErrors.AddRange(validation.Errors);
+
+                if (!await JS.InvokeAsync<bool>("confirm", "Validation failed. Save as draft with warnings?"))
+                {
+                    return;
+                }
+
+                await WorkflowApiClient.UpdateWorkflowAsync(selectedWorkflowId, updatedWorkflow, saveAsDraft: true);
+                await ReloadWorkflowRowsAsync();
+                await LoadRulesForWorkflowAsync(selectedWorkflowId);
+                await CloseRuleModal();
+                SetStatus("Rule saved as draft with validation warnings.", Color.Warning);
                 return;
             }
 
@@ -442,6 +423,7 @@
                 RuleName = string.IsNullOrWhiteSpace(ruleForm.RuleName) ? sourceRule.RuleName : ruleForm.RuleName.Trim(),
                 Enabled = sourceRule.Enabled,
                 Expression = string.IsNullOrWhiteSpace(ruleForm.Expression) ? sourceRule.Expression : ruleForm.Expression.Trim(),
+                ExecuteOrder = Math.Max(1, ruleForm.ExecuteOrder),
                 Operator = sourceRule.Operator,
                 ErrorMessage = sourceRule.ErrorMessage,
                 RuleExpressionType = sourceRule.RuleExpressionType,
@@ -460,6 +442,17 @@
             if (!validation.IsValid)
             {
                 ruleValidationErrors.AddRange(validation.Errors);
+
+                if (!await JS.InvokeAsync<bool>("confirm", "Validation failed. Save as draft with warnings?"))
+                {
+                    return;
+                }
+
+                await WorkflowApiClient.UpdateWorkflowAsync(selectedWorkflowId, updatedWorkflow, saveAsDraft: true);
+                await ReloadWorkflowRowsAsync();
+                await LoadRulesForWorkflowAsync(selectedWorkflowId);
+                await CloseRuleModal();
+                SetStatus("Rule version saved as draft with validation warnings.", Color.Warning);
                 return;
             }
 
@@ -506,6 +499,11 @@
         {
             SetStatus(string.Join(" ", exception.Errors), Color.Danger);
         }
+    }
+
+    private void OpenVisualEditor(WorkflowGridRow workflow)
+    {
+        NavigationManager.NavigateTo($"/visual-editor/{workflow.Id}");
     }
 
     private async Task ValidateRuleAsync(Guid workflowId, RuleGridRow rule)
@@ -594,6 +592,7 @@
             Enabled = rule.Enabled,
             RuleExpressionType = rule.RuleExpressionType,
             Expression = rule.Expression,
+            ExecuteOrder = rule.ExecuteOrder,
             RuleJson = rule.RuleJson,
             SuccessEvent = rule.SuccessEvent,
             LocalParams = rule.LocalParams.Select(item => new ScopedParamPayload { Name = item.Name, Expression = item.Expression }).ToArray(),
@@ -609,12 +608,4 @@
         statusColor = color;
     }
 
-    private sealed class RuleFormModel
-    {
-        public string RuleName { get; set; } = string.Empty;
-
-        public string Expression { get; set; } = string.Empty;
-
-        public bool IsActive { get; set; }
-    }
 }

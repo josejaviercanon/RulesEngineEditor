@@ -40,4 +40,6 @@ public sealed class WorkflowDto
     public DateTimeOffset? EffectiveFromUtc { get; init; }
 
     public DateTimeOffset? EffectiveToUtc { get; init; }
+
+    public IReadOnlyList<string> ValidationWarnings { get; init; } = [];
 }

@@ -36,11 +36,12 @@ public sealed class WorkflowApiClient(HttpClient httpClient)
         Guid id,
         WorkflowPayload workflow,
         int? schemaVersion = 1,
+        bool saveAsDraft = false,
         CancellationToken cancellationToken = default)
     {
         var response = await httpClient.PutAsJsonAsync(
             $"api/workflows/{id}",
-            new WorkflowRequestPayload(workflow, schemaVersion, CreateNewVersion: false),
+            new WorkflowRequestPayload(workflow, schemaVersion, CreateNewVersion: false, SaveAsDraft: saveAsDraft),
             cancellationToken);
 
         return await ReadWorkflowResponseAsync(response, cancellationToken);
@@ -163,7 +164,11 @@ public sealed class WorkflowApiException(string message, IReadOnlyList<string> e
     public IReadOnlyList<string> Errors { get; } = errors;
 }
 
-public sealed record WorkflowRequestPayload(WorkflowPayload Workflow, int? SchemaVersion, bool CreateNewVersion = false);
+public sealed record WorkflowRequestPayload(
+    WorkflowPayload Workflow,
+    int? SchemaVersion,
+    bool CreateNewVersion = false,
+    bool SaveAsDraft = false);
 
 public sealed record WorkflowResponsePayload(
     Guid Id,
@@ -247,6 +252,8 @@ public sealed class RulePayload
     public string RuleExpressionType { get; set; } = "LambdaExpression";
 
     public string Expression { get; set; } = string.Empty;
+
+    public int ExecuteOrder { get; set; }
 
     public string RuleJson { get; set; } = string.Empty;
 

@@ -41,6 +41,11 @@ public sealed class RulesEngineEditorDbContext(DbContextOptions<RulesEngineEdito
                 .UseCollation("pg_catalog.\"default\"")
                 .IsRequired();
 
+            entity.Property(rule => rule.ExecuteOrder)
+                .HasColumnName("ExecuteOrder")
+                .HasDefaultValue(0)
+                .IsRequired();
+
             entity.Property(rule => rule.RuleJson)
                 .HasColumnName("RuleJson")
                 .HasColumnType("text")

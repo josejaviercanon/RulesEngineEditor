@@ -3,12 +3,14 @@ using AutoMapper;
 using Microsoft.Extensions.Logging.Abstractions;
 using RulesEngine.Application.Commands;
 using RulesEngine.Application.Dtos;
+using RulesEngine.Application.Exceptions;
 using RulesEngine.Application.Handlers;
 using RulesEngine.Application.Mapping;
 using RulesEngine.Application.Policies;
 using RulesEngine.Core.Execution;
 using RulesEngine.Core.Models;
 using RulesEngine.Core.Repositories;
+using RulesEngine.Models;
 using System.Text.Json;
 
 namespace RulesEngine.Tests;
@@ -87,6 +89,165 @@ public sealed class WorkflowApplicationHandlersTests
         repository.Store.Should().HaveCount(2);
         repository.Store.Should().ContainSingle(item => item.Version == 1 && !item.IsActive);
         repository.Store.Should().ContainSingle(item => item.Version == 2 && item.IsActive);
+    }
+
+    [Fact]
+    public async Task UpdateWorkflowHandler_ShouldOrderRulesByExecuteOrderAndRuleGuidId()
+    {
+        var repository = new InMemoryWorkflowRepository();
+        var rulesService = new RulesEngineWorkflowService();
+        var createHandler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
+        var updateHandler = new UpdateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
+
+        var created = await createHandler.Handle(new CreateWorkflowCommand(BuildWorkflowDto("workflow-order"), null), CancellationToken.None);
+        var firstRuleGuid = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        var secondRuleGuid = Guid.Parse("22222222-2222-2222-2222-222222222222");
+        var thirdRuleGuid = Guid.Parse("33333333-3333-3333-3333-333333333333");
+
+        var updatedWorkflow = new WorkflowDto
+        {
+            Id = created.Id,
+            WorkflowName = "workflow-order",
+            RuleExpressionType = RuleExpressionType.LambdaExpression,
+            Rules =
+            [
+                new RuleDto
+                {
+                    RuleGuidId = thirdRuleGuid,
+                    Version = 1,
+                    RuleName = "Third",
+                    Expression = "1 == 1",
+                    Enabled = true,
+                    IsActive = true,
+                    ExecuteOrder = 2
+                },
+                new RuleDto
+                {
+                    RuleGuidId = secondRuleGuid,
+                    Version = 1,
+                    RuleName = "Second",
+                    Expression = "1 == 1",
+                    Enabled = true,
+                    IsActive = true,
+                    ExecuteOrder = 1
+                },
+                new RuleDto
+                {
+                    RuleGuidId = firstRuleGuid,
+                    Version = 1,
+                    RuleName = "First",
+                    Expression = "1 == 1",
+                    Enabled = true,
+                    IsActive = true,
+                    ExecuteOrder = 1
+                }
+            ],
+            WorkflowsToInject = [],
+            Version = 1,
+            IsActive = true,
+            IsEnabled = true,
+            Comments = "order test"
+        };
+
+        var updated = await updateHandler.Handle(
+            new UpdateWorkflowCommand(created.Id, updatedWorkflow, null),
+            CancellationToken.None);
+
+        updated.Should().NotBeNull();
+        updated!.Rules.Select(rule => rule.RuleGuidId)
+            .Should().Equal(firstRuleGuid, secondRuleGuid, thirdRuleGuid);
+        updated.Rules.Select(rule => rule.ExecuteOrder)
+            .Should().Equal(1, 1, 2);
+    }
+
+    [Fact]
+    public async Task UpdateWorkflowHandler_ShouldThrowValidationException_WhenInvalidAndNotDraft()
+    {
+        var repository = new InMemoryWorkflowRepository();
+        var rulesService = new RulesEngineWorkflowService();
+        var createHandler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
+        var updateHandler = new UpdateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
+
+        var created = await createHandler.Handle(new CreateWorkflowCommand(BuildWorkflowDto("workflow-invalid"), null), CancellationToken.None);
+
+        var invalidWorkflow = BuildWorkflowDto("workflow-invalid");
+        invalidWorkflow = new WorkflowDto
+        {
+            Id = created.Id,
+            WorkflowName = invalidWorkflow.WorkflowName,
+            RuleExpressionType = invalidWorkflow.RuleExpressionType,
+            Rules =
+            [
+                new RuleDto
+                {
+                    RuleGuidId = Guid.NewGuid(),
+                    Version = 1,
+                    RuleName = "Broken",
+                    Expression = string.Empty,
+                    Enabled = true,
+                    IsActive = true,
+                    ExecuteOrder = 1
+                }
+            ],
+            WorkflowsToInject = invalidWorkflow.WorkflowsToInject,
+            Version = 1,
+            IsActive = true,
+            IsEnabled = true,
+            Comments = invalidWorkflow.Comments
+        };
+
+        var action = async () => await updateHandler.Handle(
+            new UpdateWorkflowCommand(created.Id, invalidWorkflow, null, SaveAsDraft: false),
+            CancellationToken.None);
+
+        await action.Should().ThrowAsync<WorkflowValidationException>();
+    }
+
+    [Fact]
+    public async Task UpdateWorkflowHandler_ShouldPersistAndReturnWarnings_WhenInvalidAndDraftSave()
+    {
+        var repository = new InMemoryWorkflowRepository();
+        var rulesService = new RulesEngineWorkflowService();
+        var createHandler = new CreateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
+        var updateHandler = new UpdateWorkflowCommandHandler(repository, rulesService, Mapper, StatusPolicy);
+
+        var created = await createHandler.Handle(new CreateWorkflowCommand(BuildWorkflowDto("workflow-draft"), null), CancellationToken.None);
+
+        var invalidWorkflow = new WorkflowDto
+        {
+            Id = created.Id,
+            WorkflowName = "workflow-draft",
+            RuleExpressionType = RuleExpressionType.LambdaExpression,
+            Rules =
+            [
+                new RuleDto
+                {
+                    RuleGuidId = Guid.NewGuid(),
+                    Version = 1,
+                    RuleName = "Broken",
+                    Expression = string.Empty,
+                    Enabled = true,
+                    IsActive = true,
+                    ExecuteOrder = 1
+                }
+            ],
+            WorkflowsToInject = [],
+            Version = 1,
+            IsActive = true,
+            IsEnabled = true,
+            Comments = "draft warning"
+        };
+
+        var updated = await updateHandler.Handle(
+            new UpdateWorkflowCommand(created.Id, invalidWorkflow, null, SaveAsDraft: true),
+            CancellationToken.None);
+
+        updated.Should().NotBeNull();
+        updated!.ValidationWarnings.Should().NotBeEmpty();
+
+        repository.Store.Should().ContainSingle(item =>
+            item.Id == created.Id &&
+            item.WorkflowJson.Contains("\"RuleName\":\"Broken\"", StringComparison.Ordinal));
     }
 
     [Fact]
@@ -406,8 +567,12 @@ public sealed class WorkflowApplicationHandlersTests
                 RuleJson = JsonSerializer.Serialize(rule),
                 Version = rule.Version == 0 ? 1 : rule.Version,
                 IsActive = true,
-                Status = RuleStatusParser.ParseOrDefault(rule.Status)
-            }).ToArray();
+                Status = RuleStatusParser.ParseOrDefault(rule.Status),
+                ExecuteOrder = rule.ExecuteOrder
+            })
+            .OrderBy(rule => rule.ExecuteOrder)
+            .ThenBy(rule => rule.RuleGuidId)
+            .ToArray();
 
             return Task.FromResult<IReadOnlyCollection<RuleVersionRecord>>(rules);
         }

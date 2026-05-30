@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using RulesEngine.Core.Models;
 using RulesEngine.Infrastructure.Persistence;
 using RulesEngine.Infrastructure.Repositories;
+using System.Text.Json;
 
 namespace RulesEngine.Tests;
 
@@ -155,6 +156,49 @@ public sealed class WorkflowRepositoryTests
 
         deleted.Should().BeTrue();
         loaded.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task ListWorkflowRulesAsync_ShouldOrderByExecuteOrderThenRuleGuidId()
+    {
+        await using var dbContext = CreateDbContext();
+        var repository = new WorkflowRepository(dbContext);
+        var firstRuleGuid = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        var secondRuleGuid = Guid.Parse("22222222-2222-2222-2222-222222222222");
+        var thirdRuleGuid = Guid.Parse("33333333-3333-3333-3333-333333333333");
+
+        var workflowJson = JsonSerializer.Serialize(new
+        {
+            WorkflowName = "ordered-rules",
+            Rules = new object[]
+            {
+                new { RuleGuidId = thirdRuleGuid, RuleName = "Third", Expression = "1 == 1", ExecuteOrder = 2, Version = 1, IsActive = true },
+                new { RuleGuidId = secondRuleGuid, RuleName = "Second", Expression = "1 == 1", ExecuteOrder = 1, Version = 1, IsActive = true },
+                new { RuleGuidId = firstRuleGuid, RuleName = "First", Expression = "1 == 1", ExecuteOrder = 1, Version = 1, IsActive = true }
+            }
+        });
+
+        var created = await repository.CreateAsync(new WorkflowRecord
+        {
+            Id = Guid.NewGuid(),
+            Name = "ordered-rules",
+            Expression = "1 == 1",
+            WorkflowJson = workflowJson,
+            RuleJson = workflowJson,
+            IsActive = true,
+            IsEnabled = true
+        }, CancellationToken.None);
+
+        var rules = await repository.ListWorkflowRulesAsync(
+            created.Id,
+            created.Version,
+            WorkflowRuleQueryMode.ActiveOnly,
+            CancellationToken.None);
+
+        rules.Select(rule => rule.RuleGuidId)
+            .Should().Equal(firstRuleGuid, secondRuleGuid, thirdRuleGuid);
+        rules.Select(rule => rule.ExecuteOrder)
+            .Should().Equal(1, 1, 2);
     }
 
     private static RulesEngineEditorDbContext CreateDbContext()

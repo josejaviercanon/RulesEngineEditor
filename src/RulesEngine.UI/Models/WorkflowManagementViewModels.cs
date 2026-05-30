@@ -23,6 +23,7 @@ public sealed record RuleGridRow(
     int ActiveVersion,
     int LastVersion,
     string RuleName,
+    int ExecuteOrder,
     string Expression,
     string Status,
     bool IsActive);

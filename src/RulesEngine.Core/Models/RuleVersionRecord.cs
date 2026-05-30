@@ -10,6 +10,8 @@ public sealed class RuleVersionRecord
 
     public string Expression { get; set; } = string.Empty;
 
+    public int ExecuteOrder { get; set; }
+
     public string RuleJson { get; set; } = string.Empty;
 
     public int Version { get; set; }

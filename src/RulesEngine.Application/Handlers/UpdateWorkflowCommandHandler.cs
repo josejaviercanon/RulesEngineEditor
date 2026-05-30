@@ -39,13 +39,18 @@ public sealed class UpdateWorkflowCommandHandler(
 
         var workflowDefinition = mapper.Map<Workflow>(normalized);
         var validationsPassed = TryValidateWorkflow(workflowDefinition, out var validationErrors);
+        IReadOnlyList<string> validationWarnings = validationsPassed ? [] : validationErrors;
 
         if (!validationsPassed)
         {
-            throw new WorkflowValidationException(validationErrors);
+            if (!request.SaveAsDraft)
+            {
+                throw new WorkflowValidationException(validationErrors);
+            }
         }
 
         normalized = AddJsonPayloads(normalized);
+        EnsureJsonPayloadsAreValid(normalized);
 
         WorkflowRecord? updated;
         if (request.CreateNewVersion)
@@ -86,11 +91,36 @@ public sealed class UpdateWorkflowCommandHandler(
 
         rulesEngineWorkflowService.RefreshWorkflow(updated.Id, workflowDefinition);
 
-        return await WorkflowDtoProjection.BuildAsync(
+        var projected = await WorkflowDtoProjection.BuildAsync(
             updated,
             workflowRepository,
             WorkflowRuleQueryMode.ActiveOnly,
             cancellationToken);
+
+        if (validationWarnings.Count == 0)
+        {
+            return projected;
+        }
+
+        return new WorkflowDto
+        {
+            Id = projected.Id,
+            WorkflowName = projected.WorkflowName,
+            RuleExpressionType = projected.RuleExpressionType,
+            GlobalParams = projected.GlobalParams,
+            Rules = projected.Rules,
+            WorkflowsToInject = projected.WorkflowsToInject,
+            WorkflowJson = projected.WorkflowJson,
+            Version = projected.Version,
+            ActiveVersion = projected.ActiveVersion,
+            LastVersion = projected.LastVersion,
+            IsActive = projected.IsActive,
+            IsEnabled = projected.IsEnabled,
+            Comments = projected.Comments,
+            EffectiveFromUtc = projected.EffectiveFromUtc,
+            EffectiveToUtc = projected.EffectiveToUtc,
+            ValidationWarnings = validationWarnings
+        };
     }
 
     private static WorkflowDto BuildDefaultRuleWorkflowVersion(WorkflowDto workflow)
@@ -112,7 +142,8 @@ public sealed class UpdateWorkflowCommandHandler(
                     Status = "draft",
                     RuleName = "Default Rule",
                     Enabled = true,
-                    Expression = "1 == 1"
+                    Expression = "1 == 1",
+                    ExecuteOrder = 1
                 }
             ],
             WorkflowsToInject = workflow.WorkflowsToInject,
@@ -175,6 +206,7 @@ public sealed class UpdateWorkflowCommandHandler(
                     Enabled = rule.Enabled,
                     RuleExpressionType = rule.RuleExpressionType,
                     Expression = rule.Expression,
+                    ExecuteOrder = rule.ExecuteOrder,
                     SuccessEvent = rule.SuccessEvent,
                     LocalParams = rule.LocalParams,
                     Rules = rule.Rules,
@@ -208,8 +240,7 @@ public sealed class UpdateWorkflowCommandHandler(
         var normalizedRules = workflow.Rules
             .Select(rule =>
             {
-                var canonicalRule = mapper.Map<Rule>(rule);
-                var serializedRule = JsonSerializer.Serialize(canonicalRule);
+                var serializedRule = BuildRuleJsonPayload(rule);
 
                 return new RuleDto
                 {
@@ -223,6 +254,7 @@ public sealed class UpdateWorkflowCommandHandler(
                     Enabled = rule.Enabled,
                     RuleExpressionType = rule.RuleExpressionType,
                     Expression = rule.Expression,
+                    ExecuteOrder = rule.ExecuteOrder,
                     RuleJson = serializedRule,
                     SuccessEvent = rule.SuccessEvent,
                     LocalParams = rule.LocalParams,
@@ -270,6 +302,7 @@ public sealed class UpdateWorkflowCommandHandler(
                 rule.Enabled,
                 rule.RuleExpressionType,
                 rule.Expression,
+                rule.ExecuteOrder,
                 rule.SuccessEvent,
                 rule.LocalParams,
                 rule.Rules,
@@ -279,6 +312,55 @@ public sealed class UpdateWorkflowCommandHandler(
             }),
             workflow.WorkflowsToInject
         });
+
+    private static string BuildRuleJsonPayload(RuleDto rule)
+        => JsonSerializer.Serialize(new
+        {
+            rule.RuleGuidId,
+            rule.Version,
+            rule.IsActive,
+            rule.Status,
+            rule.RuleName,
+            rule.Operator,
+            rule.ErrorMessage,
+            rule.Enabled,
+            rule.RuleExpressionType,
+            rule.Expression,
+            rule.ExecuteOrder,
+            rule.SuccessEvent,
+            rule.LocalParams,
+            rule.Rules,
+            rule.Actions,
+            rule.WorkflowsToInject,
+            rule.Properties
+        });
+
+    private static void EnsureJsonPayloadsAreValid(WorkflowDto workflow)
+    {
+        TryParseJson(workflow.WorkflowJson, "WorkflowJson");
+
+        foreach (var rule in workflow.Rules)
+        {
+            TryParseJson(rule.RuleJson, $"RuleJson ({rule.RuleName})");
+        }
+    }
+
+    private static void TryParseJson(string value, string fieldName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new InvalidOperationException($"{fieldName} cannot be empty.");
+        }
+
+        try
+        {
+            using var _ = JsonDocument.Parse(value);
+        }
+        catch (JsonException)
+        {
+            throw new InvalidOperationException($"{fieldName} must be valid JSON.");
+        }
+    }
 
     private static void ValidateWorkflowMetadata(WorkflowDto workflow)
     {

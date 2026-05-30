@@ -284,7 +284,8 @@ workflows.MapPut("/{id:guid}", async (
                 id,
                 request.Workflow,
                 request.SchemaVersion,
-                request.CreateNewVersion), cancellationToken);
+                request.CreateNewVersion,
+                request.SaveAsDraft), cancellationToken);
         }
         catch (WorkflowValidationException exception)
         {

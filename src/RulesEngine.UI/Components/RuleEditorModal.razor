@@ -1,0 +1,135 @@
+<Modal @ref="modalRef" Centered Size="ModalSize.Large">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>@Title</ModalTitle>
+            <CloseButton Clicked="HandleCancelAsync" />
+        </ModalHeader>
+        <ModalBody>
+            @if (ShowVersionSelector)
+            {
+                <Field>
+                    <FieldLabel>Rule Version</FieldLabel>
+                    <Select TValue="int" Value="SelectedVersion" ValueChanged="SelectedVersionChanged">
+                        @foreach (var option in VersionOptions)
+                        {
+                            <SelectItem Value="@option.Version">
+                                Version @option.Version @(option.IsActive ? "(Active)" : string.Empty)
+                            </SelectItem>
+                        }
+                    </Select>
+                </Field>
+            }
+
+            @if (ShowActiveToggle)
+            {
+                <Field>
+                    <Switch @bind-Value="FormModel.IsActive">
+                        Active Version
+                    </Switch>
+                </Field>
+            }
+
+            <Field>
+                <FieldLabel>Rule Name</FieldLabel>
+                <TextInput @bind-Value="FormModel.RuleName" Placeholder="@NamePlaceholder" />
+            </Field>
+
+            <Field>
+                <FieldLabel>Expression</FieldLabel>
+                <MemoInput @bind-Value="FormModel.Expression" Rows="6" Placeholder="@ExpressionPlaceholder" />
+            </Field>
+
+            <Field>
+                <FieldLabel>Execute Order</FieldLabel>
+                <input type="number" class="form-control" min="1" step="1" @bind="FormModel.ExecuteOrder" />
+            </Field>
+
+            @if (ValidationErrors.Count > 0)
+            {
+                <Alert Color="Color.Danger" Visible>
+                    <AlertMessage>Rule validation failed</AlertMessage>
+                    <AlertDescription>
+                        <UnorderedList>
+                            @foreach (var error in ValidationErrors)
+                            {
+                                <UnorderedListItem>@error</UnorderedListItem>
+                            }
+                        </UnorderedList>
+                    </AlertDescription>
+                </Alert>
+            }
+        </ModalBody>
+
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="HandleCancelAsync">Cancel</Button>
+            @if (ShowCreateVersionButton)
+            {
+                <Button Color="Color.Warning" Clicked="OnCreateVersion">Create New Version</Button>
+            }
+            <Button Color="Color.Primary" Clicked="OnSave">@SaveButtonText</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Rule";
+
+    [Parameter]
+    public RuleEditorFormModel FormModel { get; set; } = new();
+
+    [Parameter]
+    public bool ShowVersionSelector { get; set; }
+
+    [Parameter]
+    public IReadOnlyList<RuleVersionOption> VersionOptions { get; set; } = [];
+
+    [Parameter]
+    public int SelectedVersion { get; set; }
+
+    [Parameter]
+    public EventCallback<int> SelectedVersionChanged { get; set; }
+
+    [Parameter]
+    public bool ShowActiveToggle { get; set; } = true;
+
+    [Parameter]
+    public IReadOnlyList<string> ValidationErrors { get; set; } = [];
+
+    [Parameter]
+    public bool ShowCreateVersionButton { get; set; }
+
+    [Parameter]
+    public EventCallback OnCreateVersion { get; set; }
+
+    [Parameter]
+    public EventCallback OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    [Parameter]
+    public string SaveButtonText { get; set; } = "Save";
+
+    [Parameter]
+    public string NamePlaceholder { get; set; } = "Enter rule name";
+
+    [Parameter]
+    public string ExpressionPlaceholder { get; set; } = "Enter rule expression";
+
+    private Modal modalRef = default!;
+
+    public Task ShowAsync() => modalRef.Show();
+
+    public Task HideAsync() => modalRef.Hide();
+
+    private async Task HandleCancelAsync()
+    {
+        if (OnCancel.HasDelegate)
+        {
+            await OnCancel.InvokeAsync();
+        }
+    }
+
+    public sealed record RuleVersionOption(int Version, bool IsActive);
+}

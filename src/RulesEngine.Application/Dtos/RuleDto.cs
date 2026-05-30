@@ -42,6 +42,9 @@ public sealed class RuleDto
     [JsonPropertyName("Expression")]
     public string Expression { get; init; } = string.Empty;
 
+    [JsonPropertyName("ExecuteOrder")]
+    public int ExecuteOrder { get; init; }
+
     [JsonPropertyName("RuleJson")]
     public string RuleJson { get; init; } = string.Empty;
 

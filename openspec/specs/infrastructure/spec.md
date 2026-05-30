@@ -20,8 +20,6 @@ The system MUST store workflow definitions as JSON in an EF Core database and MU
 - **WHEN** an existing workflow is updated through backend update flow
 - **THEN** persisted workflow definition fields are replaced with updated values
 
-## ADDED Requirements
-
 ### Requirement: Execution State Persistence
 The system MUST persist non-dry-run workflow execution outcomes in infrastructure storage, including execution identifier, workflow identifier, timestamp, success flag, and serialized result payload.
 

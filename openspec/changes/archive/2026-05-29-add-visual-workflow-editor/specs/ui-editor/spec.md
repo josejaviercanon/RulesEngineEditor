@@ -1,8 +1,5 @@
-# ui-editor Specification
+## MODIFIED Requirements
 
-## Purpose
-Define Blazor WebAssembly editor behavior, user interaction flows, and JS interop contracts for visual workflow authoring.
-## Requirements
 ### Requirement: Visual Workflow Editing
 The system SHALL provide a Blazor WebAssembly SPA visual workflow editing experience using LogicFlow.js, MUST include a dedicated `Visual Editor` entry point, and MUST support toolbar actions for `Load` and `Save` in that visual editor context.
 
@@ -41,33 +38,6 @@ The system SHALL provide a Blazor WebAssembly SPA visual workflow editing experi
 - WHEN selecting components for forms, data grids, dialogs, and action controls
 - THEN they use Blazorise components and configured providers (`Blazorise`, `Blazorise.Tailwind`, `Blazorise.Icons.Lucide`)
 - AND they do not introduce an alternate UI component library for app-level UI composition
-
-### Requirement: Home page is the default workflow management entry point
-The UI SHALL open to the Home page by default and SHALL present a workflow grid with one row per workflow identity showing active revision metadata and operator actions.
-
-#### Scenario: Home route is the default page
-- **WHEN** a user opens the RulesEngine.UI application
-- **THEN** the Home page is shown as the initial route
-- **AND** the workflow grid is loaded without requiring manual navigation
-
-#### Scenario: Home workflow grid shows required columns
-- **WHEN** the Home page workflow list is rendered
-- **THEN** each row shows Actions, workflow Guid ID, Active Version, latest workflow version, workflow name, and enablement state
-- **AND** Active Version appears immediately after Guid ID
-- **AND** each row represents the active revision projection for a workflow identity
-
-#### Scenario: Create workflow from Home actions
-- **WHEN** the user clicks New in Home actions and saves a valid modal form
-- **THEN** a new workflow is created without requiring system-only fields in user input
-- **AND** the new workflow enablement default is OFF
-- **AND** the grid refreshes to show the new workflow row
-
-#### Scenario: Edit workflow from Home actions with version controls
-- **WHEN** the user opens Edit for a workflow row
-- **THEN** a modal shows editable workflow data and a version list for that workflow identity
-- **AND** clicking Save updates only the currently selected version in the version list
-- **AND** clicking Create New Version opens a yes/no confirmation dialog before creating a new version
-- **AND** the user can activate a selected version and set enablement according to lifecycle constraints
 
 ### Requirement: Rules page supports expandable workflow-to-rules management
 The UI SHALL provide a Rules page that reuses workflow grid context, includes row expansion for workflow rules, and supports rule create/edit/delete/validate operations through modal dialogs and row actions. The Rules page workflow main grid SHALL show `Active Version` independently from `Last Version`, and the nested rules grid SHALL show active-only rows per rule identity with `ExecuteOrder` visible and sortable.
@@ -131,4 +101,3 @@ The UI SHALL provide a Rules page that reuses workflow grid context, includes ro
 - **WHEN** the workflow grid is rendered on the Rules page
 - **THEN** the Actions column includes a Validate action after the New Rule action
 - **AND** Validate runs full workflow validation and shows whether the workflow is valid or includes validation errors
-

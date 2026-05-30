@@ -46,10 +46,11 @@ public sealed class WorkflowManagementService(WorkflowApiClient apiClient)
                 rule.ActiveVersion,
                 rule.LastVersion,
                 rule.RuleName,
+                rule.ExecuteOrder,
                 rule.Expression,
                 rule.Status,
                 rule.IsActive))
-            .OrderBy(rule => rule.RuleName)
+            .OrderBy(rule => rule.ExecuteOrder)
             .ThenBy(rule => rule.RuleGuidId)
             .ThenBy(rule => rule.Version)
             .ToArray();

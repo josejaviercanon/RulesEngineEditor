@@ -7,4 +7,5 @@ public sealed record UpdateWorkflowCommand(
     Guid Id,
     WorkflowDto Workflow,
     int? SchemaVersion,
-    bool CreateNewVersion = false) : IRequest<WorkflowDto?>;
+    bool CreateNewVersion = false,
+    bool SaveAsDraft = false) : IRequest<WorkflowDto?>;

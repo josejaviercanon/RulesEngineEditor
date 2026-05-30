@@ -401,6 +401,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                     Name = item.RuleName,
                     Expression = item.Expression,
                     RuleJson = item.RawRuleJson,
+                    ExecuteOrder = item.ExecuteOrder,
                     Version = 1,
                     ActiveVersion = 1,
                     LastVersion = 1,
@@ -430,7 +431,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
             case WorkflowRuleQueryMode.ActiveOnly:
                 entities = await query
                     .Where(rule => rule.IsActive)
-                    .OrderBy(rule => rule.Name)
+                    .OrderBy(rule => rule.ExecuteOrder)
                     .ThenBy(rule => rule.RuleGuidId)
                     .ToListAsync(cancellationToken);
                 break;
@@ -440,13 +441,13 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                     .Select(group => group
                         .OrderByDescending(item => item.Version)
                         .First())
-                    .OrderBy(rule => rule.Name)
+                    .OrderBy(rule => rule.ExecuteOrder)
                     .ThenBy(rule => rule.RuleGuidId)
                     .ToListAsync(cancellationToken);
                 break;
             default:
                 entities = await query
-                    .OrderBy(rule => rule.Name)
+                    .OrderBy(rule => rule.ExecuteOrder)
                     .ThenBy(rule => rule.RuleGuidId)
                     .ThenBy(rule => rule.Version)
                     .ToListAsync(cancellationToken);
@@ -642,6 +643,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                 Name = item.Rule.RuleName,
                 Expression = item.Rule.Expression,
                 RuleJson = JsonPayloadUtilities.EnsureRuleJsonContainsExpression(item.Rule.RawRuleJson, item.Rule.Expression),
+                ExecuteOrder = item.Rule.ExecuteOrder,
                 Version = nextVersion,
                 IsActive = true,
                 Status = item.Rule.Status,
@@ -719,6 +721,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                     Name = rule.RuleName,
                     Expression = rule.Expression,
                     RuleJson = JsonPayloadUtilities.EnsureRuleJsonContainsExpression(rule.RawRuleJson, rule.Expression),
+                    ExecuteOrder = rule.ExecuteOrder,
                     Version = resolvedVersion,
                     IsActive = true,
                     Status = rule.Status,
@@ -733,6 +736,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                 ruleRecord.Name = rule.RuleName;
                 ruleRecord.Expression = rule.Expression;
                 ruleRecord.RuleJson = JsonPayloadUtilities.EnsureRuleJsonContainsExpression(rule.RawRuleJson, rule.Expression);
+                ruleRecord.ExecuteOrder = rule.ExecuteOrder;
                 ruleRecord.Status = rule.Status;
 
                 if (rule.IsActive)
@@ -801,10 +805,12 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
             }
 
             var rules = new List<ParsedRulePayload>();
+            var index = 0;
             foreach (var item in rulesElement.EnumerateArray())
             {
                 if (item.ValueKind != JsonValueKind.Object)
                 {
+                    index++;
                     continue;
                 }
 
@@ -818,6 +824,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                 var status = RuleStatus.Draft;
                 var version = 1;
                 var isActive = true;
+                var executeOrder = index + 1;
                 if (item.TryGetProperty("RuleGuidId", out var ruleGuidElement) &&
                     ruleGuidElement.ValueKind == JsonValueKind.String &&
                     Guid.TryParse(ruleGuidElement.GetString(), out var parsed))
@@ -844,7 +851,15 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
                     status = RuleStatusParser.ParseOrDefault(statusElement.GetString(), RuleStatus.Draft);
                 }
 
-                rules.Add(new ParsedRulePayload(ruleName, expression, item.GetRawText(), ruleGuidId, status, version, isActive));
+                if (item.TryGetProperty("ExecuteOrder", out var executeOrderElement) &&
+                    executeOrderElement.ValueKind == JsonValueKind.Number &&
+                    executeOrderElement.TryGetInt32(out var parsedExecuteOrder))
+                {
+                    executeOrder = parsedExecuteOrder;
+                }
+
+                rules.Add(new ParsedRulePayload(ruleName, expression, item.GetRawText(), ruleGuidId, status, version, isActive, executeOrder));
+                index++;
             }
 
             return rules;
@@ -902,6 +917,7 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         RuleGuidId = record.RuleGuidId,
         Name = record.Name,
         Expression = record.Expression,
+        ExecuteOrder = record.ExecuteOrder,
         RuleJson = record.RuleJson,
         Version = record.Version,
         ActiveVersion = record.IsActive ? record.Version : 0,
@@ -938,5 +954,6 @@ public sealed class WorkflowRepository(RulesEngineEditorDbContext dbContext) : I
         Guid RuleGuidId,
         RuleStatus Status,
         int Version,
-        bool IsActive);
+        bool IsActive,
+        int ExecuteOrder);
 }

@@ -72,6 +72,7 @@ internal static class WorkflowDtoProjection
                 Status = RuleStatusParser.ToValue(record.Status),
                 RuleName = record.Name,
                 Expression = record.Expression,
+                ExecuteOrder = record.ExecuteOrder,
                 RuleJson = record.RuleJson,
                 Enabled = true
             };
@@ -93,6 +94,7 @@ internal static class WorkflowDtoProjection
             Enabled = parsed.Enabled,
             RuleExpressionType = parsed.RuleExpressionType,
             Expression = parsed.Expression,
+            ExecuteOrder = parsed.ExecuteOrder > 0 ? parsed.ExecuteOrder : record.ExecuteOrder,
             RuleJson = string.IsNullOrWhiteSpace(parsed.RuleJson) ? record.RuleJson : parsed.RuleJson,
             SuccessEvent = parsed.SuccessEvent,
             LocalParams = parsed.LocalParams,

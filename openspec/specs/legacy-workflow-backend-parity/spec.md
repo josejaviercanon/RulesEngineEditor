@@ -1,4 +1,9 @@
-## ADDED Requirements
+# legacy-workflow-backend-parity Specification
+
+## Purpose
+Define backend lifecycle, validation, and execution parity guarantees for legacy-compatible workflow behavior independent of UI-coupled legacy implementation details.
+
+## Requirements
 
 ### Requirement: Backend Workflow Lifecycle Parity
 The system SHALL provide backend workflow lifecycle behavior equivalent to legacy backend-relevant logic, including workflow create, read, update, delete, validate, and execute operations through the API/application/core/infrastructure layers.

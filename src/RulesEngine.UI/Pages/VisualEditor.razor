@@ -1,0 +1,481 @@
+@page "/visual-editor"
+@page "/visual-editor/{WorkflowId:guid}"
+@inject WorkflowApiClient WorkflowApiClient
+@inject WorkflowManagementService WorkflowManagementService
+@inject IJSRuntime Js
+@inject NavigationManager NavigationManager
+
+<PageTitle>Visual Editor</PageTitle>
+
+<Heading Size="HeadingSize.Is2" Margin="Margin.Is3.FromBottom">Visual Editor</Heading>
+
+@if (!string.IsNullOrWhiteSpace(statusMessage))
+{
+    <Alert Color="@statusColor" Visible Margin="Margin.Is2.FromBottom">
+        <AlertDescription>@statusMessage</AlertDescription>
+    </Alert>
+}
+
+<Card Margin="Margin.Is2.FromBottom">
+    <CardBody>
+        <Field Horizontal>
+            <Button Color="Color.Primary" Clicked="OpenLoadModal">Load</Button>
+            <Button Color="Color.Success" Margin="Margin.Is1.FromStart" Clicked="SaveAsync">Save</Button>
+            <Button Color="Color.Info" Margin="Margin.Is1.FromStart" Clicked="AddRuleNodeAsync">Add Rule Node</Button>
+            <Button Color="Color.Secondary" Margin="Margin.Is1.FromStart" Clicked="OpenSelectedRuleEditorAsync">Edit Selected Rule</Button>
+        </Field>
+
+        <Field Horizontal>
+            <FieldLabel Margin="Margin.Is1.FromEnd">Connect</FieldLabel>
+            <Select TValue="string" @bind-SelectedValue="connectSourceNodeId">
+                @foreach (var node in nodesById.Values.OrderBy(item => item.ExecuteOrder).ThenBy(item => item.RuleName))
+                {
+                    <SelectItem Value="@NodeId(node)">@node.RuleName (@node.ExecuteOrder)</SelectItem>
+                }
+            </Select>
+            <Select TValue="string" @bind-SelectedValue="connectTargetNodeId" Margin="Margin.Is1.FromStart">
+                @foreach (var node in nodesById.Values.OrderBy(item => item.ExecuteOrder).ThenBy(item => item.RuleName))
+                {
+                    <SelectItem Value="@NodeId(node)">@node.RuleName (@node.ExecuteOrder)</SelectItem>
+                }
+            </Select>
+            <Button Color="Color.Warning" Margin="Margin.Is1.FromStart" Clicked="ConnectSelectedNodesAsync">Connect</Button>
+        </Field>
+
+        <div id="visual-workflow-canvas" style="height: 560px; border: 1px solid #d1d5db; border-radius: 8px;"></div>
+    </CardBody>
+</Card>
+
+<Modal @ref="loadModalRef" Centered>
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>Load Workflow</ModalTitle>
+            <CloseButton Clicked="CloseLoadModal" />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel>Active workflow versions</FieldLabel>
+                <Select TValue="Guid" @bind-SelectedValue="selectedLoadWorkflowId">
+                    @foreach (var workflow in workflowRows)
+                    {
+                        <SelectItem Value="@workflow.Id">@workflow.WorkflowName (@workflow.ActiveVersion)</SelectItem>
+                    }
+                </Select>
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="CloseLoadModal">Cancel</Button>
+            <Button Color="Color.Primary" Clicked="AcceptLoadAsync">Accept</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+<RuleEditorModal
+    @ref="ruleEditorModalRef"
+    Title="Rule Properties"
+    FormModel="ruleForm"
+    ShowVersionSelector="false"
+    ShowActiveToggle="true"
+    OnSave="SaveRulePropertiesAsync"
+    OnCancel="CloseRuleModal" />
+
+@code {
+    [Parameter]
+    public Guid? WorkflowId { get; set; }
+
+    private const string CanvasId = "visual-workflow-canvas";
+    private readonly List<WorkflowGridRow> workflowRows = [];
+    private readonly Dictionary<string, RulePayload> nodesById = new(StringComparer.Ordinal);
+    private readonly List<(string SourceNodeId, string TargetNodeId)> links = [];
+
+    private Modal loadModalRef = default!;
+    private RuleEditorModal ruleEditorModalRef = default!;
+
+    private Guid selectedLoadWorkflowId;
+    private Guid? currentWorkflowId;
+    private WorkflowPayload? loadedWorkflow;
+
+    private string connectSourceNodeId = string.Empty;
+    private string connectTargetNodeId = string.Empty;
+
+    private string? editingNodeId;
+    private RuleEditorFormModel ruleForm = new();
+
+    private string statusMessage = string.Empty;
+    private Color statusColor = Color.Info;
+    private bool canvasInitialized;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ReloadWorkflowRowsAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        await Js.InvokeVoidAsync("workflowCanvasInterop.initializeCanvas", CanvasId, new { nodes = Array.Empty<object>(), edges = Array.Empty<object>() });
+        canvasInitialized = true;
+
+        if (WorkflowId.HasValue)
+        {
+            await LoadWorkflowByIdAsync(WorkflowId.Value);
+            StateHasChanged();
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!WorkflowId.HasValue || !canvasInitialized)
+        {
+            return;
+        }
+
+        if (currentWorkflowId.HasValue && currentWorkflowId.Value == WorkflowId.Value)
+        {
+            return;
+        }
+
+        await LoadWorkflowByIdAsync(WorkflowId.Value);
+    }
+
+    private async Task ReloadWorkflowRowsAsync()
+    {
+        workflowRows.Clear();
+        workflowRows.AddRange(await WorkflowManagementService.ListWorkflowGridRowsAsync());
+        if (selectedLoadWorkflowId == Guid.Empty && workflowRows.Count > 0)
+        {
+            selectedLoadWorkflowId = workflowRows[0].Id;
+        }
+    }
+
+    private Task OpenLoadModal() => loadModalRef.Show();
+
+    private Task CloseLoadModal() => loadModalRef.Hide();
+
+    private async Task AcceptLoadAsync()
+    {
+        if (selectedLoadWorkflowId == Guid.Empty)
+        {
+            SetStatus("Select a workflow to load.", Color.Warning);
+            return;
+        }
+
+        await LoadWorkflowByIdAsync(selectedLoadWorkflowId);
+        await CloseLoadModal();
+    }
+
+    private async Task LoadWorkflowByIdAsync(Guid workflowId)
+    {
+        var payload = await WorkflowApiClient.GetWorkflowByIdAsync(workflowId, "ActiveOnly");
+        if (payload is null)
+        {
+            SetStatus("Workflow not found.", Color.Warning);
+            return;
+        }
+
+        currentWorkflowId = workflowId;
+        loadedWorkflow = CloneWorkflow(payload.Workflow);
+
+        nodesById.Clear();
+        links.Clear();
+
+        var activeRules = payload.Workflow.Rules
+            .Where(rule => rule.IsActive)
+            .OrderBy(rule => rule.ExecuteOrder)
+            .ThenBy(rule => rule.RuleGuidId)
+            .ToArray();
+
+        for (var index = 0; index < activeRules.Length; index++)
+        {
+            var rule = CloneRule(activeRules[index]);
+            if (rule.ExecuteOrder <= 0)
+            {
+                rule.ExecuteOrder = index + 1;
+            }
+
+            nodesById[NodeId(rule)] = rule;
+
+            if (index > 0)
+            {
+                links.Add((NodeId(activeRules[index - 1]), NodeId(rule)));
+            }
+        }
+
+        await Js.InvokeVoidAsync("workflowCanvasInterop.loadGraphData", CanvasId, BuildGraphData());
+        SetStatus($"Loaded workflow '{payload.Workflow.WorkflowName}'.", Color.Success);
+    }
+
+    private async Task AddRuleNodeAsync()
+    {
+        var executeOrder = nodesById.Count == 0 ? 1 : nodesById.Values.Max(rule => rule.ExecuteOrder) + 1;
+        var rule = new RulePayload
+        {
+            RuleGuidId = Guid.NewGuid(),
+            Version = 1,
+            IsActive = true,
+            Status = "draft",
+            RuleName = $"Rule {executeOrder}",
+            Enabled = true,
+            Expression = "1 == 1",
+            ExecuteOrder = executeOrder
+        };
+
+        var nodeId = NodeId(rule);
+        nodesById[nodeId] = rule;
+        await Js.InvokeAsync<string?>("workflowCanvasInterop.addRuleNode", CanvasId, new
+        {
+            id = nodeId,
+            label = rule.RuleName,
+            ruleGuidId = rule.RuleGuidId,
+            version = rule.Version,
+            executeOrder = rule.ExecuteOrder
+        });
+    }
+
+    private async Task OpenSelectedRuleEditorAsync()
+    {
+        var nodeId = await Js.InvokeAsync<string?>("workflowCanvasInterop.getSelectedNodeId", CanvasId);
+        if (string.IsNullOrWhiteSpace(nodeId) || !nodesById.TryGetValue(nodeId, out var selectedRule))
+        {
+            SetStatus("Select a rule node to edit.", Color.Warning);
+            return;
+        }
+
+        editingNodeId = nodeId;
+        ruleForm = new RuleEditorFormModel
+        {
+            RuleName = selectedRule.RuleName,
+            Expression = selectedRule.Expression,
+            ExecuteOrder = selectedRule.ExecuteOrder,
+            IsActive = selectedRule.IsActive
+        };
+
+        await ruleEditorModalRef.ShowAsync();
+    }
+
+    private Task CloseRuleModal() => ruleEditorModalRef.HideAsync();
+
+    private async Task SaveRulePropertiesAsync()
+    {
+        if (string.IsNullOrWhiteSpace(editingNodeId) || !nodesById.TryGetValue(editingNodeId, out var selectedRule))
+        {
+            return;
+        }
+
+        selectedRule.RuleName = ruleForm.RuleName.Trim();
+        selectedRule.Expression = ruleForm.Expression.Trim();
+        selectedRule.ExecuteOrder = Math.Max(1, ruleForm.ExecuteOrder);
+        selectedRule.IsActive = ruleForm.IsActive;
+
+        await Js.InvokeVoidAsync("workflowCanvasInterop.updateRuleNode", CanvasId, editingNodeId, new
+        {
+            label = selectedRule.RuleName,
+            ruleGuidId = selectedRule.RuleGuidId,
+            version = selectedRule.Version,
+            executeOrder = selectedRule.ExecuteOrder
+        });
+
+        await CloseRuleModal();
+    }
+
+    private async Task ConnectSelectedNodesAsync()
+    {
+        if (string.IsNullOrWhiteSpace(connectSourceNodeId) || string.IsNullOrWhiteSpace(connectTargetNodeId))
+        {
+            SetStatus("Choose source and target nodes.", Color.Warning);
+            return;
+        }
+
+        if (connectSourceNodeId == connectTargetNodeId)
+        {
+            SetStatus("Source and target must be different nodes.", Color.Warning);
+            return;
+        }
+
+        links.Add((connectSourceNodeId, connectTargetNodeId));
+        await Js.InvokeVoidAsync("workflowCanvasInterop.connectNodes", CanvasId, connectSourceNodeId, connectTargetNodeId);
+    }
+
+    private async Task SaveAsync()
+    {
+        if (nodesById.Count == 0)
+        {
+            SetStatus("Add at least one rule node before saving.", Color.Warning);
+            return;
+        }
+
+        var workflow = BuildWorkflowForSave();
+        var validation = await WorkflowApiClient.ValidateWorkflowAsync(workflow);
+
+        if (!validation.IsValid)
+        {
+            var saveAsDraft = await Js.InvokeAsync<bool>("confirm", "Validation errors were found. Save as draft with warnings?");
+            if (!saveAsDraft)
+            {
+                SetStatus("Save cancelled so you can fix validation errors.", Color.Warning);
+                return;
+            }
+
+            if (!currentWorkflowId.HasValue)
+            {
+                SetStatus("Draft save requires a loaded workflow. Use Load first.", Color.Warning);
+                return;
+            }
+
+            await WorkflowApiClient.UpdateWorkflowAsync(currentWorkflowId.Value, workflow, saveAsDraft: true);
+            SetStatus($"Workflow saved as draft with warnings: {string.Join(" | ", validation.Errors)}", Color.Warning);
+            return;
+        }
+
+        if (currentWorkflowId.HasValue)
+        {
+            await WorkflowApiClient.UpdateWorkflowAsync(currentWorkflowId.Value, workflow);
+            SetStatus("Workflow saved successfully.", Color.Success);
+            return;
+        }
+
+        var created = await WorkflowApiClient.CreateWorkflowAsync(workflow);
+        currentWorkflowId = created.Id;
+        SetStatus("Workflow created and saved successfully.", Color.Success);
+    }
+
+    private object BuildGraphData()
+    {
+        var nodes = nodesById.Values
+            .OrderBy(rule => rule.ExecuteOrder)
+            .ThenBy(rule => rule.RuleGuidId)
+            .Select((rule, index) => new
+            {
+                id = NodeId(rule),
+                type = "rect",
+                x = 160 + (index * 180),
+                y = 180,
+                text = rule.RuleName,
+                properties = new
+                {
+                    ruleGuidId = rule.RuleGuidId,
+                    version = rule.Version,
+                    executeOrder = rule.ExecuteOrder
+                }
+            })
+            .ToArray();
+
+        var edges = links
+            .Where(link => nodesById.ContainsKey(link.SourceNodeId) && nodesById.ContainsKey(link.TargetNodeId))
+            .Select(link => new
+            {
+                id = $"e-{link.SourceNodeId}-{link.TargetNodeId}",
+                type = "polyline",
+                sourceNodeId = link.SourceNodeId,
+                targetNodeId = link.TargetNodeId
+            })
+            .ToArray();
+
+        return new
+        {
+            nodes,
+            edges
+        };
+    }
+
+    private WorkflowPayload BuildWorkflowForSave()
+    {
+        var reference = loadedWorkflow ?? new WorkflowPayload
+        {
+            WorkflowName = "New Workflow",
+            RuleExpressionType = "LambdaExpression",
+            GlobalParams = [],
+            WorkflowsToInject = [],
+            IsEnabled = true,
+            IsActive = true,
+            Version = 1
+        };
+
+        var orderedRules = nodesById.Values
+            .OrderBy(rule => rule.ExecuteOrder)
+            .ThenBy(rule => rule.RuleGuidId)
+            .Select(CloneRule)
+            .ToArray();
+
+        for (var index = 0; index < orderedRules.Length; index++)
+        {
+            if (orderedRules[index].ExecuteOrder <= 0)
+            {
+                orderedRules[index].ExecuteOrder = index + 1;
+            }
+        }
+
+        return new WorkflowPayload
+        {
+            Id = reference.Id,
+            WorkflowName = reference.WorkflowName,
+            RuleExpressionType = reference.RuleExpressionType,
+            GlobalParams = reference.GlobalParams,
+            Rules = orderedRules,
+            WorkflowsToInject = reference.WorkflowsToInject,
+            WorkflowJson = reference.WorkflowJson,
+            Version = reference.Version,
+            IsActive = reference.IsActive,
+            IsEnabled = reference.IsEnabled,
+            Comments = reference.Comments,
+            EffectiveFromUtc = reference.EffectiveFromUtc,
+            EffectiveToUtc = reference.EffectiveToUtc
+        };
+    }
+
+    private static string NodeId(RulePayload rule) => rule.RuleGuidId.ToString("N");
+
+    private static WorkflowPayload CloneWorkflow(WorkflowPayload workflow)
+        => new()
+        {
+            Id = workflow.Id,
+            WorkflowName = workflow.WorkflowName,
+            RuleExpressionType = workflow.RuleExpressionType,
+            GlobalParams = workflow.GlobalParams.Select(item => new ScopedParamPayload { Name = item.Name, Expression = item.Expression }).ToArray(),
+            Rules = workflow.Rules.Select(CloneRule).ToArray(),
+            WorkflowsToInject = workflow.WorkflowsToInject.ToArray(),
+            WorkflowJson = workflow.WorkflowJson,
+            Version = workflow.Version,
+            IsActive = workflow.IsActive,
+            IsEnabled = workflow.IsEnabled,
+            Comments = workflow.Comments,
+            EffectiveFromUtc = workflow.EffectiveFromUtc,
+            EffectiveToUtc = workflow.EffectiveToUtc
+        };
+
+    private static RulePayload CloneRule(RulePayload rule)
+        => new()
+        {
+            RuleGuidId = rule.RuleGuidId,
+            Version = rule.Version,
+            ActiveVersion = rule.ActiveVersion,
+            LastVersion = rule.LastVersion,
+            IsActive = rule.IsActive,
+            Status = rule.Status,
+            RuleName = rule.RuleName,
+            Operator = rule.Operator,
+            ErrorMessage = rule.ErrorMessage,
+            Enabled = rule.Enabled,
+            RuleExpressionType = rule.RuleExpressionType,
+            Expression = rule.Expression,
+            ExecuteOrder = rule.ExecuteOrder,
+            RuleJson = rule.RuleJson,
+            SuccessEvent = rule.SuccessEvent,
+            LocalParams = rule.LocalParams.Select(item => new ScopedParamPayload { Name = item.Name, Expression = item.Expression }).ToArray(),
+            Rules = rule.Rules.Select(CloneRule).ToArray(),
+            Actions = rule.Actions,
+            WorkflowsToInject = rule.WorkflowsToInject.ToArray(),
+            Properties = new Dictionary<string, string>(rule.Properties)
+        };
+
+    private void SetStatus(string message, Color color)
+    {
+        statusMessage = message;
+        statusColor = color;
+    }
+
+}

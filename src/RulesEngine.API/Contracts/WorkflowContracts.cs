@@ -5,7 +5,8 @@ namespace RulesEngine.API.Contracts;
 public sealed record WorkflowRequest(
     WorkflowDto Workflow,
     int? SchemaVersion,
-    bool CreateNewVersion = false);
+    bool CreateNewVersion = false,
+    bool SaveAsDraft = false);
 
 public sealed record WorkflowResponse(
     Guid Id,
