@@ -16,8 +16,9 @@
 ## Debugging Steps
 - Run backend with `dotnet run`.
 - Use Visual Studio 2026 breakpoints in controllers and services.
-- Inspect logs in `WorkflowDbContext` for persistence issues.
-- Test endpoints with Scalar or Postman.
+- Inspect logs or database directly for persistence issues.
+- Test endpoints with Scalar at `/scalar/v1` or Postman.
+- Use `dotnet watch` for hot reload during development.
 
 ## .NET Hot Reload
 - Use `dotnet watch` for hot reload during development.
@@ -30,11 +31,12 @@
 - Enabled via `app.MapScalarApiReference()` in `Program.cs`
 - Use Scalar to explore endpoints, send test requests, and view OpenAPI schema.
 - The OpenAPI document is mapped at `/openapi/v1.json`.
+- Note: Not Swagger UI — the project uses Scalar exclusively.
 
 ## OpenTelemetry Trace Inspection
-- OpenTelemetry is configured for distributed tracing and metrics.
-- Traces include: incoming HTTP requests, database calls, and external service calls.
-- To inspect traces during development, check application logs or integrate with:
+- OpenTelemetry is **not yet configured** in the current project.
+- When added, traces will include: incoming HTTP requests, database calls, and external service calls.
+- Planned integrations:
   - Jaeger / Zipkin (self-hosted trace collectors)
   - Azure Application Insights (production)
   - OTEL-compatible logging tools

@@ -1,7 +1,10 @@
 # Skills Alignment Audit
 
 ## Overview
-Audit of all installed opencode skill plugins and their alignment with the RulesEngineEditor ASP.NET Core 10 MVC WebAPI project.
+Audit of all installed opencode skill plugins and their alignment with the RulesEngineEditor ASP.NET Core 10 MVC WebAPI project, covering both Deepseek and Qwen agent models.
+
+## Model-Agnostic Assessment
+All skill plugins listed below are **model-agnostic** — their relevance does not change between Deepseek and Qwen agents. Skills provide framework and language-specific guidance that applies regardless of which LLM agent executes the task. The distinction between `deepseek-*.md` and `qwen-*.md` skill files is about model assignment and permissions, not about which opencode skills are needed.
 
 ## dotnet Plugin (3 skills)
 
@@ -36,15 +39,16 @@ Audit of all installed opencode skill plugins and their alignment with the Rules
 
 | Gap | Impact | Resolution |
 |-----|--------|------------|
-| No EF Core 10-specific skill | Medium | Documentation in `deepseek-builder.md` agent skill file covers EF Core patterns |
-| No PostgreSQL/Npgsql skill | Low | Npgsql patterns documented in `deepseek-builder.md` |
+| No EF Core 10-specific skill | Medium | EF Core patterns documented in both `deepseek-builder.md` and `qwen-builder.md` agent skill files |
+| No PostgreSQL/Npgsql skill | Low | Npgsql patterns documented in both `deepseek-builder.md` and `qwen-builder.md` |
 | No OpenAPI/Scalar skill | Low | `dotnet-webapi` skill covers OpenAPI metadata; Scalar setup is in `Program.cs` |
 | No CORS configuration skill | Low | CORS already configured in `Program.cs`; documented in debug guide |
 
 ## Recommendations
 
 1. **Keep all installed plugins** — even low-relevance skills don't cause harm and may serve edge cases
-2. **No new skill plugins required** — identified gaps are adequately addressed through the Deepseek agent skill files (`.agents/skills/deepseek-*.md`)
-3. **Ignore `convert-blazor-server-to-webapp`** — not applicable to MVC WebAPI project
-4. **Leverage `coverage-analysis` and `crap-score`** — these are particularly valuable for the .NET test suite to identify risk hotspots
-5. **Use `detect-static-dependencies`** early in the project lifecycle to prevent testability debt
+2. **No new skill plugins required** — identified gaps are adequately addressed through the Deepseek and Qwen agent skill files (`.agents/skills/deepseek-*.md` and `.agents/skills/qwen-*.md`)
+3. **Qwen skill files are sufficient** — Qwen agents share the same technology stack and coding conventions as Deepseek agents; skill files mirror the structure with model-specific assignments only
+4. **Ignore `convert-blazor-server-to-webapp`** — not applicable to MVC WebAPI project
+5. **Leverage `coverage-analysis` and `crap-score`** — these are particularly valuable for the .NET test suite to identify risk hotspots
+6. **Use `detect-static-dependencies`** early in the project lifecycle to prevent testability debt
