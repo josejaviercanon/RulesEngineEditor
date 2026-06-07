@@ -1,6 +1,0 @@
-<Solution>
-  <Folder Name="/Libraries/">
-    <Project Path="../BE.Libraries/RulesEngine/src/RulesEngine/RulesEngine.csproj" />
-  </Folder>
-  <Project Path="RulesEngineEditor.Server.csproj" />
-</Solution>
