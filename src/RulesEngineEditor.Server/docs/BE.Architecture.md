@@ -79,9 +79,9 @@ BE.Api/
   - Test endpoints with real JSON payloads.  
   - Validate DB persistence with test database.
 
-- **Optional E2E (Playwright + Scalar)**  
-  - Automate API endpoint testing via Scalar UI.  
-  - Recommended for exploratory/manual validation, not required for CI/CD.
+- **API Contract Testing**  
+  - Use Playwright's native `APIRequestContext` for headless API contract verification if needed.  
+  - For exploratory/manual validation, use Scalar at `/scalar/v1`.
 
 ---
 

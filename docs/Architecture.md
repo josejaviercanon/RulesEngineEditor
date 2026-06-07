@@ -8,19 +8,20 @@ This document defines the overall structure, integration points, and governance 
 
 ## Solution Structure
 
-RulesEngineWorkflowEditor/
-├── RulesEngineWorkflowEditor.sln
+RulesEngineEditor/
+├── RulesEngineEditor.slnx
 ├── docs/
 │   ├── Architecture.md
 │   ├── Governance.md
 │   ├── SprintPlaybook.md
 │   ├── QA.md
+│   ├── TestingStrategy.md
 ├── src/
-│   ├── UI.React/        # React workflow editor
-│   ├── BE.Api/          # ASP.NET Core backend
-│   ├── Shared/          # Shared libraries
-│   ├── BE.tests/        # BE Test projects
-│   ├── UI.tests/        # UI Test projects
+│   ├── RulesEngineEditor.Server/   # ASP.NET Core 10 Web API backend
+│   ├── rulesengineeditor.client/   # React workflow editor (Vite)
+│   ├── BE.Libraries/               # Shared libraries (RulesEngine wrapper)
+│   ├── BE.Tests/                   # Backend xUnit test project
+│   ├── UI.Tests/                   # Frontend E2E + unit tests
 
 
 ---
@@ -71,7 +72,7 @@ RulesEngineWorkflowEditor/
 - **Backend** → xUnit for unit + integration tests.  
 - **Frontend** → React Testing Library (RTL) for isolated component, panel form, and state logic.
 - **Frontend** → Playwright for E2E tests workflow automation.   
-- **Optional** → Playwright + Scalar for exploratory API testing.  
+- **Optional** → Playwright `APIRequestContext` for headless API contract testing.  
 - QA checklist maintained in `QA.md`.
 
 ---

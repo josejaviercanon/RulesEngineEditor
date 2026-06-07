@@ -31,6 +31,22 @@ Provide unified governance for UI and backend agents, ensuring compliance, obser
 - **BE → UI**: Validation results surfaced in React editor.
 - **Shared Libraries**: RulesEngineWrapper ensures schema compliance across layers.
 
+## Agent Output Review Checklist
+- [ ] Proposal clearly defines what, why, and scope before implementation.
+- [ ] Design describes how with sufficient technical detail and trade-off rationale.
+- [ ] Tasks are concrete, verifiable, and scoped to single concerns.
+- [ ] Implementation code follows ASP.NET Core 10 MVC WebAPI conventions (attribute routing, async/await, OpenAPI metadata).
+- [ ] xUnit test coverage exists for core logic and integration paths.
+- [ ] EF Core migration changes reviewed manually before applying.
+- [ ] Documentation updated to reflect any schema or contract changes.
+
+## Cross-Project Dependency Checklist (UI ↔ BE)
+- [ ] JSON schema exports from React match the backend validation schema.
+- [ ] API endpoint contracts (paths, request/response shapes) are synchronized.
+- [ ] New features have corresponding UI panels and API endpoints.
+- [ ] Error response formats are consistent between frontend expectations and backend output.
+- [ ] CORS policy updated if new origins are needed.
+
 ## Compliance Checklist
 - [ ] Schema validation passes for all workflows.
 - [ ] Human approval logged for critical changes.

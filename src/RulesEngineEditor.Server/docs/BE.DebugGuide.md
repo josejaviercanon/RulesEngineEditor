@@ -17,7 +17,46 @@
 - Run backend with `dotnet run`.
 - Use Visual Studio 2026 breakpoints in controllers and services.
 - Inspect logs in `WorkflowDbContext` for persistence issues.
-- Test endpoints with Swagger or Postman.
+- Test endpoints with Scalar or Postman.
+
+## .NET Hot Reload
+- Use `dotnet watch` for hot reload during development.
+- Changes to controllers, services, and views apply without restarting the process.
+- Run: `dotnet watch run` from the project directory.
+- Note: Some changes (e.g., new NuGet packages, static files) still require a restart.
+
+## OpenAPI / Scalar UI
+- Scalar UI is available in development mode at: `/scalar/v1`
+- Enabled via `app.MapScalarApiReference()` in `Program.cs`
+- Use Scalar to explore endpoints, send test requests, and view OpenAPI schema.
+- The OpenAPI document is mapped at `/openapi/v1.json`.
+
+## OpenTelemetry Trace Inspection
+- OpenTelemetry is configured for distributed tracing and metrics.
+- Traces include: incoming HTTP requests, database calls, and external service calls.
+- To inspect traces during development, check application logs or integrate with:
+  - Jaeger / Zipkin (self-hosted trace collectors)
+  - Azure Application Insights (production)
+  - OTEL-compatible logging tools
+
+## PostgreSQL Connection Troubleshooting
+- Connection string is configured in `appsettings.json` under `ConnectionStrings`.
+- Common connection errors:
+  - **Host not found**: Verify PostgreSQL server is running and accessible.
+  - **Authentication failed**: Check username/password in connection string.
+  - **Database not found**: Ensure the target database exists; run EF Core migrations.
+- Test connection: `dotnet ef database update` or use `pg_isready` command-line tool.
+- Npgsql-specific: For SSL issues, add `SslMode=Prefer` or `SslMode=Disable` to connection string.
+
+## EF Core Migration Debugging
+- Add migration: `dotnet ef migrations add <MigrationName>`
+- Update database: `dotnet ef database update`
+- Rollback: `dotnet ef database update <PreviousMigrationName>`
+- Script migration: `dotnet ef migrations script`
+- Common issues:
+  - **Snapshot mismatch**: Delete the migration and re-add after synchronizing the model.
+  - **Pending model changes**: Run `dotnet ef migrations has-pending-model-changes` to check.
+  - **Design-time errors**: Ensure `Microsoft.EntityFrameworkCore.Design` is referenced.
 
 ## Human Intervention
 - Developers review EF Core schema changes.

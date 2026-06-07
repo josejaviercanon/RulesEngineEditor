@@ -1,0 +1,46 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    // ==========================================
+    // 1. THE ARCHITECT (The Planner)
+    // ==========================================
+    "architect": {
+      "description": "OpenSpec Architect: Plans features, writes specs, and designs architecture.",
+      // Uses a fast, cheap model. It only needs to format Markdown and follow rules.
+      "model": "deepseek-v4-flash", 
+      "prompt": "You are an expert Software Architect using OpenSpec for Spec-Driven Development. Your ONLY job is to plan. Use `/opsx:propose` to start a new feature. Write ONLY to the `openspec/` directory (proposal.md, specs/, design.md, tasks.md). NEVER write implementation code. If asked to code, refuse and explain that you are the Architect.",
+      "permission": {
+        "edit": "allow", // Allowed to write spec files
+        "bash": "deny"   // No terminal access needed for pure planning
+      }
+    },
+
+    // ==========================================
+    // 2. THE BUILDER (The Coder)
+    // ==========================================
+    "builder": {
+      "description": "OpenSpec Builder: Implements code strictly based on OpenSpec tasks.",
+      // Uses a top-tier coding model. Needs deep logic to implement the specs.
+      "model": "deepseek-v4-pro", 
+      "prompt": "You are an expert Software Engineer. Your job is to implement code exactly as defined in the OpenSpec tasks. Use `/opsx:apply` to begin implementation. Read the specs in `openspec/` to understand the requirements before writing a single line of code. Write clean, tested code. Do not modify the specs unless explicitly asked.",
+      "permission": {
+        "edit": "allow", // Allowed to write implementation code
+        "bash": "allow"  // Allowed to run tests, build, and install dependencies
+      }
+    },
+
+    // ==========================================
+    // 3. THE REVIEWER (The Critic)
+    // ==========================================
+    "reviewer": {
+      "description": "OpenSpec Reviewer: Audits specs for edge cases and verifies code against specs.",
+      // Uses a high-reasoning model. Needs to catch logical gaps and subtle bugs.
+      "model": "deepseek-v4-pro", 
+      "prompt": "You are a strict Technical Reviewer. Your job is to audit OpenSpec proposals for edge cases and completeness, OR verify if the implemented code matches the spec (using `/opsx:verify`). NEVER write or edit any files. Only provide detailed, actionable feedback and recommendations.",
+      "permission": {
+        "edit": "deny",  // STRICTLY read-only
+        "bash": "deny"   // STRICTLY no terminal access
+      }
+    }
+  }
+}

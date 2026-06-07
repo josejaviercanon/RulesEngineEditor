@@ -6,7 +6,7 @@ Ensure that both UI and backend components meet functional, performance, and com
 ## QA Checklist
 - [ ] All workflows validated against Microsoft RulesEngine schema.
 - [ ] Unit tests pass in `UI.Tests` (Vitest + React Testing Library).
-- [ ] Unit tests pass in `BE.Tests` (xUnit/NUnit).
+- [ ] Unit tests pass in `BE.Tests` (xUnit).
 - [ ] Integration tests confirm UI → API communication.
 - [ ] Schema export/import round‑trip verified.
 - [ ] Performance benchmarks meet response time < 200ms for validation calls.
