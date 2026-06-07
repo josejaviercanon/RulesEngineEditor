@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "ScopedParam": {
+      "type": "object",
+      "properties": {
+        "Name": { "type": "string" },
+        "Expression": { "type": "string" }
+      },
+      "required": [ "Name", "Expression" ]
+    },
+    "Rule": {
+      "title": "Rule",
+      "properties": {
+        "RuleName": {
+          "type": "string"
+        },
+        "LocalParams": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/ScopedParam" }
+        },
+        "Operator": {
+          "enum": [
+            "And",
+            "AndAlso",
+            "Or",
+            "OrElse"
+          ]
+        },
+        "ErrorMessage": {
+          "type": "string"
+        },
+        "SuccessEvent": {
+          "type": "string"
+        },
+        "Rules": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/LeafRule"
+              },
+              {
+                "$ref": "#/definitions/Rule"
+              }
+            ]
+          }
+        },
+        "Properties": {
+          "type": "object"
+        },
+        "Actions": {
+          "$ref": "#/definitions/RuleActions"
+        },
+        "Enabled": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "required": [
+        "RuleName",
+        "Operator",
+        "Rules"
+      ],
+      "type": "object"
+    },
+    "LeafRule": {
+      "title": "Leaf Rule",
+      "type": "object",
+      "required": [
+        "RuleName",
+        "Expression"
+      ],
+      "properties": {
+        "RuleName": {
+          "type": "string"
+        },
+        "LocalParams": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/ScopedParam" }
+        },
+        "Expression": {
+          "type": "string"
+        },
+        "RuleExpressionType": {
+          "enum": [
+            "LambdaExpression"
+          ]
+        },
+        "ErrorMessage": {
+          "type": "string"
+        },
+        "SuccessEvent": {
+          "type": "string"
+        },
+        "Properties": {
+          "type": "object"
+        },
+        "Actions": {
+          "$ref": "#/definitions/RuleActions"
+        },
+        "Enabled": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "ActionInfo": {
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Context": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "Name"
+      ]
+    },
+    "RuleActions": {
+      "properties": {
+        "OnSuccess": {
+          "$ref": "#/definitions/ActionInfo"
+        },
+        "OnFailure": {
+          "$ref": "#/definitions/ActionInfo"
+        }
+      }
+    }
+
+  },
+  "properties": {
+    "WorkflowName": {
+      "type": "string"
+    },
+    "WorkflowsToInject": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "GlobalParams": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/ScopedParam" }
+    },
+    "Rules": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/LeafRule"
+          },
+          {
+            "$ref": "#/definitions/Rule"
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "WorkflowName",
+    "Rules"
+  ],
+  "type": "object"
+}

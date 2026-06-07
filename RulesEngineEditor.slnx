@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="src/rulesengineeditor.client/rulesengineeditor.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="src/RulesEngineEditor.Server/RulesEngineEditor.Server.csproj" />
+</Solution>
