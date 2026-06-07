@@ -1,0 +1,6 @@
+[submodule "src/UI"]
+	path = src/UI
+	url = https://github.com/josejaviercanon/RulesEngineEditor_UI
+[submodule "src/BE"]
+	path = src/BE
+	url = https://github.com/josejaviercanon/RulesEngineEditor_BE
