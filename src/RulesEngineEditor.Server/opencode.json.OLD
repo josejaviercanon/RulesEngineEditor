@@ -1,0 +1,61 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "opencode-plugin-openspec",
+    "opencode-mem"
+  ],
+  "agent": {
+    "explorer": {
+      "description": "Deeply explores the existing codebase, identifies patterns, dependencies, and edge cases.",
+      "mode": "primary",
+      "model": "opencode-go/deepseek-v4-pro",
+      "temperature": 0.3,
+      "top_p": 0.95,
+      "prompt": "You are a senior .NET Core software system analyst. Use /opsx:explore to deeply understand the codebase. Ask probing questions, map dependencies, and surface hidden risks. Do not write or edit code. Output structured insights that can be used by the architect to write specs.",
+      "permission": {
+        "read": "allow",
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "architect": {
+      "description": "Writes OpenSpec change proposals, specs, design docs, and tasks based on exploration output.",
+      "mode": "primary",
+      "model": "opencode-go/deepseek-v4-flash",
+      "temperature": 0.1,
+      "top_p": 0.85,
+      "prompt": "You are an OpenSpec .NET Core software Architect. Your only job is to write clear, complete specifications. Use /opsx:propose to start a change. Write only within openspec/ (proposal.md, specs/, design.md, tasks.md). Never write implementation code. If you need deeper understanding, ask the user to run /opsx:explore first.",
+      "permission": {
+        "read": "allow",
+        "edit": "allow",
+        "bash": "deny"
+      }
+    },
+    "builder": {
+      "description": "Implements code exactly as defined in OpenSpec tasks.",
+      "mode": "primary",
+      "model": "opencode-go/deepseek-v4-pro",
+      "temperature": 0.2,
+      "top_p": 0.9,
+      "prompt": "You are a meticulous .NET Core software engineer. Implement code following the OpenSpec tasks in openspec/changes/. Use /opsx:apply to start. Read all relevant specs before coding. Write clean, tested code. Do not modify specs unless explicitly told.",
+      "permission": {
+        "read": "allow",
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "reviewer": {
+      "description": "Reviews OpenSpec proposals for completeness and edge cases, or verifies code against specs.",
+      "mode": "primary",
+      "model": "github-copilot/gpt-5.3-codex",
+      "temperature": 0.05,
+      "top_p": 0.8,
+      "prompt": "You are a strict .NET Core software technical reviewer. Use /opsx:verify to check if code matches specs. Use /opsx:review to audit proposals for edge cases, consistency, and completeness. Never write or edit files. Provide only feedback and recommendations.",
+      "permission": {
+        "read": "allow",
+        "edit": "deny",
+        "bash": "deny"
+      }
+    }
+  }
+}
